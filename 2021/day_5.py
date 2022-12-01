@@ -2,9 +2,9 @@ from typing import List, Tuple
 
 
 def split_line(line: str) -> Tuple[Tuple[int, int], Tuple[int, int]]:
-    start, end = line.split(' -> ')
-    start = tuple(map(int, start.split(',')))
-    end = tuple(map(int, end.split(',')))
+    start, end = line.split(" -> ")
+    start = tuple(map(int, start.split(",")))
+    end = tuple(map(int, end.split(",")))
     return start, end
 
 
@@ -58,10 +58,10 @@ def part2(data: str):
     return c
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''0,9 -> 5,9
+    test_input = """0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
 2,2 -> 2,1
@@ -70,11 +70,11 @@ if __name__ == '__main__':
 0,9 -> 2,9
 3,4 -> 1,4
 0,0 -> 8,8
-5,5 -> 8,2'''
+5,5 -> 8,2"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_5_input.txt', 'r') as input_file:
+        with open("day_5_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

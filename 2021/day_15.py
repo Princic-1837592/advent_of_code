@@ -9,14 +9,14 @@ def dynamic_programming(data: List[List[int]]):
     for i in range(1, len(data)):
         for j in range(1, len(data[0])):
             grid[i][j] = data[i][j] + min(grid[i - 1][j], grid[i][j - 1])
-    # print('\n'.join(map(lambda l: ''.join(map(lambda x: f'{x:>5}', l)), grid)))
+    # print("\n".join(map(lambda l: "".join(map(lambda x: f"{x:>5}", l)), grid)))
     return grid[-1][-1]
 
 
 def dijkstra(cavern: List[List[int]]) -> int:
-    # print('\n'.join(map(lambda l: ''.join(map(str, l)), cavern)))
+    # print("\n".join(map(lambda l: "".join(map(str, l)), cavern)))
     dynamic_result = dynamic_programming(cavern)
-    print('dynamic result:', dynamic_result)
+    print("dynamic result:", dynamic_result)
     weights = [[{} for _ in range(len(cavern[0]))] for _ in range(len(cavern))]
     for i in range(len(cavern)):
         for j in range(len(cavern[0])):
@@ -85,12 +85,12 @@ def part2(data: str):
     return dijkstra(multiply(cavern))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import time
 
     test = True
     test = False
-    test_input = '''1163751742
+    test_input = """1163751742
 1381373672
 2136511328
 3694931569
@@ -99,11 +99,11 @@ if __name__ == '__main__':
 1359912421
 3125421639
 1293138521
-2311944581'''
+2311944581"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_15_input.txt', 'r') as input_file:
+        with open("day_15_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     start = time.time()
     print(part1(puzzle_input))

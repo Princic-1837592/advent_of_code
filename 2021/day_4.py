@@ -20,10 +20,10 @@ def compute_score(board: List[List[int]], picked: List[bool], last_picked: int) 
 
 
 def part1(data: str):
-    sequence, *boards = data.split('\n\n')
+    sequence, *boards = data.split("\n\n")
     picked = [False] * len(sequence)
     boards = [[list(map(int, line.split())) for line in board.splitlines()] for board in boards]
-    for number in map(int, sequence.split(',')):
+    for number in map(int, sequence.split(",")):
         picked[number] = True
         for board in boards:
             if check_win(board, picked):
@@ -31,14 +31,14 @@ def part1(data: str):
 
 
 def part2(data: str):
-    sequence, *boards = data.split('\n\n')
+    sequence, *boards = data.split("\n\n")
     picked = [False] * len(sequence)
     boards = [[list(map(int, line.split())) for line in board.splitlines()] for board in boards]
     has_won = [False] * len(boards)
     won_last = -1
     last_picked = -1
     last_score= 0
-    for number in map(int, sequence.split(',')):
+    for number in map(int, sequence.split(",")):
         picked[number] = True
         for i, board in enumerate(boards):
             if not has_won[i] and check_win(board, picked):
@@ -49,10 +49,10 @@ def part2(data: str):
     return last_score
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
+    test_input = """7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
 22 13 17 11  0
  8  2 23  4 24
@@ -70,11 +70,11 @@ if __name__ == '__main__':
 10 16 15  9 19
 18  8 23 26 20
 22 11 13  6  5
- 2  0 12  3  7'''
+ 2  0 12  3  7"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_4_input.txt', 'r') as input_file:
+        with open("day_4_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

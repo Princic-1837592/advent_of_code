@@ -42,18 +42,18 @@ def part2(data: str):
     return first_three[0] * first_three[1] * first_three[2]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''2199943210
+    test_input = """2199943210
 3987894921
 9856789892
 8767896789
-9899965678'''
+9899965678"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_9_input.txt', 'r') as input_file:
+        with open("day_9_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

@@ -54,10 +54,10 @@ def part2(data: str):
     return steps
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''5483143223
+    test_input = """5483143223
 2745854711
 5264556173
 6141336146
@@ -66,11 +66,11 @@ if __name__ == '__main__':
 2176841721
 6882881134
 4846848554
-5283751526'''
+5283751526"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_11_input.txt', 'r') as input_file:
+        with open("day_11_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

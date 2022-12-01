@@ -15,25 +15,25 @@ def simulate(days, limit: int) -> List[int]:
 
 
 def part1(data: str):
-    days = list(map(int, data.split(',')))
+    days = list(map(int, data.split(",")))
     fishes = simulate(days, 80)
     return sum(fishes)
 
 
 def part2(data: str):
-    days = list(map(int, data.split(',')))
+    days = list(map(int, data.split(",")))
     fishes = simulate(days, 256)
     return sum(fishes)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''3,4,3,1,2'''
+    test_input = """3,4,3,1,2"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_6_input.txt', 'r') as input_file:
+        with open("day_6_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

@@ -1,24 +1,24 @@
 closed = {
-    '(': ')',
-    '[': ']',
-    '{': '}',
-    '<': '>',
+    "(": ")",
+    "[": "]",
+    "{": "}",
+    "<": ">",
 }
 
 
 def part1(data: str):
     lines = data.splitlines()
     points = {
-        ')': 3,
-        ']': 57,
-        '}': 1197,
-        '>': 25137,
+        ")": 3,
+        "]": 57,
+        "}": 1197,
+        ">": 25137,
     }
     result = 0
     for line in lines:
         stack = []
         for char in line:
-            if char in '([{<':
+            if char in "([{<":
                 stack.append(char)
             else:
                 popped = stack.pop()
@@ -31,7 +31,7 @@ def part1(data: str):
 def is_incomplete(line: str):
     stack = []
     for char in line:
-        if char in '([{<':
+        if char in "([{<":
             stack.append(closed[char])
         else:
             if not stack:
@@ -39,15 +39,15 @@ def is_incomplete(line: str):
             expected = stack.pop()
             if char != expected:
                 return False
-    return ''.join(reversed(stack))
+    return "".join(reversed(stack))
 
 
 def score(completion: str) -> int:
     points = {
-        ')': 1,
-        ']': 2,
-        '}': 3,
-        '>': 4,
+        ")": 1,
+        "]": 2,
+        "}": 3,
+        ">": 4,
     }
     score = 0
     for char in completion:
@@ -61,10 +61,10 @@ def part2(data: str):
     return sorted(results)[len(results) // 2]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''[({(<(())[]>[[{[]{<()<>>
+    test_input = """[({(<(())[]>[[{[]{<()<>>
 [(()[<>])]({[<{<<[]>>(
 {([(<{}[<>[]}>{[]{[(<()>
 (((({<>}<{<{<>}{[]{[]{}
@@ -73,11 +73,11 @@ if __name__ == '__main__':
 {<[[]]>}<{[{[{[]{()[[[]
 [<(<(<(<{}))><([]([]()
 <{([([[(<>()){}]>(<<{{
-<{([{{}}[<[[[<>{}]]]>[]]'''
+<{([{{}}[<[[[<>{}]]]>[]]"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_10_input.txt', 'r') as input_file:
+        with open("day_10_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

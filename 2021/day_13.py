@@ -3,11 +3,11 @@ from typing import List, Tuple
 
 def split_data(data: str) -> Tuple[List[List[int]], List[Tuple[str, int]]]:
     def split_instruction(line: str):
-        split = line.split('=')
+        split = line.split("=")
         return split[0][-1], int(split[1])
 
-    dots, instructions = data.split('\n\n')
-    coords = list(map(lambda x: tuple(map(int, reversed(x.split(',')))), dots.splitlines()))
+    dots, instructions = data.split("\n\n")
+    coords = list(map(lambda x: tuple(map(int, reversed(x.split(",")))), dots.splitlines()))
     height, width = max(coords, key = lambda x: x[0])[0], max(coords, key = lambda x: x[1])[1]
     paper = [[0 for _ in range(width + 1)] for _ in range(height + 1)]
     for x, y in coords:
@@ -16,7 +16,7 @@ def split_data(data: str) -> Tuple[List[List[int]], List[Tuple[str, int]]]:
 
 
 def fold(paper: List[List[int]], direction: str, index: int):
-    if direction == 'x':
+    if direction == "x":
         for offset in reversed(range(1, len(paper[0]) - index)):
             for i in range(len(paper)):
                 if paper[i][index + offset] == 1:
@@ -24,7 +24,7 @@ def fold(paper: List[List[int]], direction: str, index: int):
                 paper[i].pop()
         for i in range(len(paper)):
             paper[i].pop()
-    elif direction == 'y':
+    elif direction == "y":
         for offset in reversed(range(1, len(paper) - index)):
             for j in range(len(paper[0])):
                 if paper[index + offset][j] == 1:
@@ -52,13 +52,13 @@ def part2(data: str):
     paper, instructions = split_data(data)
     for direction, index in instructions:
         fold(paper, direction, index)
-    return '\n'.join(map(lambda l: ''.join(map(lambda d: ' ' if d == 0 else '#', l)), paper))
+    return "\n".join(map(lambda l: "".join(map(lambda d: " " if d == 0 else "#", l)), paper))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''6,10
+    test_input = """6,10
 0,14
 9,10
 0,3
@@ -78,11 +78,11 @@ if __name__ == '__main__':
 9,0
 
 fold along y=7
-fold along x=5'''
+fold along x=5"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_13_input.txt', 'r') as input_file:
+        with open("day_13_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

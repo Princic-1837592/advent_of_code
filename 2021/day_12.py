@@ -23,11 +23,11 @@ def visit(
         used_extra_cave: bool
 ) -> int:
     if cave in visited:
-        if used_extra_cave or cave == 'start':
+        if used_extra_cave or cave == "start":
             return 0
         else:
             used_extra_cave = True
-    if cave == 'end':
+    if cave == "end":
         return 1
     paths = 0
     if cave.islower():
@@ -42,19 +42,19 @@ def visit(
 def part1(data: str):
     lines = data.splitlines()
     caves = extract_paths(lines)
-    return visit(caves, 'start', [], True)
+    return visit(caves, "start", [], True)
 
 
 def part2(data: str):
     lines = data.splitlines()
     caves = extract_paths(lines)
-    return visit(caves, 'start', [], False)
+    return visit(caves, "start", [], False)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''fs-end
+    test_input = """fs-end
 he-DX
 fs-he
 start-DX
@@ -71,11 +71,11 @@ start-pj
 he-WI
 zg-he
 pj-fs
-start-RW'''
+start-RW"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_12_input.txt', 'r') as input_file:
+        with open("day_12_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

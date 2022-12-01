@@ -1,5 +1,5 @@
 def part1(data: str):
-    positions = list(map(int, data.split(',')))
+    positions = list(map(int, data.split(",")))
     m, M = min(positions), max(positions)
     min_sum = M * len(positions)
     for n in range(m, M + 1):
@@ -10,7 +10,7 @@ def part1(data: str):
 
 
 def part2(data: str):
-    positions = list(map(int, data.split(',')))
+    positions = list(map(int, data.split(",")))
     m, M = min(positions), max(positions)
     min_sum = M * len(positions) * (M * len(positions) + 1) // 2
     for n in range(m, M + 1):
@@ -20,14 +20,14 @@ def part2(data: str):
     return min_sum
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = True
     test = False
-    test_input = '''16,1,2,0,4,2,7,1,2,14'''
+    test_input = """16,1,2,0,4,2,7,1,2,14"""
     if test:
         puzzle_input = test_input
     else:
-        with open('day_7_input.txt', 'r') as input_file:
+        with open("day_7_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))
