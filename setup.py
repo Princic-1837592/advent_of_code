@@ -39,4 +39,4 @@ def setup_calendar(year: str):
 
 
 if __name__ == "__main__":
-    setup_calendar("2021")
+    setup_calendar("2022")
