@@ -1,5 +1,4 @@
 import re
-from collections import deque
 
 
 def part1(data: str):
@@ -28,7 +27,7 @@ def part2(data: str):
         for i in reversed(range(len(lines) - 1)):
             if lines[i][col] != " ":
                 stacks[c].append(lines[i][col])
-    crane = deque()
+    crane = []
     for n, src, dest in moves:
         for _ in range(n):
             crane.append(stacks[src - 1].pop())
