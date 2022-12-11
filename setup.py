@@ -27,12 +27,12 @@ def setup_calendar(year: str):
     if not os.path.exists(year):
         os.mkdir(year)
     for day in range(1, 25 + 1):
-        path = os.path.join(year, f"day_{day}.py")
+        path = os.path.join(year, f"day_{day:0>2}.py")
         if not os.path.exists(path):
             with open(path, "w") as f:
                 f.write(content.format(day))
                 f.write("\n")
-        path = os.path.join(year, f"day_{day}_input.txt")
+        path = os.path.join(year, f"day_{day:0>2}_input.txt")
         if not os.path.exists(path):
             with open(path, "w") as _f:
                 pass

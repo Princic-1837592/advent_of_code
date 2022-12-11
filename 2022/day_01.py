@@ -7,7 +7,7 @@ def part1(data: str):
 def part2(data: str):
     elves = data.split("\n\n")
     elves = list(map(sum, map(lambda x: map(int, x.split("\n")), elves)))
-    return sum(sorted(elves, reverse = True)[:3])
+    return sum(sorted(elves, reverse=True)[:3])
 
 
 if __name__ == "__main__":
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     if test:
         puzzle_input = test_input
     else:
-        with open("day_1_input.txt", "r") as input_file:
+        with open("day_01_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

@@ -74,7 +74,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
     if test:
         puzzle_input = test_input
     else:
-        with open("day_8_input.txt", "r") as input_file:
+        with open("day_08_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

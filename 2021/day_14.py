@@ -17,7 +17,7 @@ def part1(data: str):
     for _ in range(10):
         start = step(start, rules)
     repetitions = Counter(start)
-    return repetitions[max(repetitions, key = repetitions.get)] - repetitions[min(repetitions, key = repetitions.get)]
+    return repetitions[max(repetitions, key=repetitions.get)] - repetitions[min(repetitions, key=repetitions.get)]
 
 
 def step_pairs(pairs: Dict[str, int], rules: Dict[str, str]):
@@ -43,7 +43,7 @@ def part2(data: str):
     for pair, occurrences in pairs.items():
         counts[pair[0]] = counts.get(pair[0], 0) + occurrences
     counts[start[-1]] = counts.get(start[-1], 0) + 1
-    return counts[max(counts, key = counts.get)] - counts[min(counts, key = counts.get)]
+    return counts[max(counts, key=counts.get)] - counts[min(counts, key=counts.get)]
 
 
 if __name__ == "__main__":

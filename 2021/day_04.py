@@ -37,7 +37,7 @@ def part2(data: str):
     has_won = [False] * len(boards)
     won_last = -1
     last_picked = -1
-    last_score= 0
+    last_score = 0
     for number in map(int, sequence.split(",")):
         picked[number] = True
         for i, board in enumerate(boards):
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     if test:
         puzzle_input = test_input
     else:
-        with open("day_4_input.txt", "r") as input_file:
+        with open("day_04_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

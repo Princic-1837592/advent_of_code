@@ -8,7 +8,7 @@ def split_data(data: str) -> Tuple[List[List[int]], List[Tuple[str, int]]]:
 
     dots, instructions = data.split("\n\n")
     coords = list(map(lambda x: tuple(map(int, reversed(x.split(",")))), dots.splitlines()))
-    height, width = max(coords, key = lambda x: x[0])[0], max(coords, key = lambda x: x[1])[1]
+    height, width = max(coords, key=lambda x: x[0])[0], max(coords, key=lambda x: x[1])[1]
     paper = [[0 for _ in range(width + 1)] for _ in range(height + 1)]
     for x, y in coords:
         paper[x][y] = 1
