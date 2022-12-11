@@ -21,16 +21,16 @@ def part1(data: str):
     return result
 
 
-def part2(data: str):
+def part2(data: str, out_char: str = "#"):
     instructions = data.splitlines()
-    crt = [["." for _ in range(40)] for _ in range(6)]
+    crt = [[" " for _ in range(40)] for _ in range(6)]
     sprite = 0
     cycle = 0
     add = False
     i = 0
     while i < len(instructions):
         if sprite <= cycle % 40 <= sprite + 2:
-            crt[cycle // 40][cycle % 40] = "#"
+            crt[cycle // 40][cycle % 40] = out_char
         instr = instructions[i]
         if add:
             add = False
