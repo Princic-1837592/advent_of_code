@@ -65,13 +65,15 @@ inverse_right = {
 }
 
 
-def find_x(monkeys, monkey, parents, solution, results) -> float:
+def find_x(monkeys, monkey, parents, solution, results) -> Tuple[float, str]:
     if monkey == "humn":
-        return solution
+        return solution, "x"
     operation, left_monkey, right_monkey = monkeys[monkey]
     if left_monkey in parents:
-        return find_x(monkeys, left_monkey, parents, inverse_left[operation](solution, results[right_monkey]), results)
-    return find_x(monkeys, right_monkey, parents, inverse_right[operation](solution, results[left_monkey]), results)
+        s, e = find_x(monkeys, left_monkey, parents, inverse_left[operation](solution, results[right_monkey]), results)
+        return s, f"({e} {operation} {results[right_monkey]})"
+    s, e = find_x(monkeys, right_monkey, parents, inverse_right[operation](solution, results[left_monkey]), results)
+    return s, f"({results[left_monkey]} {operation} {e})"
 
 
 def part2(data: str):
@@ -82,7 +84,7 @@ def part2(data: str):
         else:
             monkey = match(r"(.+): (.+) (.) (.+)", line)
             monkeys[monkey.group(1)] = (monkey.group(3), monkey.group(2), monkey.group(4))
-    parents = {"root", "humn"}
+    parents = {"humn"}
     results = {}
     _, left_monkey, right_monkey = monkeys["root"]
     left = compute_and_find_human(monkeys, left_monkey, parents, results)
@@ -94,7 +96,9 @@ def part2(data: str):
     else:
         objective = left
         variable = right_monkey
-    return find_x(monkeys, variable, parents, objective, results)
+    solution, equation = find_x(monkeys, variable, parents, objective, results)
+    print(f"{equation} = {objective} where x = {solution}")
+    return solution
 
 
 if __name__ == "__main__":
