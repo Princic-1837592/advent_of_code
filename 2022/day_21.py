@@ -2,8 +2,8 @@ from re import match
 from typing import Tuple
 
 
-def compute(monkeys, monkey):
-    if type(monkeys[monkey]) == int:
+def compute(monkeys, monkey) -> float:
+    if type(monkeys[monkey]) in (int, float):
         return monkeys[monkey]
     operation, left, right = monkeys[monkey]
     left, right = compute(monkeys, left), compute(monkeys, right)
@@ -21,15 +21,15 @@ def part1(data: str):
     monkeys = {}
     for line in data.splitlines():
         if monkey := match(r"([a-z]+): (\d+)", line):
-            monkeys[monkey.group(1)] = int(monkey.group(2))
+            monkeys[monkey.group(1)] = float(monkey.group(2))
         else:
             monkey = match(r"([a-z]+): ([a-z]+) (.) ([a-z]+)", line)
             monkeys[monkey.group(1)] = (monkey.group(3), monkey.group(2), monkey.group(4))
     return compute(monkeys, "root")
 
 
-def compute_and_find_human(monkeys, monkey, parents, results) -> int:
-    if type(monkeys[monkey]) == int:
+def compute_and_find_human(monkeys, monkey, parents, results) -> float:
+    if type(monkeys[monkey]) in (int, float):
         results[monkey] = monkeys[monkey]
         return monkeys[monkey]
     operation, left_monkey, right_monkey = monkeys[monkey]
@@ -80,7 +80,7 @@ def part2(data: str):
     monkeys = {}
     for line in data.splitlines():
         if monkey := match(r"(.+): (\d+)$", line):
-            monkeys[monkey.group(1)] = int(monkey.group(2))
+            monkeys[monkey.group(1)] = float(monkey.group(2))
         else:
             monkey = match(r"(.+): (.+) (.) (.+)", line)
             monkeys[monkey.group(1)] = (monkey.group(3), monkey.group(2), monkey.group(4))
@@ -99,6 +99,40 @@ def part2(data: str):
     solution, equation = find_x(monkeys, variable, parents, objective, results)
     print(f"{equation} = {objective} where x = {solution}")
     return solution
+
+
+def part2_binary_search(data: str):
+    monkeys = {}
+    for line in data.splitlines():
+        if monkey := match(r"(.+): (\d+)$", line):
+            monkeys[monkey.group(1)] = float(monkey.group(2))
+        else:
+            monkey = match(r"(.+): (.+) (.) (.+)", line)
+            monkeys[monkey.group(1)] = (monkey.group(3), monkey.group(2), monkey.group(4))
+    parents = {"humn"}
+    results = {}
+    _, left_monkey, right_monkey = monkeys["root"]
+    left = compute_and_find_human(monkeys, left_monkey, parents, results)
+    right = compute_and_find_human(monkeys, right_monkey, parents, results)
+    human_on_left = left_monkey in parents
+    if human_on_left:
+        objective = right
+        variable = left_monkey
+    else:
+        objective = left
+        variable = right_monkey
+    left_limit, right_limit = 0, part1(data)
+    i = 0
+    while i < 100:
+        monkeys["humn"] = (left_limit + right_limit) // 2
+        result = compute(monkeys, variable)
+        if result == objective:
+            return monkeys["humn"]
+        elif result < objective:
+            right_limit = monkeys["humn"] - 1
+        else:
+            left_limit = monkeys["humn"] + 1
+        i += 1
 
 
 if __name__ == "__main__":
@@ -126,3 +160,4 @@ hmdt: 32"""
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))
+    print(part2_binary_search(puzzle_input))
