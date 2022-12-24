@@ -63,7 +63,6 @@ def move_blizzards(valley: Valley, direction=1):
 def bfs(current: Deque[Optional[Position]], valley: Valley, target: Position):
     h, w = len(valley), len(valley[0])
     minutes = 0
-    move_blizzards(valley)
     while True:
         position = current.popleft()
         if position is None:
@@ -73,7 +72,7 @@ def bfs(current: Deque[Optional[Position]], valley: Valley, target: Position):
             current.append(None)
             continue
         if position == target:
-            return minutes + 1
+            return minutes
         if valley[position[0]][position[1]] != ".":
             continue
         for direction in [(0, 1), (0, -1), (1, 0), (-1, 0), (0, 0)]:
@@ -83,14 +82,14 @@ def bfs(current: Deque[Optional[Position]], valley: Valley, target: Position):
 
 def part1(data: str):
     valley = list(map(lambda l: list(map(lambda c: Cell(c), l)), data.splitlines()))
-    return bfs(deque([(0, 1), None]), valley, (len(valley) - 1, len(valley[0]) - 2))
+    return bfs(deque([None, (0, 1)]), valley, (len(valley) - 1, len(valley[0]) - 2))
 
 
 def part2(data: str):
     valley = list(map(lambda l: list(map(lambda c: Cell(c), l)), data.splitlines()))
-    steps = bfs(deque([(0, 1), None]), valley, (len(valley) - 1, len(valley[0]) - 2))
-    steps += bfs(deque([(len(valley) - 1, len(valley[0]) - 2), None]), valley, (0, 1))
-    steps += bfs(deque([(0, 1), None]), valley, (len(valley) - 1, len(valley[0]) - 2))
+    steps = bfs(deque([None, (0, 1)]), valley, (len(valley) - 1, len(valley[0]) - 2))
+    steps += bfs(deque([None, (len(valley) - 1, len(valley[0]) - 2)]), valley, (0, 1))
+    steps += bfs(deque([None, (0, 1)]), valley, (len(valley) - 1, len(valley[0]) - 2))
     return steps
 
 
@@ -103,13 +102,6 @@ if __name__ == "__main__":
 #>v.><>#
 #<^v^^>#
 ######.#"""
-    #     test_input = """#.#####
-    # #.....#
-    # #>....#
-    # #.....#
-    # #...v.#
-    # #.....#
-    # #####.#"""
     if test:
         puzzle_input = test_input
     else:
