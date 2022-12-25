@@ -71,7 +71,6 @@ def ten_to_snafu(ten: int):
                 c += 1
             x[c] += 1
         c -= 1
-
     return x
 
 
@@ -81,10 +80,6 @@ def part1(data: str):
     ten = sum(tens)
     snafu = ten_to_snafu(ten)
     return ten_digits_to_snafu(snafu)
-
-
-def part2(data: str):
-    pass
 
 
 if __name__ == "__main__":
@@ -109,4 +104,3 @@ if __name__ == "__main__":
         with open("day_25_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
-    print(part2(puzzle_input))
