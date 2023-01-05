@@ -107,3 +107,4 @@ path = "day_25.rs"
 
 [dependencies]
 regex = "1.7.0"
+rayon = "1.6.1"
