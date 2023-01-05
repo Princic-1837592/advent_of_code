@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Andrea Princic <princic.1837592@studenti.uniroma1.it>"]
 edition = "2021"
 
+[lib]
+name = "advent_of_code_2020"
+path = "lib.rs"
+
 [[bin]]
 name = "day_01"
 path = "day_01.rs"
