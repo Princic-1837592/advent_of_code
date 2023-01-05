@@ -4,9 +4,13 @@ mod part1 {
             .split("\r\n\r\n")
             .map(|l| l.split(|c| c == ' ' || c == '\n').collect())
             .collect();
-        passports.iter().filter(|p| {
-            p.len() == 8 || (p.iter().filter(|f| f.starts_with("cid:")).count() == 0 && p.len() == 7)
-        }).count()
+        passports
+            .iter()
+            .filter(|p| {
+                p.len() == 8
+                    || (p.iter().filter(|f| f.starts_with("cid:")).count() == 0 && p.len() == 7)
+            })
+            .count()
     }
 }
 
@@ -81,7 +85,8 @@ mod part2 {
             .split("\r\n\r\n")
             .map(|l| l.split_whitespace().collect::<Vec<_>>())
             .filter(|p| {
-                p.len() == 8 || (p.iter().filter(|f| f.starts_with("cid:")).count() == 0 && p.len() == 7)
+                p.len() == 8
+                    || (p.iter().filter(|f| f.starts_with("cid:")).count() == 0 && p.len() == 7)
             })
             .filter(validate)
             .count()
@@ -92,7 +97,8 @@ fn main() {
     // let test = true;
     let test = false;
     let test_input = "yecl:gry pid:998952368 eyr:2026 hcl:#fffffd
-byr:1940 iyr:2014 cid:147 hgt:174cm".to_owned();
+byr:1940 iyr:2014 cid:147 hgt:174cm"
+        .to_owned();
     let puzzle_input = if test {
         test_input
     } else {

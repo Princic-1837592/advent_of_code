@@ -42,7 +42,8 @@ fn main() {
 366
 299
 675
-1456".to_owned();
+1456"
+        .to_owned();
     let puzzle_input = if test {
         test_input
     } else {

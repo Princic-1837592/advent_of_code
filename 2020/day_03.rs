@@ -34,7 +34,6 @@ mod part2 {
     }
 }
 
-
 fn main() {
     // let test = true;
     let test = false;
@@ -48,7 +47,8 @@ fn main() {
 .#........#
 #.##...#...
 #...##....#
-.#..#...#.#".to_owned();
+.#..#...#.#"
+        .to_owned();
     let puzzle_input = if test {
         test_input
     } else {

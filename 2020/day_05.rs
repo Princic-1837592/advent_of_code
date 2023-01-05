@@ -14,8 +14,8 @@ fn find_seat_id(seat: &&str) -> usize {
 }
 
 mod part1 {
-    use rayon::prelude::*;
     use super::find_seat_id;
+    use rayon::prelude::*;
 
     pub(crate) fn solve(input: &str) -> usize {
         let seats: Vec<_> = input.lines().collect();
@@ -24,14 +24,18 @@ mod part1 {
 }
 
 mod part2 {
+    use super::find_seat_id;
+    use rayon::prelude::*;
     use std::cmp::Ordering;
     use std::usize;
-    use rayon::prelude::*;
-    use super::find_seat_id;
-
 
     pub(crate) fn solve(input: &str) -> usize {
-        let mut seats: Vec<_> = input.lines().collect::<Vec<_>>().par_iter().map(find_seat_id).collect();
+        let mut seats: Vec<_> = input
+            .lines()
+            .collect::<Vec<_>>()
+            .par_iter()
+            .map(find_seat_id)
+            .collect();
         seats.sort_unstable();
         let (min, max) = (seats[0], seats[seats.len() - 1]);
         let (mut left, mut right) = (0, seats.len() - 1);
@@ -39,7 +43,7 @@ mod part2 {
             let mid = (left + right) / 2;
             let mid_value = mid + min;
             match seats[mid].cmp(&mid_value) {
-                Ordering::Equal | Ordering::Less => { left = mid }
+                Ordering::Equal | Ordering::Less => left = mid,
                 Ordering::Greater => {
                     if seats[mid - 1] == seats[mid] - 2 {
                         return seats[mid] - 1;
