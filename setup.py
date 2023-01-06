@@ -28,6 +28,10 @@ name = "advent_of_code_{year}"
 version = "0.1.0"
 authors = ["Andrea Princic <princic.1837592@studenti.uniroma1.it>"]
 
+[lib]
+name = "advent_of_code_{year}"
+path = "lib.rs"
+
 {bins}
 
 [dependencies]
@@ -63,23 +67,29 @@ cargo_bin_content = """
 name = "day_{day:0>2}"
 path = "day_{day:0>2}.rs"
 """.lstrip()
+rust_lib_content = """
+#[cfg(windows)]
+pub const LINE_ENDING: &str = "\r\n";
+#[cfg(not(windows))]
+pub const LINE_ENDING: &str = "\n";
+""".lstrip()
 
 
 def setup_calendar(year: str, language: str = "python"):
     def rust():
-        if not os.path.exists(year):
-            os.mkdir(year)
-        inputs = os.path.join(year, "inputs")
-        if not os.path.exists(inputs):
-            os.mkdir(inputs)
-        if not os.path.exists(os.path.join(year, "Cargo.toml")):
-            with open(os.path.join(year, "Cargo.toml"), "w") as cargo:
-                cargo.write(
+        cargo = os.path.join(year, "Cargo.toml")
+        if not os.path.exists(cargo):
+            with open(cargo, "w") as cargo_toml:
+                cargo_toml.write(
                     cargo_toml_content.format(
                         year=year,
                         bins="\n".join(cargo_bin_content.format(day=day) for day in range(1, 25 + 1)),
                     )
                 )
+        lib = os.path.join(year, "lib.rs")
+        if not os.path.exists(lib):
+            with open(lib, "w") as lib_rs:
+                lib_rs.write(rust_lib_content)
         for day in range(1, 25 + 1):
             path = os.path.join(year, f"day_{day:0>2}.rs")
             if not os.path.exists(path):
@@ -91,11 +101,6 @@ def setup_calendar(year: str, language: str = "python"):
                     pass
 
     def python():
-        if not os.path.exists(year):
-            os.mkdir(year)
-        inputs = os.path.join(year, "inputs")
-        if not os.path.exists(inputs):
-            os.mkdir(inputs)
         for day in range(1, 25 + 1):
             path = os.path.join(year, f"day_{day:0>2}.py")
             if not os.path.exists(path):
@@ -106,6 +111,11 @@ def setup_calendar(year: str, language: str = "python"):
                 with open(path, "w") as _day_input:
                     pass
 
+    if not os.path.exists(year):
+        os.mkdir(year)
+    inputs = os.path.join(year, "inputs")
+    if not os.path.exists(inputs):
+        os.mkdir(inputs)
     if language == "python":
         python()
     elif language == "rust":
