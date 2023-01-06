@@ -181,10 +181,6 @@ L.LLLLL.LL"
     } else {
         std::fs::read_to_string("inputs/day_11_input.txt").unwrap()
     };
-    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
-    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
 }
