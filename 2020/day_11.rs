@@ -1,7 +1,4 @@
-use std::{
-    fmt::{Display, Formatter},
-    time::Instant,
-};
+use std::fmt::{Display, Formatter};
 
 #[derive(Clone, Debug)]
 enum Seat {
