@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 fn parse(input: &str) -> Vec<usize> {
     let mut jolts: Vec<_> = input.lines().map(|n| n.parse().unwrap()).collect();
     jolts.push(0);
@@ -37,8 +35,7 @@ mod part2 {
         let jolts = parse(input);
         let mut dynamic = vec![0; jolts.len()];
         dynamic[0] = 1;
-        dynamic[1] = 1;
-        for i in 2..jolts.len() {
+        for i in 1..jolts.len() {
             let mut combs = dynamic[i - 1];
             if i >= 2 && jolts[i] - jolts[i - 2] <= 3 {
                 combs += dynamic[i - 2];
