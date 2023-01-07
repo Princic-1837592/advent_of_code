@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 fn parse(input: &str) -> (usize, Vec<Option<usize>>) {
     let mut lines = input.lines();
     let timestamp = lines.next().unwrap().parse().unwrap();
