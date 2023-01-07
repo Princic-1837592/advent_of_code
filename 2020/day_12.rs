@@ -1,5 +1,3 @@
-use std::time::Instant;
-
 #[derive(Debug, Copy, Clone)]
 enum Instruction {
     Move(isize, isize, isize),
@@ -37,7 +35,7 @@ fn parse(input: &str) -> Vec<Instruction> {
 }
 
 mod part1 {
-    use crate::{Instruction, parse};
+    use crate::{parse, Instruction};
 
     pub(crate) fn solve(input: &str) -> usize {
         let instructions = parse(input);
@@ -59,7 +57,7 @@ mod part1 {
 }
 
 mod part2 {
-    use crate::{Instruction, parse};
+    use crate::{parse, Instruction};
 
     pub(crate) fn solve(input: &str) -> usize {
         let instructions = parse(input);
@@ -94,10 +92,6 @@ F11"
     } else {
         std::fs::read_to_string("inputs/day_12_input.txt").unwrap()
     };
-    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
-    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
 }
