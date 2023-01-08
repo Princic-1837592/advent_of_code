@@ -37,6 +37,8 @@ path = "lib.rs"
 [dependencies]
 """.lstrip()
 rust_src_content = """
+use std::time::Instant;
+
 mod part1 {{
     pub(crate) fn solve(input: &str) -> usize {{
         0
@@ -58,8 +60,12 @@ fn main() {{
     }} else {{
         std::fs::read_to_string("inputs/day_{day:0>2}_input.txt").unwrap()
     }};
+    let start = Instant::now();
     println!("{{}}", part1::solve(&puzzle_input));
+    println!("{{:?}}", start.elapsed());
+    let start = Instant::now();
     println!("{{}}", part2::solve(&puzzle_input));
+    println!("{{:?}}", start.elapsed());
 }}
 """.lstrip()
 cargo_bin_content = """
