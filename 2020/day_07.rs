@@ -1,5 +1,7 @@
 extern crate core;
 
+use std::time::Instant;
+
 mod part1 {
     use std::collections::{HashMap, HashSet};
 
@@ -108,6 +110,11 @@ dark violet bags contain no other bags."
     } else {
         std::fs::read_to_string("inputs/day_07_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

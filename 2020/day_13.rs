@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 fn parse(input: &str) -> (usize, Vec<Option<usize>>) {
     let mut lines = input.lines();
     let timestamp = lines.next().unwrap().parse().unwrap();
@@ -65,6 +67,11 @@ fn main() {
     } else {
         std::fs::read_to_string("inputs/day_13_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 fn find_seat_id(seat: &&str) -> usize {
     let (mut front, mut back) = (0, 127);
     let (mut left, mut right) = (0, 7);
@@ -64,6 +66,11 @@ fn main() {
     } else {
         std::fs::read_to_string("inputs/day_05_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

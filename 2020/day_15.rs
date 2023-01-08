@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::Instant;
 
 fn parse(input: &str) -> HashMap<usize, usize> {
     input
@@ -53,6 +54,11 @@ fn main() {
     } else {
         std::fs::read_to_string("inputs/day_15_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

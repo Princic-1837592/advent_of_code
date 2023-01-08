@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 #[derive(Debug, Copy, Clone)]
 enum Instruction {
     Move(isize, isize, isize),
@@ -92,6 +94,11 @@ F11"
     } else {
         std::fs::read_to_string("inputs/day_12_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

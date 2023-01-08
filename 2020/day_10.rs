@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 fn parse(input: &str) -> Vec<usize> {
     let mut jolts: Vec<_> = input.lines().map(|n| n.parse().unwrap()).collect();
     jolts.push(0);
@@ -89,6 +91,11 @@ fn main() {
     } else {
         std::fs::read_to_string("inputs/day_10_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

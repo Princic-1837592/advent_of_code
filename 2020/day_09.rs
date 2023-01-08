@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::time::Instant;
 
 fn parse(input: &str) -> Vec<usize> {
     input.lines().map(|n| n.parse().unwrap()).collect()
@@ -107,6 +108,11 @@ fn main() {
             25,
         )
     };
-    println!("{}", part1::solve(&puzzle_input, size));
-    println!("{}", part2::solve(&puzzle_input, size));
+    let start = Instant::now();
+    println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
+    println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

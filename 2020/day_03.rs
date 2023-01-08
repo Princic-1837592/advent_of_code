@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 mod part1 {
     pub(crate) fn solve(input: &str) -> usize {
         let map: Vec<Vec<_>> = input.lines().map(|l| l.chars().collect()).collect();
@@ -54,6 +56,11 @@ fn main() {
     } else {
         std::fs::read_to_string("inputs/day_03_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }

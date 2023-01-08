@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 mod part1 {
     pub(crate) fn solve(input: &str) -> usize {
         let passports: Vec<Vec<_>> = input
@@ -104,6 +106,11 @@ byr:1940 iyr:2014 cid:147 hgt:174cm"
     } else {
         std::fs::read_to_string("inputs/day_04_input.txt").unwrap()
     };
+    let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+    let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
+    println!("{:?}", start.elapsed());
+}
 }
