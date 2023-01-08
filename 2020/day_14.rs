@@ -6,14 +6,14 @@ enum Operation {
 
 #[derive(Clone, Copy, Debug)]
 struct Value {
-    pub(crate) bits: [u8; 36],
-    pub(crate) actual: u64,
+    bits: [u8; 36],
+    actual: u64,
 }
 
 #[derive(Clone, Copy, Debug)]
 struct Instruction {
-    pub(crate) operation: Operation,
-    pub(crate) value: Value,
+    operation: Operation,
+    value: Value,
 }
 
 impl From<&str> for Instruction {
@@ -120,7 +120,6 @@ mod part2 {
             mut masked: usize,
             value: u64,
             i: usize,
-            bit: usize,
         ) {
             if i >= mask.len() {
                 memory.insert(masked, value);
@@ -131,20 +130,19 @@ mod part2 {
                         memory,
                         mask,
                         address,
-                        masked | (address & (1 << bit) != 0) as usize,
+                        masked | (address & (1 << (35 - i)) != 0) as usize,
                         value,
                         i + 1,
-                        bit - 1,
                     ),
-                    1 => recursive(memory, mask, address, masked | 1, value, i + 1, bit - 1),
+                    1 => recursive(memory, mask, address, masked | 1, value, i + 1),
                     _x => {
-                        recursive(memory, mask, address, masked | 1, value, i + 1, bit - 1);
-                        recursive(memory, mask, address, masked, value, i + 1, bit - 1);
+                        recursive(memory, mask, address, masked | 1, value, i + 1);
+                        recursive(memory, mask, address, masked, value, i + 1);
                     }
                 }
             }
         }
-        recursive(memory, &mut mask.clone(), address, 0, value, 0, 35);
+        recursive(memory, &mut mask.clone(), address, 0, value, 0);
     }
 
     pub(crate) fn solve(input: &str) -> u64 {
