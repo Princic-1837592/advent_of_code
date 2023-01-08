@@ -9,7 +9,7 @@ fn parse(input: &str) -> (usize, Vec<Option<usize>>) {
             .split(',')
             .map(|b| match b.chars().next().unwrap() {
                 'x' => None,
-                _ => Some(b.parse().unwrap()),
+                _n => Some(b.parse().unwrap()),
             })
             .collect(),
     )

@@ -19,7 +19,7 @@ mod part1 {
                     match e - prev {
                         1 => (ones + 1, threes),
                         3 => (ones, threes + 1),
-                        _ => (ones, threes),
+                        _two => (ones, threes),
                     },
                 )
             })

@@ -18,14 +18,14 @@ impl From<&str> for Instruction {
             'R' => match n {
                 90 => Instruction::Right,
                 180 => Instruction::Flip,
-                _ => Instruction::Left,
+                _turn_270 => Instruction::Left,
             },
             'L' => match n {
                 90 => Instruction::Left,
                 180 => Instruction::Flip,
-                _ => Instruction::Right,
+                _turn_270 => Instruction::Right,
             },
-            _ => Instruction::Forward(n),
+            _f => Instruction::Forward(n),
         }
     }
 }

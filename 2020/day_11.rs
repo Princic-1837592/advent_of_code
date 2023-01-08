@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Copy)]
 enum Seat {
     Floor,
     Empty,
@@ -12,7 +12,7 @@ impl From<char> for Seat {
         match c {
             'L' => Seat::Empty,
             '#' => Seat::Occupied,
-            _ => Seat::Floor,
+            _f => Seat::Floor,
         }
     }
 }
@@ -70,7 +70,7 @@ mod part1 {
                         support_vec[i][j] = Seat::Empty;
                         changed = true;
                     }
-                    _ => {}
+                    _f => {}
                 }
             }
         }
@@ -140,7 +140,7 @@ mod part2 {
                         support_vec[i][j] = Seat::Empty;
                         changed = true;
                     }
-                    _ => {}
+                    _f => {}
                 }
             }
         }

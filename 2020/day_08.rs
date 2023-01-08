@@ -15,7 +15,7 @@ impl From<&str> for Instruction {
             match op.chars().next().unwrap() {
                 'a' => Operation::Acc,
                 'j' => Operation::Jmp,
-                _ => Operation::Nop,
+                _n => Operation::Nop,
             },
             arg,
         )

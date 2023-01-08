@@ -6,8 +6,7 @@ fn find_seat_id(seat: &&str) -> usize {
             'F' => back = (front + back) / 2,
             'B' => front = (front + back) / 2 + 1,
             'L' => right = (left + right) / 2,
-            'R' => left = (left + right) / 2 + 1,
-            _ => panic!("Invalid character"),
+            _r => left = (left + right) / 2 + 1,
         }
     }
     front * 8 + left
