@@ -51,7 +51,7 @@ mod part1 {
 mod part2 {
     use std::cmp::Ordering;
 
-    use super::{find_invalid, parse};
+    use crate::{find_invalid, parse};
 
     pub(crate) fn solve(input: &str, size: usize) -> usize {
         let numbers = parse(input);

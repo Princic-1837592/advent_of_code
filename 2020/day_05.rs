@@ -15,7 +15,7 @@ fn find_seat_id(seat: &&str) -> usize {
 }
 
 mod part1 {
-    use super::find_seat_id;
+    use crate::find_seat_id;
     use rayon::prelude::*;
 
     pub(crate) fn solve(input: &str) -> usize {
@@ -25,7 +25,7 @@ mod part1 {
 }
 
 mod part2 {
-    use super::find_seat_id;
+    use crate::find_seat_id;
     use rayon::prelude::*;
     use std::cmp::Ordering;
     use std::usize;
