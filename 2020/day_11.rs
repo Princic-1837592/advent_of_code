@@ -1,5 +1,7 @@
-use std::fmt::{Display, Formatter};
-use std::time::Instant;
+use std::{
+    fmt::{Display, Formatter},
+    time::Instant,
+};
 
 #[derive(Clone, Debug, Copy)]
 enum Seat {
@@ -185,5 +187,4 @@ L.LLLLL.LL"
     let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
-}
 }

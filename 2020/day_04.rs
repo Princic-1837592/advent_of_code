@@ -113,4 +113,4 @@ byr:1940 iyr:2014 cid:147 hgt:174cm"
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
 }
-}
+

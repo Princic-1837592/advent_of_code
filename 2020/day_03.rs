@@ -63,4 +63,4 @@ fn main() {
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
 }
-}
+

@@ -83,7 +83,7 @@ mod part2 {
 }
 
 fn main() {
-    let test = true;
+    // let test = true;
     let test = false;
     let test_input = "nop +0
 acc +1
@@ -106,5 +106,4 @@ acc +6"
     let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
-}
 }

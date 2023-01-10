@@ -185,4 +185,3 @@ mem[26] = 1"
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
 }
-}

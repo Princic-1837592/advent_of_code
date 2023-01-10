@@ -15,8 +15,9 @@ fn find_seat_id(seat: &&str) -> usize {
 }
 
 mod part1 {
-    use crate::find_seat_id;
     use rayon::prelude::*;
+
+    use crate::find_seat_id;
 
     pub(crate) fn solve(input: &str) -> usize {
         let seats: Vec<_> = input.lines().collect();
@@ -25,10 +26,11 @@ mod part1 {
 }
 
 mod part2 {
-    use crate::find_seat_id;
+    use std::{cmp::Ordering, usize};
+
     use rayon::prelude::*;
-    use std::cmp::Ordering;
-    use std::usize;
+
+    use crate::find_seat_id;
 
     pub(crate) fn solve(input: &str) -> usize {
         let mut seats: Vec<_> = input
@@ -38,7 +40,7 @@ mod part2 {
             .map(find_seat_id)
             .collect();
         seats.sort_unstable();
-        let (min, max) = (seats[0], seats[seats.len() - 1]);
+        let (min, _max) = (seats[0], seats[seats.len() - 1]);
         let (mut left, mut right) = (0, seats.len() - 1);
         while left < right {
             let mid = (left + right) / 2;
@@ -72,5 +74,4 @@ fn main() {
     let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
-}
 }

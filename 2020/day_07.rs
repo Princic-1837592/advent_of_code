@@ -117,4 +117,3 @@ dark violet bags contain no other bags."
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
 }
-}

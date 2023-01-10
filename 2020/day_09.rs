@@ -109,10 +109,10 @@ fn main() {
         )
     };
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
+    println!("{}", part1::solve(&puzzle_input,size));
     println!("{:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
+    println!("{}", part2::solve(&puzzle_input,size));
     println!("{:?}", start.elapsed());
 }
-}
+

@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use std::time::Instant;
+use std::{collections::HashMap, time::Instant};
 
 fn parse(input: &str) -> HashMap<usize, usize> {
     input
@@ -60,5 +59,4 @@ fn main() {
     let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
     println!("{:?}", start.elapsed());
-}
 }
