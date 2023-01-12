@@ -106,9 +106,9 @@ byr:1940 iyr:2014 cid:147 hgt:174cm"
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
+    println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
+    println!("Run in {:?}", start.elapsed());
 }
 

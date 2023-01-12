@@ -181,8 +181,8 @@ L.LLLLL.LL"
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
+    println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
-    println!("{:?}", start.elapsed());
+    println!("Run in {:?}", start.elapsed());
 }
