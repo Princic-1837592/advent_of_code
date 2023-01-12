@@ -1,8 +1,6 @@
-extern crate core;
-
 use std::time::Instant;
 
-mod part1 {
+pub mod part1 {
     use std::collections::{HashMap, HashSet};
 
     use regex::Regex;
@@ -29,7 +27,7 @@ mod part1 {
         map
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let map = parse(input);
         let mut can_be_reached = HashSet::new();
         can_be_reached.insert("shiny gold bag");
@@ -46,7 +44,7 @@ mod part1 {
     }
 }
 
-mod part2 {
+pub mod part2 {
     use std::collections::{HashMap, HashSet};
 
     use regex::Regex;
@@ -88,15 +86,13 @@ mod part2 {
         bags
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let bags = parse(input);
         explore(&bags, "shiny gold") - 1
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "shiny gold bags contain 2 dark red bags.
 dark red bags contain 2 dark orange bags.
 dark orange bags contain 2 dark yellow bags.

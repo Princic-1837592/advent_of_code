@@ -44,8 +44,8 @@ fn count(seats: Vec<Vec<Seat>>) -> usize {
         .sum()
 }
 
-mod part1 {
-    use crate::{count, parse, Seat};
+pub mod part1 {
+    use super::{count, parse, Seat};
 
     fn count_occupied_neighbors(seats: &[Vec<Seat>], i: usize, j: usize) -> usize {
         let mut count = 0;
@@ -79,7 +79,7 @@ mod part1 {
         }
         (changed, support_vec)
     }
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut seats = parse(input);
         let mut changed = true;
         while changed {
@@ -91,8 +91,8 @@ mod part1 {
     }
 }
 
-mod part2 {
-    use crate::{count, parse, Seat};
+pub mod part2 {
+    use super::{count, parse, Seat};
 
     fn count_occupied_neighbors(seats: &[Vec<Seat>], i: usize, j: usize) -> usize {
         let (i, j) = (i as isize, j as isize);
@@ -150,7 +150,7 @@ mod part2 {
         (changed, support_vec)
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut seats = parse(input);
         let mut changed = true;
         while changed {
@@ -162,9 +162,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "L.LL.LL.LL
 LLLLLLL.LL
 L.L.L..L..

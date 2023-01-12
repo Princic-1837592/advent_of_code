@@ -8,10 +8,10 @@ fn parse(input: &str) -> HashMap<usize, usize> {
         .collect()
 }
 
-mod part1 {
-    use crate::parse;
+pub mod part1 {
+    use super::parse;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut turns = parse(input);
         let mut number = 0;
         let mut turn = turns.len() + 1;
@@ -26,10 +26,10 @@ mod part1 {
     }
 }
 
-mod part2 {
-    use crate::parse;
+pub mod part2 {
+    use super::parse;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut turns = parse(input);
         let mut number = 0;
         let mut turn = turns.len() + 1;
@@ -44,9 +44,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "0,3,6".to_owned();
     let puzzle_input = if test {
         test_input

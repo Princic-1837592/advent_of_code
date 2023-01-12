@@ -14,25 +14,25 @@ fn find_seat_id(seat: &&str) -> usize {
     front * 8 + left
 }
 
-mod part1 {
+pub mod part1 {
     use rayon::prelude::*;
 
-    use crate::find_seat_id;
+    use super::find_seat_id;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let seats: Vec<_> = input.lines().collect();
         seats.par_iter().map(find_seat_id).max().unwrap()
     }
 }
 
-mod part2 {
+pub mod part2 {
     use std::{cmp::Ordering, usize};
 
     use rayon::prelude::*;
 
-    use crate::find_seat_id;
+    use super::find_seat_id;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut seats: Vec<_> = input
             .lines()
             .collect::<Vec<_>>()
@@ -59,9 +59,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "BBFFBBFRLL".to_owned();
     let puzzle_input = if test {
         test_input

@@ -1,7 +1,7 @@
 use std::time::Instant;
 
-mod part1 {
-    pub(crate) fn solve(input: &str) -> usize {
+pub mod part1 {
+    pub fn solve(input: &str) -> usize {
         let map: Vec<Vec<_>> = input.lines().map(|l| l.chars().collect()).collect();
         let mut trees = 0;
         let mut coord = (0, 0);
@@ -16,8 +16,8 @@ mod part1 {
     }
 }
 
-mod part2 {
-    pub(crate) fn solve(input: &str) -> usize {
+pub mod part2 {
+    pub fn solve(input: &str) -> usize {
         let map: Vec<Vec<_>> = input.lines().map(|l| l.chars().collect()).collect();
         let mut result = 1;
         for (r, c) in &[(1, 1), (1, 3), (1, 5), (1, 7), (2, 1)] {
@@ -36,9 +36,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "..##.......
 #...#...#..
 .#....#..#.

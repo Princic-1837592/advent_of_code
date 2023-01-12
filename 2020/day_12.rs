@@ -36,10 +36,10 @@ fn parse(input: &str) -> Vec<Instruction> {
     input.lines().map(Instruction::from).collect()
 }
 
-mod part1 {
-    use crate::{parse, Instruction};
+pub mod part1 {
+    use super::{parse, Instruction};
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let instructions = parse(input);
         let mut position = (0, 0);
         let mut direction = (0, 1);
@@ -58,10 +58,10 @@ mod part1 {
     }
 }
 
-mod part2 {
-    use crate::{parse, Instruction};
+pub mod part2 {
+    use super::{parse, Instruction};
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let instructions = parse(input);
         let mut ship = (0, 0);
         let mut waypoint = (-1, 10);
@@ -80,9 +80,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "F10
 N3
 F7

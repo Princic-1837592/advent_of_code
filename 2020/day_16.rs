@@ -4,7 +4,7 @@ use std::{
     time::Instant,
 };
 
-use advent_of_code_2020::LINE_ENDING;
+use crate::LINE_ENDING;
 
 #[derive(Debug, Clone, Eq)]
 struct Rule {
@@ -58,10 +58,10 @@ fn parse(input: &str) -> (Vec<Rule>, Vec<usize>, Vec<Vec<usize>>) {
     (rules, ticket, tickets)
 }
 
-mod part1 {
-    use crate::parse;
+pub mod part1 {
+    use super::parse;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let (rules, _ticket, tickets) = parse(input);
         tickets
             .iter()
@@ -75,12 +75,12 @@ mod part1 {
     }
 }
 
-mod part2 {
+pub mod part2 {
     use std::collections::{HashMap, HashSet};
 
-    use crate::parse;
+    use super::parse;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let (rules, ticket, mut tickets) = parse(input);
         tickets.retain(|ticket| {
             ticket.iter().all(|&n| {
@@ -124,9 +124,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "class: 0-1 or 4-19
 row: 0-5 or 8-19
 seat: 0-13 or 16-19

@@ -1,11 +1,11 @@
 use std::time::Instant;
 
-mod part1 {
+pub mod part1 {
     use std::collections::HashSet;
 
-    use advent_of_code_2020::LINE_ENDING;
+    use crate::LINE_ENDING;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         input
             .split(&LINE_ENDING.repeat(2))
             .map(|g| {
@@ -18,10 +18,10 @@ mod part1 {
     }
 }
 
-mod part2 {
-    use advent_of_code_2020::LINE_ENDING;
+pub mod part2 {
+    use crate::LINE_ENDING;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         input
             .split(&LINE_ENDING.repeat(2))
             .map(|g| {
@@ -34,9 +34,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "abc
 
 a

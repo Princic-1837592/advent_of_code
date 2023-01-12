@@ -1,6 +1,6 @@
 use std::{cmp::Ordering, time::Instant};
 
-use advent_of_code_2020::LINE_ENDING;
+use crate::LINE_ENDING;
 
 #[derive(Debug, Clone)]
 struct Rule {
@@ -73,8 +73,8 @@ impl From<&str> for Match {
     }
 }
 
-mod part1 {
-    use crate::{parse, Match, Rule};
+pub mod part1 {
+    use super::{parse, Match, Rule};
 
     fn matches(message: &str, rule: usize, rules: &Vec<Rule>) -> (bool, usize) {
         if message.is_empty() {
@@ -126,7 +126,7 @@ mod part1 {
         }
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let (rules, messages) = parse(input);
         messages
             .iter()
@@ -138,8 +138,8 @@ mod part1 {
     }
 }
 
-mod part2 {
-    use crate::{parse, Match, Rule};
+pub mod part2 {
+    use super::{parse, Match, Rule};
 
     fn matches(message: &str, rule: usize, rules: &Vec<Rule>) -> (bool, Vec<usize>) {
         if message.is_empty() {
@@ -216,7 +216,7 @@ mod part2 {
         }
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let (mut rules, messages) = parse(input);
         rules[8] = Rule {
             number: 8,
@@ -236,9 +236,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "0: 8 11
 1: \"a\"
 2: 1 24 | 14 4

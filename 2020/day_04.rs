@@ -1,7 +1,7 @@
 use std::time::Instant;
 
-mod part1 {
-    pub(crate) fn solve(input: &str) -> usize {
+pub mod part1 {
+    pub fn solve(input: &str) -> usize {
         let passports: Vec<Vec<_>> = input
             .split("\r\n\r\n")
             .map(|l| l.split(|c| c == ' ' || c == '\n').collect())
@@ -16,7 +16,7 @@ mod part1 {
     }
 }
 
-mod part2 {
+pub mod part2 {
     use regex::Regex;
 
     fn validate(passport: &Vec<&str>) -> bool {
@@ -82,7 +82,7 @@ mod part2 {
         true
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         input
             .split("\r\n\r\n")
             .map(|l| l.split_whitespace().collect::<Vec<_>>())
@@ -95,9 +95,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "yecl:gry pid:998952368 eyr:2026 hcl:#fffffd
 byr:1940 iyr:2014 cid:147 hgt:174cm"
         .to_owned();

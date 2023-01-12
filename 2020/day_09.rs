@@ -39,21 +39,21 @@ fn has_pair(previous: &[usize], number: usize, size: usize) -> bool {
     false
 }
 
-mod part1 {
-    use crate::{find_invalid, parse};
+pub mod part1 {
+    use super::{find_invalid, parse};
 
-    pub(crate) fn solve(input: &str, size: usize) -> usize {
+    pub fn solve(input: &str, size: usize) -> usize {
         let numbers = parse(input);
         find_invalid(&numbers, size)
     }
 }
 
-mod part2 {
+pub mod part2 {
     use std::cmp::Ordering;
 
-    use crate::{find_invalid, parse};
+    use super::{find_invalid, parse};
 
-    pub(crate) fn solve(input: &str, size: usize) -> usize {
+    pub fn solve(input: &str, size: usize) -> usize {
         let numbers = parse(input);
         let invalid = find_invalid(&numbers, size);
         let (mut left, mut right) = (0, 1);
@@ -76,9 +76,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "35
 20
 15

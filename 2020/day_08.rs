@@ -46,19 +46,19 @@ fn run(instructions: &Vec<Instruction>) -> (bool, isize) {
     (instr_ptr == instructions.len() as isize, accumulator)
 }
 
-mod part1 {
-    use crate::{parse, run, Instruction, Operation};
+pub mod part1 {
+    use super::{parse, run, Instruction, Operation};
 
-    pub(crate) fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> isize {
         let instructions = parse(input);
         run(&instructions).1
     }
 }
 
-mod part2 {
-    use crate::{parse, run, Operation};
+pub mod part2 {
+    use super::{parse, run, Operation};
 
-    pub(crate) fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> isize {
         let mut instructions = parse(input);
         for i in 0..instructions.len() {
             let before = match &instructions[i].0 {
@@ -82,9 +82,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "nop +0
 acc +1
 jmp +4

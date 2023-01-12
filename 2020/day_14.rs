@@ -70,8 +70,8 @@ fn parse(input: &str) -> Vec<Instruction> {
     input.lines().map(Instruction::from).collect()
 }
 
-mod part1 {
-    use crate::{parse, Instruction, Operation, Value};
+pub mod part1 {
+    use super::{parse, Instruction, Operation, Value};
 
     fn apply_mask(mask: &[u8; 36], value: &[u8; 36]) -> u64 {
         let mut result = 0;
@@ -85,7 +85,7 @@ mod part1 {
         result
     }
 
-    pub(crate) fn solve(input: &str) -> u64 {
+    pub fn solve(input: &str) -> u64 {
         let instructions = parse(input);
         let indexes = instructions.iter().filter_map(|i| match i.operation {
             Operation::Mem(index) => Some(index),
@@ -109,10 +109,10 @@ mod part1 {
     }
 }
 
-mod part2 {
+pub mod part2 {
     use std::collections::HashMap;
 
-    use crate::{parse, Instruction, Operation, Value};
+    use super::{parse, Instruction, Operation, Value};
 
     fn write(memory: &mut HashMap<usize, u64>, address: usize, mask: &[u8; 36], value: u64) {
         fn recursive(
@@ -147,7 +147,7 @@ mod part2 {
         recursive(memory, &mut mask.clone(), address, 0, value, 0);
     }
 
-    pub(crate) fn solve(input: &str) -> u64 {
+    pub fn solve(input: &str) -> u64 {
         let instructions = parse(input);
         let mut memory = HashMap::new();
         let mut mask = [2; 36];
@@ -165,9 +165,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "mask = 000000000000000000000000000000X1001X
 mem[42] = 100
 mask = 00000000000000000000000000000000X0XX

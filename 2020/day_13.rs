@@ -16,10 +16,10 @@ fn parse(input: &str) -> (usize, Vec<Option<usize>>) {
             .collect(),
     )
 }
-mod part1 {
-    use crate::parse;
+pub mod part1 {
+    use super::parse;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let (timestamp, buses) = parse(input);
         let (wait, bus) = buses
             .iter()
@@ -31,8 +31,8 @@ mod part1 {
     }
 }
 
-mod part2 {
-    use crate::parse;
+pub mod part2 {
+    use super::parse;
 
     fn find_earliest(
         (mut partial, mcm): (usize, usize),
@@ -45,7 +45,7 @@ mod part2 {
         (partial, mcm * prime)
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let (_, buses) = parse(input);
         buses
             .iter()
@@ -56,9 +56,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "939
 7,13,x,x,59,x,31,19"
         .to_owned();

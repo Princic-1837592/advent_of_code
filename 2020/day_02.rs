@@ -1,7 +1,7 @@
 use std::time::Instant;
 
-mod part1 {
-    pub(crate) fn solve(input: &str) -> usize {
+pub mod part1 {
+    pub fn solve(input: &str) -> usize {
         input
             .lines()
             .filter(|line| {
@@ -18,8 +18,8 @@ mod part1 {
     }
 }
 
-mod part2 {
-    pub(crate) fn solve(input: &str) -> usize {
+pub mod part2 {
+    pub fn solve(input: &str) -> usize {
         input
             .lines()
             .filter(|line| {
@@ -36,9 +36,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "1-3 a: abcde
 1-3 b: cdefg
 2-9 c: ccccccccc"

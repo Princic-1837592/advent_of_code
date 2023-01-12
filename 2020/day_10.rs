@@ -8,10 +8,10 @@ fn parse(input: &str) -> Vec<usize> {
     jolts
 }
 
-mod part1 {
-    use crate::parse;
+pub mod part1 {
+    use super::parse;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let jolts = parse(input);
         let result = jolts
             .iter()
@@ -30,10 +30,10 @@ mod part1 {
     }
 }
 
-mod part2 {
-    use crate::parse;
+pub mod part2 {
+    use super::parse;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let jolts = parse(input);
         let mut dynamic = vec![0; jolts.len()];
         dynamic[0] = 1;
@@ -51,9 +51,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "28
 33
 18

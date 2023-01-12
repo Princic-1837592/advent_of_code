@@ -31,16 +31,16 @@ fn evaluate(chars: &mut Chars) -> usize {
     result
 }
 
-mod part1 {
-    use crate::evaluate;
+pub mod part1 {
+    use super::evaluate;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         input.lines().map(|line| evaluate(&mut line.chars())).sum()
     }
 }
 
-mod part2 {
-    use crate::evaluate;
+pub mod part2 {
+    use super::evaluate;
 
     fn apply_parentheses(expression: &str) -> String {
         let mut result = String::from("((");
@@ -55,7 +55,7 @@ mod part2 {
         result
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         input
             .lines()
             .map(|line| evaluate(&mut apply_parentheses(line).chars()))
@@ -63,9 +63,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "1 + (2 * 3) + (4 * (5 + 6))".to_owned();
     let puzzle_input = if test {
         test_input

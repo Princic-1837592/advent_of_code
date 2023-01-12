@@ -1,6 +1,6 @@
 use std::time::Instant;
 
-mod part1 {
+pub mod part1 {
     use std::collections::{HashMap, HashSet};
 
     fn step(
@@ -31,7 +31,7 @@ mod part1 {
             });
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut map = input
             .lines()
             .enumerate()
@@ -51,7 +51,7 @@ mod part1 {
     }
 }
 
-mod part2 {
+pub mod part2 {
     use std::collections::{HashMap, HashSet};
 
     fn step(
@@ -86,7 +86,7 @@ mod part2 {
             });
     }
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut map = input
             .lines()
             .enumerate()
@@ -106,9 +106,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = ".#.
 ..#
 ###"

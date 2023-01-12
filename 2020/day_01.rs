@@ -1,9 +1,9 @@
 use std::time::Instant;
 
-mod part1 {
+pub mod part1 {
     use std::cmp::Ordering;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut entries: Vec<usize> = input.lines().map(|l| l.parse().unwrap()).collect();
         entries.sort();
         let mut left = 0;
@@ -20,10 +20,10 @@ mod part1 {
     }
 }
 
-mod part2 {
+pub mod part2 {
     use std::cmp::Ordering;
 
-    pub(crate) fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> usize {
         let mut entries: Vec<usize> = input.lines().map(|l| l.parse().unwrap()).collect();
         entries.sort();
         for (i, entry) in entries.iter().enumerate() {
@@ -42,9 +42,7 @@ mod part2 {
     }
 }
 
-fn main() {
-    // let test = true;
-    let test = false;
+pub fn main(test: bool) {
     let test_input = "1721
 979
 366
