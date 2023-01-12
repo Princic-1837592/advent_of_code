@@ -73,98 +73,148 @@ impl From<&str> for Match {
     }
 }
 
-fn matches(message: &str, rule: usize, rules: &Vec<Rule>) -> (bool, Vec<usize>) {
-    if message.is_empty() {
-        return (false, Vec::new());
-    }
-    match rules[rule].rule {
-        Match::Char(char) => {
-            if message.starts_with(char) {
-                (true, vec![1])
-            } else {
-                (false, Vec::new())
-            }
-        }
-        Match::And(ref and) => {
-            let mut indexes: Vec<_> = vec![0];
-            for &rule in and {
-                let mut new_indexes = Vec::new();
-                for index in indexes.iter() {
-                    let (matches, consumed) = matches(&message[*index..], rule, rules);
-                    if matches {
-                        new_indexes.extend(consumed.iter().map(|c| index + c));
-                    }
-                }
-                if new_indexes.is_empty() {
-                    return (false, Vec::new());
-                }
-                indexes = new_indexes;
-            }
-            (true, indexes)
-        }
-        Match::Or(ref left, ref right) => {
-            let mut indexes: Vec<_> = vec![0];
-            let mut matches_left = true;
-            for &rule in left {
-                let mut new_indexes = Vec::new();
-                for index in indexes.iter() {
-                    let (matches, consumed) = matches(&message[*index..], rule, rules);
-                    if matches {
-                        new_indexes.extend(consumed.iter().map(|c| index + c));
-                    }
-                }
-                if new_indexes.is_empty() {
-                    matches_left = false;
-                    break;
-                }
-                indexes = new_indexes;
-            }
-            let left_indexes = indexes;
-            indexes = vec![0];
-            let mut matches_right = true;
-            for &rule in right {
-                let mut new_indexes = Vec::new();
-                for index in indexes.iter() {
-                    let (matches, consumed) = matches(&message[*index..], rule, rules);
-                    if matches {
-                        new_indexes.extend(consumed.iter().map(|c| index + c));
-                    }
-                }
-                if new_indexes.is_empty() {
-                    matches_right = false;
-                    break;
-                }
-                indexes = new_indexes;
-            }
-            let mut result = vec![];
-            if matches_left {
-                result.extend(left_indexes);
-            }
-            if matches_right {
-                result.extend(indexes);
-            }
-            (true, result)
-        }
-    }
-}
-
 mod part1 {
-    use crate::{matches, parse};
+    use crate::{parse, Match, Rule};
+
+    fn matches(message: &str, rule: usize, rules: &Vec<Rule>) -> (bool, usize) {
+        if message.is_empty() {
+            return (false, 0);
+        }
+        match rules[rule].rule {
+            Match::Char(char) => {
+                if message.starts_with(char) {
+                    (true, 1)
+                } else {
+                    (false, 0)
+                }
+            }
+            Match::And(ref and) => {
+                let mut index = 0;
+                for &rule in and {
+                    let (matches, consumed) = matches(&message[index..], rule, rules);
+                    if !matches {
+                        return (false, 0);
+                    }
+                    index += consumed;
+                }
+                (true, index)
+            }
+            Match::Or(ref left, ref right) => {
+                let mut index = 0;
+                let mut matches_left = true;
+                for &rule in left {
+                    let (matches, consumed) = matches(&message[index..], rule, rules);
+                    if !matches {
+                        matches_left = false;
+                        break;
+                    }
+                    index += consumed;
+                }
+                if matches_left {
+                    return (true, index);
+                }
+                index = 0;
+                for &rule in right {
+                    let (matches, consumed) = matches(&message[index..], rule, rules);
+                    if !matches {
+                        return (false, 0);
+                    }
+                    index += consumed;
+                }
+                (true, index)
+            }
+        }
+    }
 
     pub(crate) fn solve(input: &str) -> usize {
         let (rules, messages) = parse(input);
         messages
             .iter()
             .filter(|m| {
-                let (matches, lenghts) = matches(m, 0, &rules);
-                matches && lenghts.contains(&m.len())
+                let (matches, lenght) = matches(m, 0, &rules);
+                matches && lenght == m.len()
             })
             .count()
     }
 }
 
 mod part2 {
-    use crate::{matches, parse, Match, Rule};
+    use crate::{parse, Match, Rule};
+
+    fn matches(message: &str, rule: usize, rules: &Vec<Rule>) -> (bool, Vec<usize>) {
+        if message.is_empty() {
+            return (false, Vec::new());
+        }
+        match rules[rule].rule {
+            Match::Char(char) => {
+                if message.starts_with(char) {
+                    (true, vec![1])
+                } else {
+                    (false, Vec::new())
+                }
+            }
+            Match::And(ref and) => {
+                let mut indexes: Vec<_> = vec![0];
+                for &rule in and {
+                    let mut new_indexes = Vec::new();
+                    for index in indexes.iter() {
+                        let (matches, consumed) = matches(&message[*index..], rule, rules);
+                        if matches {
+                            new_indexes.extend(consumed.iter().map(|c| index + c));
+                        }
+                    }
+                    if new_indexes.is_empty() {
+                        return (false, Vec::new());
+                    }
+                    indexes = new_indexes;
+                }
+                (true, indexes)
+            }
+            Match::Or(ref left, ref right) => {
+                let mut indexes: Vec<_> = vec![0];
+                let mut matches_left = true;
+                for &rule in left {
+                    let mut new_indexes = Vec::new();
+                    for index in indexes.iter() {
+                        let (matches, consumed) = matches(&message[*index..], rule, rules);
+                        if matches {
+                            new_indexes.extend(consumed.iter().map(|c| index + c));
+                        }
+                    }
+                    if new_indexes.is_empty() {
+                        matches_left = false;
+                        break;
+                    }
+                    indexes = new_indexes;
+                }
+                let left_indexes = indexes;
+                indexes = vec![0];
+                let mut matches_right = true;
+                for &rule in right {
+                    let mut new_indexes = Vec::new();
+                    for index in indexes.iter() {
+                        let (matches, consumed) = matches(&message[*index..], rule, rules);
+                        if matches {
+                            new_indexes.extend(consumed.iter().map(|c| index + c));
+                        }
+                    }
+                    if new_indexes.is_empty() {
+                        matches_right = false;
+                        break;
+                    }
+                    indexes = new_indexes;
+                }
+                let mut result = vec![];
+                if matches_left {
+                    result.extend(left_indexes);
+                }
+                if matches_right {
+                    result.extend(indexes);
+                }
+                (true, result)
+            }
+        }
+    }
 
     pub(crate) fn solve(input: &str) -> usize {
         let (mut rules, messages) = parse(input);
