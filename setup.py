@@ -32,28 +32,28 @@ authors = ["Andrea Princic <princic.1837592@studenti.uniroma1.it>"]
 name = "advent_of_code_{year}"
 path = "lib.rs"
 
-{bins}
+[[bin]]
+name = "main"
+path = "main.rs"
 
 [dependencies]
 """.lstrip()
 rust_src_content = """
 use std::time::Instant;
 
-mod part1 {{
-    pub(crate) fn solve(input: &str) -> usize {{
+pub mod part1 {{
+    pub fn solve(input: &str) -> usize {{
         0
     }}
 }}
 
-mod part2 {{
-    pub(crate) fn solve(input: &str) -> usize {{
+pub mod part2 {{
+    pub fn solve(input: &str) -> usize {{
         0
     }}
 }}
 
-fn main() {{
-    let test = true;
-    // let test = false;
+pub fn main(test: bool) {{
     let test_input = "".to_owned();
     let puzzle_input = if test {{
         test_input
@@ -68,16 +68,33 @@ fn main() {{
     println!("{{:?}}", start.elapsed());
 }}
 """.lstrip()
-cargo_bin_content = """
-[[bin]]
-name = "day_{day:0>2}"
-path = "day_{day:0>2}.rs"
+rust_main_content = """
+use std::{{env, time::Instant}};
+
+use advent_of_code_{year} as aoc;
+
+fn main() {{
+    let test = env::args().any(|arg| arg == "--test");
+    let start = Instant::now();
+{single_days}
+    println!("Total: {{:?}}", start.elapsed());
+}}
+
 """.lstrip()
+rust_single_day_content = """
+    println!("Running day {day}");
+    aoc::day_{day:0>2}::main(test);
+    println!();
+"""
 rust_lib_content = """
+{mods}
 #[cfg(windows)]
-pub const LINE_ENDING: &str = "\r\n";
+pub const LINE_ENDING: &str = "\\r\\n";
 #[cfg(not(windows))]
-pub const LINE_ENDING: &str = "\n";
+pub const LINE_ENDING: &str = "\\n";
+""".lstrip()
+rust_lib_mod_content = """
+pub mod day_{day:0>2};
 """.lstrip()
 
 
@@ -86,16 +103,15 @@ def setup_calendar(year: str, language: str = "python"):
         cargo = os.path.join(year, "Cargo.toml")
         if not os.path.exists(cargo):
             with open(cargo, "w") as cargo_toml:
-                cargo_toml.write(
-                    cargo_toml_content.format(
-                        year=year,
-                        bins="\n".join(cargo_bin_content.format(day=day) for day in range(1, 25 + 1)),
-                    )
-                )
+                cargo_toml.write(cargo_toml_content.format(year=year))
         lib = os.path.join(year, "lib.rs")
         if not os.path.exists(lib):
             with open(lib, "w") as lib_rs:
-                lib_rs.write(rust_lib_content)
+                lib_rs.write(
+                    rust_lib_content.format(
+                        mods="".join(rust_lib_mod_content.format(day=day) for day in range(1, 25 + 1))
+                    )
+                )
         for day in range(1, 25 + 1):
             path = os.path.join(year, f"day_{day:0>2}.rs")
             if not os.path.exists(path):
@@ -105,6 +121,15 @@ def setup_calendar(year: str, language: str = "python"):
             if not os.path.exists(path):
                 with open(path, "w") as _day_input:
                     pass
+        path = os.path.join(year, "main.rs")
+        if not os.path.exists(path):
+            with open(path, "w") as main:
+                main.write(
+                    rust_main_content.format(
+                        year=year,
+                        single_days="".join(rust_single_day_content.format(day=day) for day in range(1, 25 + 1))
+                    )
+                )
 
     def python():
         for day in range(1, 25 + 1):

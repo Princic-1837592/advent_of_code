@@ -55,7 +55,8 @@ pub mod part2 {
                 }
             }
         }
-        panic!("Couldn't find the solution!")
+        println!("No solution found");
+        0
     }
 }
 
