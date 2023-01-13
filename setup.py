@@ -1,6 +1,9 @@
 import os
 
 python_src_content = """
+# https://adventofcode.com/2020/day/{day}
+
+
 def part1(data: str):
     pass
 
@@ -39,6 +42,7 @@ path = "main.rs"
 [dependencies]
 """.lstrip()
 rust_src_content = """
+//! https://adventofcode.com/2020/day/{day}
 use std::time::Instant;
 
 pub mod part1 {{
