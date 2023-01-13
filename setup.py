@@ -42,13 +42,13 @@ rust_src_content = """
 use std::time::Instant;
 
 pub mod part1 {{
-    pub fn solve(input: &str) -> usize {{
+    pub fn solve(_input: &str) -> usize {{
         0
     }}
 }}
 
 pub mod part2 {{
-    pub fn solve(input: &str) -> usize {{
+    pub fn solve(_input: &str) -> usize {{
         0
     }}
 }}
