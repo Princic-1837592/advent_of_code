@@ -25,7 +25,8 @@ fn evaluate(chars: &mut Chars) -> usize {
             '*' => operation = Operation::Mul,
             '(' => result = operation.apply(result, evaluate(chars)),
             ')' => return result,
-            _space => {}
+            ' ' => {}
+            _ => panic!("Invalid character: {}", char),
         }
     }
     result

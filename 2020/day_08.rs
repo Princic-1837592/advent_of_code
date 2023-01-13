@@ -17,7 +17,8 @@ impl From<&str> for Instruction {
             match op.chars().next().unwrap() {
                 'a' => Operation::Acc,
                 'j' => Operation::Jmp,
-                _n => Operation::Nop,
+                'n' => Operation::Nop,
+                _ => panic!("Invalid instruction: {}", op),
             },
             arg,
         )

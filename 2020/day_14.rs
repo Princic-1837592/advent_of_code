@@ -27,7 +27,8 @@ impl From<&str> for Instruction {
                     value[i] = match b {
                         '0' => 0,
                         '1' => 1,
-                        _x => 2,
+                        'X' => 2,
+                        _ => panic!("Invalid bit: {}", b),
                     }
                 });
             } else {
@@ -52,7 +53,7 @@ impl From<&str> for Instruction {
         Instruction {
             operation: match op.chars().nth(1).unwrap() {
                 'a' => Operation::Mask,
-                _e => Operation::Mem(
+                'e' => Operation::Mem(
                     op.chars()
                         .skip(4)
                         .take(op.len() - 4 - 1)
@@ -60,6 +61,7 @@ impl From<&str> for Instruction {
                         .parse()
                         .unwrap(),
                 ),
+                _ => panic!("Invalid instruction: {}", op),
             },
             value,
         }

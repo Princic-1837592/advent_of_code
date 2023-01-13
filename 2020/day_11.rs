@@ -15,7 +15,8 @@ impl From<char> for Seat {
         match c {
             'L' => Seat::Empty,
             '#' => Seat::Occupied,
-            _f => Seat::Floor,
+            '.' => Seat::Floor,
+            _ => panic!("Invalid seat: {}", c),
         }
     }
 }
@@ -64,16 +65,16 @@ pub mod part1 {
         let mut changed = false;
         for i in 0..support_vec.len() {
             for j in 0..support_vec[0].len() {
-                match seats[i][j] {
-                    Seat::Empty if count_occupied_neighbors(&seats, i, j) == 0 => {
+                match (seats[i][j], count_occupied_neighbors(&seats, i, j)) {
+                    (Seat::Empty, 0) => {
                         support_vec[i][j] = Seat::Occupied;
                         changed = true;
                     }
-                    Seat::Occupied if count_occupied_neighbors(&seats, i, j) >= 4 => {
+                    (Seat::Occupied, 4..) => {
                         support_vec[i][j] = Seat::Empty;
                         changed = true;
                     }
-                    _f => {}
+                    _ => {}
                 }
             }
         }

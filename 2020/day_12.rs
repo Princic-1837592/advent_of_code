@@ -27,7 +27,8 @@ impl From<&str> for Instruction {
                 180 => Instruction::Flip,
                 _turn_270 => Instruction::Right,
             },
-            _f => Instruction::Forward(n),
+            'F' => Instruction::Forward(n),
+            i => panic!("invalid instruction: {}", i),
         }
     }
 }

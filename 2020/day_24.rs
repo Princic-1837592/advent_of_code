@@ -15,7 +15,7 @@ fn parse(input: &str) -> Vec<Vec<(i8, i8, i8)>> {
                             ('s', 'w') => (0, -1, 1),
                             (' ', 'w') => (1, -1, 0),
                             ('n', 'w') => (1, 0, -1),
-                            _ => panic!("Invalid sequence"),
+                            _ => panic!("Invalid coordinate: {}", char),
                         });
                         (vec, ' ')
                     }
