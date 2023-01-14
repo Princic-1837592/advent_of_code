@@ -16,13 +16,11 @@ impl Debug for Node {
     }
 }
 
-fn parse(input: &str) -> Vec<Node> {
-    let mut result: Vec<_> = "0"
-        .chars()
-        .chain(input.chars())
-        .map(|char| Node {
+fn parse(input: impl Iterator<Item = usize>) -> Vec<Node> {
+    let mut result: Vec<_> = input
+        .map(|n| Node {
+            val: n,
             prev: 0,
-            val: char.to_digit(10).unwrap() as usize,
             next: 0,
         })
         .collect();
@@ -32,8 +30,8 @@ fn parse(input: &str) -> Vec<Node> {
         let next_i = if i == result.len() - 1 { 1 } else { i + 1 };
         result[i].next = result[next_i].val;
     }
+    result[0].next = result[1].val;
     result.sort_by_key(|node| node.val);
-    result[0].val = input.chars().next().unwrap().to_digit(10).unwrap() as usize;
     result
 }
 
@@ -53,13 +51,10 @@ fn insert_after(to_insert: usize, current: usize, cups: &mut [Node]) {
     cups[after_current].prev = to_insert;
 }
 
-fn do_moves(
-    how_many: usize,
-    cups: &mut Vec<Node>,
-    removed_stack: &mut Vec<usize>,
-    present: &mut [bool],
-) {
-    let mut current = cups[0].val;
+fn do_moves(how_many: usize, cups: &mut [Node]) {
+    let mut removed_stack = Vec::with_capacity(3);
+    let mut present = vec![true; cups.len()];
+    let mut current = cups[0].next;
     for _ in 0..how_many {
         for _ in 0..3 {
             let removed = remove_after(current, cups);
@@ -70,7 +65,7 @@ fn do_moves(
         loop {
             destination -= 1;
             if destination == 0 {
-                destination = 9;
+                destination = cups.len() - 1;
             }
             if present[destination] {
                 break;
@@ -81,7 +76,7 @@ fn do_moves(
             insert_after(to_insert, destination, cups);
             present[to_insert] = true;
         }
-        current = cups[cups[current].next].val;
+        current = cups[current].next;
     }
 }
 
@@ -89,7 +84,7 @@ fn to_string(cups: &Vec<Node>) -> String {
     let mut result = String::with_capacity(cups.len() - 2);
     let mut cup = cups[1].next;
     while cup != 1 {
-        result.push(char::from_digit(cup as u32, 10).unwrap());
+        result.push_str(&cup.to_string());
         cup = cups[cup].next;
     }
     result
@@ -99,17 +94,33 @@ pub mod part1 {
     use crate::day_23::{do_moves, parse, to_string};
 
     pub fn solve(input: &str) -> String {
-        let mut cups = parse(input);
-        let mut removed_stack = Vec::with_capacity(3);
-        let mut present = vec![true; cups.len()];
-        do_moves(100, &mut cups, &mut removed_stack, &mut present);
+        let mut cups = parse(
+            "0".chars()
+                .chain(input.chars())
+                .map(|char| char.to_digit(10).unwrap() as usize),
+        );
+        do_moves(100, &mut cups);
         to_string(&cups)
     }
 }
 
 pub mod part2 {
-    pub fn solve(_input: &str) -> usize {
-        0
+    use crate::day_23::{do_moves, parse};
+
+    pub fn solve(input: &str) -> usize {
+        let numbers = "0"
+            .chars()
+            .chain(input.chars())
+            .map(|char| char.to_digit(10).unwrap() as usize);
+        let mut cups = parse(
+            numbers
+                .clone()
+                .chain((numbers.max().unwrap() + 1)..=1000000),
+        );
+        do_moves(10000000, &mut cups);
+        let first = cups[1].next;
+        let second = cups[first].next;
+        first * second
     }
 }
 
