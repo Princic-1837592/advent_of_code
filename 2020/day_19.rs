@@ -131,8 +131,8 @@ pub mod part1 {
         messages
             .iter()
             .filter(|m| {
-                let (matches, lenght) = matches(m, 0, &rules);
-                matches && lenght == m.len()
+                let (matches, length) = matches(m, 0, &rules);
+                matches && length == m.len()
             })
             .count()
     }
@@ -229,8 +229,8 @@ pub mod part2 {
         messages
             .iter()
             .filter(|m| {
-                let (matches, lenghts) = matches(m, 0, &rules);
-                matches && lenghts.contains(&m.len())
+                let (matches, lengths) = matches(m, 0, &rules);
+                matches && lengths.contains(&m.len())
             })
             .count()
     }
