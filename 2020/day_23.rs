@@ -1,19 +1,9 @@
-use std::{
-    fmt::{Debug, Formatter},
-    time::Instant,
-};
+use std::time::Instant;
 
-#[derive(Clone, Copy)]
 struct Node {
     val: usize,
     prev: usize,
     next: usize,
-}
-
-impl Debug for Node {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "({}, {}, {})", self.prev, self.val, self.next)
-    }
 }
 
 fn parse(input: impl Iterator<Item = usize>) -> Vec<Node> {
@@ -80,18 +70,18 @@ fn do_moves(how_many: usize, cups: &mut [Node]) {
     }
 }
 
-fn to_string(cups: &Vec<Node>) -> String {
-    let mut result = String::with_capacity(cups.len() - 2);
-    let mut cup = cups[1].next;
-    while cup != 1 {
-        result.push_str(&cup.to_string());
-        cup = cups[cup].next;
-    }
-    result
-}
-
 pub mod part1 {
-    use crate::day_23::{do_moves, parse, to_string};
+    use crate::day_23::{do_moves, Node, parse};
+
+    fn to_string(cups: &Vec<Node>) -> String {
+        let mut result = String::with_capacity(cups.len() - 2);
+        let mut cup = cups[1].next;
+        while cup != 1 {
+            result.push_str(&cup.to_string());
+            cup = cups[cup].next;
+        }
+        result
+    }
 
     pub fn solve(input: &str) -> String {
         let mut cups = parse(
