@@ -1,11 +1,13 @@
 use std::time::Instant;
 
 type Argument = isize;
+
 enum Operation {
     Acc,
     Jmp,
     Nop,
 }
+
 struct Instruction(Operation, Argument);
 
 impl From<&str> for Instruction {
@@ -48,7 +50,7 @@ fn run(instructions: &Vec<Instruction>) -> (bool, isize) {
 }
 
 pub mod part1 {
-    use super::{parse, run, Instruction, Operation};
+    use super::{parse, run};
 
     pub fn solve(input: &str) -> isize {
         let instructions = parse(input);
