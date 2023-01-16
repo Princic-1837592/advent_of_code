@@ -1,5 +1,6 @@
 use std::time::Instant;
 
+#[derive(Copy, Clone)]
 struct Node {
     val: usize,
     prev: usize,
@@ -21,7 +22,16 @@ fn parse(input: impl Iterator<Item = usize>) -> Vec<Node> {
         result[i].next = result[next_i].val;
     }
     result[0].next = result[1].val;
-    result.sort_by_key(|node| node.val);
+    let mut i = 1;
+    while i < 10 {
+        if result[i].val != i {
+            let tmp = result[i];
+            result[i] = result[result[i].val];
+            result[tmp.val] = tmp;
+        } else {
+            i += 1;
+        }
+    }
     result
 }
 
@@ -71,7 +81,7 @@ fn do_moves(how_many: usize, cups: &mut [Node]) {
 }
 
 pub mod part1 {
-    use crate::day_23::{do_moves, Node, parse};
+    use crate::day_23::{do_moves, parse, Node};
 
     fn to_string(cups: &Vec<Node>) -> String {
         let mut result = String::with_capacity(cups.len() - 2);
