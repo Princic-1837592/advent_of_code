@@ -3,7 +3,7 @@
 use std::time::Instant;
 
 pub mod part1 {
-    pub fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> isize {
         input.chars().fold(0, |acc, c| match c {
             '(' => acc + 1,
             ')' => acc - 1,
@@ -18,24 +18,21 @@ pub mod part2 {
             .chars()
             .enumerate()
             .map(|(i, c)| (i + 1, c))
-            .fold(
-                (false, 0, 0),
-                |acc @ (mut found, mut floor, _), (i, c)| {
-                    if found {
-                        acc
-                    } else {
-                        floor += match c {
-                            '(' => 1,
-                            ')' => -1,
-                            _ => 0,
-                        };
-                        if floor <= -1 {
-                            found = true
-                        }
-                        (found, floor, i)
+            .fold((false, 0, 0), |acc @ (mut found, mut floor, _), (i, c)| {
+                if found {
+                    acc
+                } else {
+                    floor += match c {
+                        '(' => 1,
+                        ')' => -1,
+                        _ => 0,
+                    };
+                    if floor <= -1 {
+                        found = true
                     }
-                },
-            )
+                    (found, floor, i)
+                }
+            })
             .2
     }
 }
