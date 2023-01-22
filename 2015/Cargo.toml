@@ -13,3 +13,4 @@ name = "main"
 path = "main.rs"
 
 [dependencies]
+md5 = "0.7.0"
