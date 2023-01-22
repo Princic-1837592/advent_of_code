@@ -1,7 +1,7 @@
 import os
 
 python_src_content = """
-# https://adventofcode.com/2020/day/{day}
+# https://adventofcode.com/{year}/day/{day}
 
 
 def part1(data: str):
@@ -42,7 +42,8 @@ path = "main.rs"
 [dependencies]
 """.lstrip()
 rust_src_content = """
-//! https://adventofcode.com/2020/day/{day}
+//! https://adventofcode.com/{year}/day/{day}
+
 use std::time::Instant;
 
 pub mod part1 {{
@@ -120,7 +121,7 @@ def setup_calendar(year: str, language: str = "python"):
             path = os.path.join(year, f"day_{day:0>2}.rs")
             if not os.path.exists(path):
                 with open(path, "w") as src:
-                    src.write(rust_src_content.format(day=day))
+                    src.write(rust_src_content.format(year=year, day=day))
             path = os.path.join(year, "inputs", f"day_{day:0>2}_input.txt")
             if not os.path.exists(path):
                 with open(path, "w") as _day_input:
@@ -140,7 +141,7 @@ def setup_calendar(year: str, language: str = "python"):
             path = os.path.join(year, f"day_{day:0>2}.py")
             if not os.path.exists(path):
                 with open(path, "w") as src:
-                    src.write(python_src_content.format(day=day))
+                    src.write(python_src_content.format(year=year, day=day))
             path = os.path.join(year, "inputs", f"day_{day:0>2}_input.txt")
             if not os.path.exists(path):
                 with open(path, "w") as _day_input:
@@ -158,4 +159,4 @@ def setup_calendar(year: str, language: str = "python"):
 
 
 if __name__ == "__main__":
-    setup_calendar("2020", "rust")
+    setup_calendar("2015", "rust")
