@@ -26,27 +26,28 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashSet;
 
-    pub fn solve(input: &str) -> usize {
-        fn move_coord(coord: &mut (i32, i32), direction: char) {
-            match direction {
-                '^' => coord.1 += 1,
-                'v' => coord.1 -= 1,
-                '>' => coord.0 += 1,
-                '<' => coord.0 -= 1,
-                _ => (),
-            }
+    fn move_coord(coord: &mut (i32, i32), direction: char) {
+        match direction {
+            '^' => coord.1 += 1,
+            'v' => coord.1 -= 1,
+            '>' => coord.0 += 1,
+            '<' => coord.0 -= 1,
+            _ => (),
         }
+    }
+
+    pub fn solve(input: &str) -> usize {
         let mut houses = HashSet::new();
         let mut santa_coord = (0, 0);
         let mut robot_coord = (0, 0);
         houses.insert(santa_coord);
         houses.insert(robot_coord);
-        let (mut santa, mut robo);
+        let (mut santa, mut robot);
         for i in (0..input.len()).step_by(2) {
             santa = input.chars().nth(i).unwrap();
-            robo = input.chars().nth(i + 1).unwrap();
+            robot = input.chars().nth(i + 1).unwrap();
             move_coord(&mut santa_coord, santa);
-            move_coord(&mut robot_coord, robo);
+            move_coord(&mut robot_coord, robot);
             houses.insert(santa_coord);
             houses.insert(robot_coord);
         }
