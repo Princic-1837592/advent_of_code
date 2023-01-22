@@ -30,6 +30,7 @@ cargo_toml_content = """
 name = "advent_of_code_{year}"
 version = "0.1.0"
 authors = ["Andrea Princic <princic.1837592@studenti.uniroma1.it>"]
+edition = "2021"
 
 [lib]
 name = "advent_of_code_{year}"
