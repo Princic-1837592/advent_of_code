@@ -24,7 +24,8 @@ pub mod part1 {
         reindeer
             .iter()
             .map(|(speed, fly, rest)| {
-                speed * fly * (2503 / (fly + rest)) + speed * ((2503 % (fly + rest)).min(*fly))
+                let cycle = fly + rest;
+                speed * fly * (2503 / cycle) + speed * ((2503 % cycle).min(*fly))
             })
             .max()
             .unwrap()
@@ -60,12 +61,10 @@ pub mod part2 {
             let mut positions: Vec<_> = states.iter().cloned().enumerate().collect();
             positions.sort_by_key(|(_, (_, distance, ..))| *distance);
             let max_distance = positions[positions.len() - 1].1 .1;
-            for (i, _) in positions
+            positions
                 .iter()
                 .filter(|(_, (_, distance, ..))| *distance == max_distance)
-            {
-                states[*i].2 += 1
-            }
+                .for_each(|(i, _)| states[*i].2 += 1)
         }
         states
             .iter()
