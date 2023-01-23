@@ -15,3 +15,4 @@ path = "main.rs"
 [dependencies]
 md5 = "0.7.0"
 regex = "1.7.1"
+itertools = "0.10.5"
