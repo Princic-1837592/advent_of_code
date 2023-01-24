@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 pub mod part1 {
     use std::collections::{HashMap, HashSet};
@@ -104,7 +104,7 @@ dark violet bags contain no other bags."
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_07_input.txt").unwrap()
+        read_to_string("inputs/day_07_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

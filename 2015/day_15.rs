@@ -5,6 +5,7 @@ use std::{
     ops::{AddAssign, Mul},
     time::Instant,
 };
+use std::fs::read_to_string;
 
 #[derive(Copy, Clone, Debug, Default)]
 struct Ingredient {
@@ -136,7 +137,7 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_15_input.txt").unwrap()
+        read_to_string("inputs/day_15_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

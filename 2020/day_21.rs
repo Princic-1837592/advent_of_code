@@ -2,6 +2,7 @@ use std::{
     collections::{HashMap, HashSet},
     time::Instant,
 };
+use std::fs::read_to_string;
 
 fn parse(input: &str) -> Vec<(HashSet<&str>, Vec<&str>)> {
     input
@@ -92,7 +93,7 @@ sqjhc mxmxvkd sbzzf (contains fish)"
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_21_input.txt").unwrap()
+        read_to_string("inputs/day_21_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

@@ -1,6 +1,7 @@
 //! https://adventofcode.com/2015/day/9
 
 use std::{collections::HashMap, time::Instant};
+use std::fs::read_to_string;
 
 use itertools::Itertools;
 
@@ -69,7 +70,7 @@ Dublin to Belfast = 141"
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_09_input.txt").unwrap()
+        read_to_string("inputs/day_09_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

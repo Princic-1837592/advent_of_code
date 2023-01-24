@@ -1,4 +1,5 @@
 use std::{collections::HashSet, time::Instant};
+use std::fs::read_to_string;
 
 fn parse(input: &str) -> Vec<Vec<(i8, i8, i8)>> {
     input
@@ -123,7 +124,7 @@ wseweeenwnesenwwwswnew"
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_24_input.txt").unwrap()
+        read_to_string("inputs/day_24_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

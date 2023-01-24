@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 fn parse(input: &str) -> (usize, Vec<Option<usize>>) {
     let mut lines = input.lines();
@@ -63,7 +63,7 @@ pub fn main(test: bool) {
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_13_input.txt").unwrap()
+        read_to_string("inputs/day_13_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

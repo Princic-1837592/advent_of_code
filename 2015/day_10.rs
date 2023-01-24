@@ -1,6 +1,6 @@
 //! https://adventofcode.com/2015/day/10
 
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 fn solve_iter(input: &str, iterations: usize) -> usize {
     let mut numbers = String::from(input);
@@ -46,7 +46,7 @@ pub fn main(test: bool) {
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_10_input.txt").unwrap()
+        read_to_string("inputs/day_10_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

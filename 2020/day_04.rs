@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 pub mod part1 {
     pub fn solve(input: &str) -> usize {
@@ -102,7 +102,7 @@ byr:1940 iyr:2014 cid:147 hgt:174cm"
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_04_input.txt").unwrap()
+        read_to_string("inputs/day_04_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

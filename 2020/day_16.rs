@@ -3,6 +3,7 @@ use std::{
     ops::RangeInclusive,
     time::Instant,
 };
+use std::fs::read_to_string;
 
 use crate::LINE_ENDING;
 
@@ -141,7 +142,7 @@ nearby tickets:
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_16_input.txt").unwrap()
+        read_to_string("inputs/day_16_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

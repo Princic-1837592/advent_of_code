@@ -1,6 +1,6 @@
 //! https://adventofcode.com/2015/day/5
 
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 pub mod part1 {
     pub fn solve(input: &str) -> usize {
@@ -93,7 +93,7 @@ ieodomkazucvgmuy"
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_05_input.txt").unwrap()
+        read_to_string("inputs/day_05_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 #[derive(Clone, Copy, Debug)]
 enum Operation {
@@ -176,7 +176,7 @@ mem[26] = 1"
     let puzzle_input = if test {
         test_input
     } else {
-        std::fs::read_to_string("inputs/day_14_input.txt").unwrap()
+        read_to_string("inputs/day_14_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

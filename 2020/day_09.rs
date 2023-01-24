@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 fn parse(input: &str) -> Vec<usize> {
     input.lines().map(|n| n.parse().unwrap()).collect()
@@ -102,7 +102,7 @@ pub fn main(test: bool) {
         (test_input, 5)
     } else {
         (
-            std::fs::read_to_string("inputs/day_09_input.txt").unwrap(),
+            read_to_string("inputs/day_09_input.txt").unwrap(),
             25,
         )
     };
