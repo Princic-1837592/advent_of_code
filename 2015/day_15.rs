@@ -56,7 +56,7 @@ impl Sum for Ingredient {
             durability: result.durability.max(0),
             flavor: result.flavor.max(0),
             texture: result.texture.max(0),
-            calories: result.calories.max(0),
+            calories: result.calories,
         }
     }
 }
@@ -90,15 +90,14 @@ pub mod part1 {
         (1..=ingredients.len())
             .map(|_| 0..=100)
             .multi_cartesian_product()
-            .filter_map(|spoons| {
-                (spoons.iter().sum::<isize>() == 100).then_some(
-                    ingredients
-                        .iter()
-                        .zip(spoons)
-                        .map(|(&ingredient, spoons)| (ingredient * spoons))
-                        .sum::<Ingredient>()
-                        .mul(),
-                )
+            .filter(|spoons| spoons.iter().sum::<isize>() == 100)
+            .map(|spoons| {
+                ingredients
+                    .iter()
+                    .zip(spoons)
+                    .map(|(&ingredient, spoons)| (ingredient * spoons))
+                    .sum::<Ingredient>()
+                    .mul()
             })
             .max()
             .unwrap()
@@ -115,20 +114,16 @@ pub mod part2 {
         (1..=ingredients.len())
             .map(|_| 0..=100)
             .multi_cartesian_product()
-            .filter_map(|spoons| {
-                (spoons.iter().sum::<isize>() == 100).then_some({
-                    let recipe = ingredients
-                        .iter()
-                        .zip(spoons)
-                        .map(|(&ingredient, spoons)| (ingredient * spoons))
-                        .sum::<Ingredient>();
-                    if recipe.calories == 500 {
-                        recipe.mul()
-                    } else {
-                        0
-                    }
-                })
+            .filter(|spoons| spoons.iter().sum::<isize>() == 100)
+            .map(|spoons| {
+                ingredients
+                    .iter()
+                    .zip(spoons)
+                    .map(|(&ingredient, spoons)| (ingredient * spoons))
+                    .sum::<Ingredient>()
             })
+            .filter(|recipe| recipe.calories == 500)
+            .map(|recipe| recipe.mul())
             .max()
             .unwrap()
     }
