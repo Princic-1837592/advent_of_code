@@ -45,7 +45,7 @@ path = "main.rs"
 rust_src_content = """
 //! https://adventofcode.com/{year}/day/{day}
 
-use std::time::Instant;
+use std::{fs::read_to_string, time::Instant};
 
 pub mod part1 {{
     #[allow(unused)]
@@ -66,7 +66,7 @@ pub fn main(test: bool) {{
     let puzzle_input = if test {{
         test_input
     }} else {{
-        std::fs::read_to_string("inputs/day_{day:0>2}_input.txt").unwrap()
+        read_to_string("inputs/day_{day:0>2}_input.txt").unwrap()
     }};
     let start = Instant::now();
     println!("{{}}", part1::solve(&puzzle_input));
