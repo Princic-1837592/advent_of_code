@@ -45,7 +45,7 @@ path = "main.rs"
 rust_src_content = """
 //! https://adventofcode.com/{year}/day/{day}
 
-use std::{fs::read_to_string, time::Instant};
+use std::{{fs::read_to_string, time::Instant}};
 
 pub mod part1 {{
     #[allow(unused)]
@@ -162,4 +162,4 @@ def setup_calendar(year: str, language: str = "python"):
 
 
 if __name__ == "__main__":
-    setup_calendar("2015", "rust")
+    setup_calendar("2018", "rust")
