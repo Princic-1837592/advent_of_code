@@ -1,4 +1,7 @@
 //! https://adventofcode.com/2015/day/25
+//! https://adventofcode.com/2015/day/25/input
+//! https://adventofcode.com/2015/day/25
+//! https://adventofcode.com/2015/day/25/input/input
 
 use std::{fs::read_to_string, time::Instant};
 

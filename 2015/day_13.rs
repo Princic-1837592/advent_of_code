@@ -1,4 +1,5 @@
 //! https://adventofcode.com/2015/day/13
+//! https://adventofcode.com/2015/day/13/input
 
 use std::{collections::HashMap, time::Instant};
 use std::fs::read_to_string;

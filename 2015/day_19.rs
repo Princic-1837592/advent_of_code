@@ -1,4 +1,5 @@
 //! https://adventofcode.com/2015/day/19
+//! https://adventofcode.com/2015/day/19/input
 
 use std::{
     collections::{HashMap, HashSet},
