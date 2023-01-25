@@ -44,6 +44,7 @@ path = "main.rs"
 """.lstrip()
 rust_src_content = """
 //! https://adventofcode.com/{year}/day/{day}
+//! https://adventofcode.com/{year}/day/{day}/input
 
 use std::{{fs::read_to_string, time::Instant}};
 
