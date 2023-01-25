@@ -76,20 +76,10 @@ pub mod part1 {
                     weapon.2 + armor.2 + rings.iter().map(|ring| ring.2).sum::<isize>(),
                 )
             })
-            // .filter(|(_, dmg, armor)| {
-            //     (boss.0 - (dmg - boss.2).max(1)) / (dmg - boss.2).max(1)
-            //         < 99 / ((boss.1 - armor).max(1))
-            // })
             .filter(|(_, dmg, armor)| {
-                let (mut player_hp, mut boss_hp) = (100_isize, boss.0);
-                while player_hp > 0 {
-                    boss_hp -= (dmg - boss.2).max(1);
-                    if boss_hp <= 0 {
-                        break;
-                    }
-                    player_hp -= (boss.1 - armor).max(1);
-                }
-                player_hp > 0
+                let player_turns = (boss.0 as f32 / (dmg - boss.2).max(1) as f32).ceil() as usize;
+                let boss_turns = (100_f32 / (boss.1 - armor).max(1) as f32).ceil() as usize;
+                player_turns <= boss_turns
             })
             .min_by_key(|&(cost, ..)| cost)
             .unwrap()
@@ -129,20 +119,10 @@ pub mod part2 {
                     weapon.2 + armor.2 + rings.iter().map(|ring| ring.2).sum::<isize>(),
                 )
             })
-            // .filter(|(_, dmg, armor)| {
-            //     (boss.0 - (dmg - boss.2).max(1)) / (dmg - boss.2).max(1)
-            //         > 99 / ((boss.1 - armor).max(1))
-            // })
             .filter(|(_, dmg, armor)| {
-                let (mut player_hp, mut boss_hp) = (100_isize, boss.0);
-                while player_hp > 0 {
-                    boss_hp -= (dmg - boss.2).max(1);
-                    if boss_hp <= 0 {
-                        break;
-                    }
-                    player_hp -= (boss.1 - armor).max(1);
-                }
-                !player_hp > 0
+                let player_turns = (boss.0 as f32 / (dmg - boss.2).max(1) as f32).ceil() as usize;
+                let boss_turns = (100_f32 / (boss.1 - armor).max(1) as f32).ceil() as usize;
+                player_turns > boss_turns
             })
             .max_by_key(|&(cost, ..)| cost)
             .unwrap()
@@ -151,7 +131,6 @@ pub mod part2 {
 }
 
 pub fn main(test: bool) {
-    // [HPboss-(ATKplayer-RESboss)]/(ATKplayer-RESboss)<[HPplayer-(ATKboss-RESplayer)]/(ATKboss-RESplayer)
     let test_input = "".to_owned();
     let puzzle_input = if test {
         test_input
