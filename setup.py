@@ -53,19 +53,19 @@ fn parse(input: &str) -> usize {{
     0
 }}
 
+#[allow(unused)]
 pub mod part1 {{
     use crate::day_{day:0>2}::parse;
 
-    #[allow(unused)]
     pub fn solve(input: &str) -> usize {{
         0
     }}
 }}
 
+#[allow(unused)]
 pub mod part2 {{
     use crate::day_{day:0>2}::parse;
 
-    #[allow(unused)]
     pub fn solve(input: &str) -> usize {{
         0
     }}
