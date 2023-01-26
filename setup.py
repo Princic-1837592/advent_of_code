@@ -49,10 +49,12 @@ rust_src_content = """
 
 use std::{{fs::read_to_string, time::Instant}};
 
+#[allow(unused)]
 fn parse(input: &str) -> usize {{
     0
 }}
 
+#[allow(unused)]
 pub mod part1 {{
     use crate::day_{day:0>2}::parse;
 
