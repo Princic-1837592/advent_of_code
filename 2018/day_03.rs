@@ -90,7 +90,8 @@ pub mod part2 {
 pub fn main(test: bool) {
     let test_input = "#1 @ 1,3: 4x4
 #2 @ 3,1: 4x4
-#3 @ 5,5: 2x2".to_owned();
+#3 @ 5,5: 2x2"
+        .to_owned();
     let puzzle_input = if test {
         test_input
     } else {
