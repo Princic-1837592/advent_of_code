@@ -48,6 +48,10 @@ rust_src_content = """
 
 use std::{{fs::read_to_string, time::Instant}};
 
+fn parse(input: &str) -> usize {{
+    0
+}}
+
 pub mod part1 {{
     #[allow(unused)]
     pub fn solve(input: &str) -> usize {{
