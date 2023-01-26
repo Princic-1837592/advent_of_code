@@ -2,6 +2,7 @@ import os
 
 python_src_content = """
 # https://adventofcode.com/{year}/day/{day}
+# https://adventofcode.com/{year}/day/{day}/input
 
 
 def part1(data: str):
