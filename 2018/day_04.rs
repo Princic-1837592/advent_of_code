@@ -101,7 +101,7 @@ pub mod part1 {
         let (id, most_sleepy_guard) = states
             .iter()
             .enumerate()
-            .max_by_key(|(_, minutes)| minutes.iter().filter(|&&minute| minute != 0).count())
+            .max_by_key(|(_, minutes)| minutes.iter().filter(|minute| **minute != 0).count())
             .unwrap();
         most_sleepy_guard
             .iter()

@@ -14,10 +14,10 @@ pub mod part1 {
                 for letter in line.chars() {
                     *map.entry(letter).or_insert(0) += 1;
                 }
-                (map.values().any(|&v| v == 2), map.values().any(|&v| v == 3))
+                (map.values().any(|&v| v == 2), map.values().any(|v| *v == 3))
             })
             .unzip();
-        twos.iter().filter(|&&id| id).count() * threes.iter().filter(|&&id| id).count()
+        twos.iter().filter(|id| **id).count() * threes.iter().filter(|id| **id).count()
     }
 }
 
