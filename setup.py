@@ -7,6 +7,10 @@ python_src_content = """
 # https://adventofcode.com/{year}/day/{day}/input
 
 
+def parse(data: str):
+    return data
+
+
 def part1(data: str):
     pass
 
@@ -138,19 +142,6 @@ def setup_calendar(year: str, language: str = "python", auto_download=True):
             if not os.path.exists(path):
                 with open(path, "w") as src:
                     src.write(rust_src_content.format(year=year, day=day))
-            path = os.path.join(year, "inputs", f"day_{day:0>2}_input.txt")
-            if not os.path.exists(path):
-                with open(path, "w") as day_input:
-                    if auto_download:
-                        config = ConfigParser()
-                        config.read("local_config.ini")
-                        session = config["auto_download"]["session"]
-                        response = get(
-                            f"https://adventofcode.com/{year}/day/{day}/input",
-                            cookies={"session": session},
-                            headers={"User-Agent": "https://github.com/Princic-1837592/advent_of_code"},
-                        )
-                        day_input.write(response.text)
         path = os.path.join(year, "main.rs")
         if not os.path.exists(path):
             with open(path, "w") as main:
@@ -167,20 +158,44 @@ def setup_calendar(year: str, language: str = "python", auto_download=True):
             if not os.path.exists(path):
                 with open(path, "w") as src:
                     src.write(python_src_content.format(year=year, day=day))
+
+    def inputs():
+        directory = os.path.join(year, "inputs")
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+        session = "None"
+        if auto_download:
+            config = ConfigParser()
+            config.read("local_config.ini")
+            session = config["auto_download"]["session"]
+        keep_downloading = True
+        for day in range(1, 25 + 1):
             path = os.path.join(year, "inputs", f"day_{day:0>2}_input.txt")
             if not os.path.exists(path):
-                with open(path, "w") as _day_input:
-                    pass
+                with open(path, "w") as day_input:
+                    if auto_download and keep_downloading:
+                        response = get(
+                            f"https://adventofcode.com/{year}/day/{day}/input",
+                            cookies={"session": session},
+                            headers={
+                                "User-Agent": "https://github.com/Princic-1837592/advent_of_code/blob/main/setup.py"
+                                              " by princic.1837592@studenti.uniroma1.it"
+                            },
+                        )
+                        if response.status_code == 200:
+                            day_input.write(response.text.rstrip("\n"))
+                            print(f"Downloaded day {day}")
+                        else:
+                            keep_downloading = False
+                            print(f"Failed to download day {day}, quitting")
 
     if not os.path.exists(year):
         os.mkdir(year)
-    inputs = os.path.join(year, "inputs")
-    if not os.path.exists(inputs):
-        os.mkdir(inputs)
     if language == "python":
         python()
     elif language == "rust":
         rust()
+    inputs()
 
 
 if __name__ == "__main__":
