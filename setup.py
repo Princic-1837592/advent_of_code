@@ -1,4 +1,6 @@
 import os
+from configparser import ConfigParser
+from requests import get
 
 python_src_content = """
 # https://adventofcode.com/{year}/day/{day}
@@ -117,7 +119,7 @@ pub mod day_{day:0>2};
 """.lstrip()
 
 
-def setup_calendar(year: str, language: str = "python"):
+def setup_calendar(year: str, language: str = "python", auto_download=True):
     def rust():
         cargo = os.path.join(year, "Cargo.toml")
         if not os.path.exists(cargo):
@@ -138,8 +140,17 @@ def setup_calendar(year: str, language: str = "python"):
                     src.write(rust_src_content.format(year=year, day=day))
             path = os.path.join(year, "inputs", f"day_{day:0>2}_input.txt")
             if not os.path.exists(path):
-                with open(path, "w") as _day_input:
-                    pass
+                with open(path, "w") as day_input:
+                    if auto_download:
+                        config = ConfigParser()
+                        config.read("local_config.ini")
+                        session = config["auto_download"]["session"]
+                        response = get(
+                            f"https://adventofcode.com/{year}/day/{day}/input",
+                            cookies={"session": session},
+                            headers={"User-Agent": "https://github.com/Princic-1837592/advent_of_code"},
+                        )
+                        day_input.write(response.text)
         path = os.path.join(year, "main.rs")
         if not os.path.exists(path):
             with open(path, "w") as main:
@@ -173,4 +184,4 @@ def setup_calendar(year: str, language: str = "python"):
 
 
 if __name__ == "__main__":
-    setup_calendar("2018", "rust")
+    setup_calendar("2018", "rust", True)
