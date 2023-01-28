@@ -13,20 +13,13 @@ fn parse(input: &str) -> (usize, usize) {
 
 #[derive(Copy, Clone, Default)]
 struct Marble {
-    val: usize,
     prev: usize,
     next: usize,
 }
 
 fn play(players: usize, marbles: usize) -> usize {
     let mut points = vec![0; players];
-    let mut nodes: Vec<_> = (0..=marbles)
-        .map(|marble| Marble {
-            val: marble,
-            prev: 0,
-            next: 0,
-        })
-        .collect();
+    let mut nodes = vec![Marble { prev: 0, next: 0 }; marbles + 1];
     let mut current = 0;
     let mut player = 0;
     for marble in 1..=marbles {
