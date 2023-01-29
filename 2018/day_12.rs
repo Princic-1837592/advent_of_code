@@ -88,7 +88,6 @@ pub mod part1 {
     }
 }
 
-#[allow(unused)]
 pub mod part2 {
     use crate::day_12::{apply_generations, parse};
 
