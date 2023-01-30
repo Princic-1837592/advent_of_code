@@ -171,7 +171,14 @@ pub mod part2 {
         let (map, mut carts) = parse(input);
         let mut support = BinaryHeap::with_capacity(carts.len());
         while carts.len() > 1 {
-            tick(&map, &mut carts, &mut support);
+            let crashes = tick(&map, &mut carts, &mut support);
+            if !crashes.is_empty() {
+                carts = carts
+                    .iter()
+                    .filter(|cart| !crashes.contains(&cart.position))
+                    .cloned()
+                    .collect();
+            }
         }
         let last = carts.pop().unwrap();
         format!("{},{}", last.position.1, last.position.0)
