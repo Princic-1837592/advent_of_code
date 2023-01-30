@@ -1,7 +1,7 @@
 //! https://adventofcode.com/2018/day/10
 //! https://adventofcode.com/2018/day/10/input
 
-use std::{fs::read_to_string, str::FromStr, time::Instant};
+use std::{fs::read_to_string, time::Instant};
 
 use itertools::Itertools;
 use regex::Regex;
@@ -13,23 +13,21 @@ struct Light {
     vertical: isize,
 }
 
-impl FromStr for Light {
-    type Err = ();
-
-    fn from_str(string: &str) -> Result<Self, Self::Err> {
+impl From<&str> for Light {
+    fn from(string: &str) -> Self {
         let pattern = Regex::new(r"-?\d+").unwrap();
         let mut numbers = pattern.find_iter(string);
-        Ok(Self {
+        Self {
             x: numbers.next().unwrap().as_str().parse().unwrap(),
             y: numbers.next().unwrap().as_str().parse().unwrap(),
             horizontal: numbers.next().unwrap().as_str().parse().unwrap(),
             vertical: numbers.next().unwrap().as_str().parse().unwrap(),
-        })
+        }
     }
 }
 
 fn parse(input: &str) -> Vec<Light> {
-    input.lines().map(|line| line.parse().unwrap()).collect()
+    input.lines().map(Light::from).collect()
 }
 
 fn is_aligned(lights: &[Light]) -> bool {

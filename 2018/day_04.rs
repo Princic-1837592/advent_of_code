@@ -1,7 +1,7 @@
 //! https://adventofcode.com/2018/day/4
 //! https://adventofcode.com/2018/day/4/input
 
-use std::{fs::read_to_string, str::FromStr, time::Instant};
+use std::{fs::read_to_string, time::Instant};
 
 use regex::Regex;
 
@@ -12,17 +12,15 @@ enum Event {
     WakesUp,
 }
 
-impl FromStr for Event {
-    type Err = ();
-
-    fn from_str(string: &str) -> Result<Self, Self::Err> {
+impl From<&str> for Event {
+    fn from(string: &str) -> Self {
         let mut parts = string.split(' ');
-        Ok(match parts.next().unwrap() {
+        match parts.next().unwrap() {
             "Guard" => Self::Begins(parts.next().unwrap()[1..].parse().unwrap()),
             "falls" => Self::FallsAsleep,
             "wakes" => Self::WakesUp,
-            _ => Err(())?,
-        })
+            _ => panic!("Invalid event: {}", string),
+        }
     }
 }
 
@@ -36,28 +34,26 @@ struct Record {
     event: Event,
 }
 
-impl FromStr for Record {
-    type Err = ();
-
-    fn from_str(string: &str) -> Result<Self, Self::Err> {
+impl From<&str> for Record {
+    fn from(string: &str) -> Self {
         let pattern = Regex::new(
             r"\[(\d+)-(\d+)-(\d+) (\d+):(\d+)] (Guard #\d+ begins shift|falls asleep|wakes up)",
         )
         .unwrap();
         let captures = pattern.captures(string).unwrap();
-        Ok(Self {
+        Self {
             year: captures.get(1).unwrap().as_str().parse().unwrap(),
             month: captures.get(2).unwrap().as_str().parse().unwrap(),
             day: captures.get(3).unwrap().as_str().parse().unwrap(),
             hour: captures.get(4).unwrap().as_str().parse().unwrap(),
             minute: captures.get(5).unwrap().as_str().parse().unwrap(),
-            event: captures.get(6).unwrap().as_str().parse().unwrap(),
-        })
+            event: Event::from(captures.get(6).unwrap().as_str()),
+        }
     }
 }
 
 fn parse(input: &str) -> Vec<Record> {
-    let mut result: Vec<_> = input.lines().map(|line| line.parse().unwrap()).collect();
+    let mut result: Vec<_> = input.lines().map(Record::from).collect();
     result.sort();
     result
 }
