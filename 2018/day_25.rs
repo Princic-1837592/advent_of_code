@@ -28,9 +28,10 @@ pub mod part1 {
         let points = parse(input);
         let mut graph = HashMap::new();
         for (i, p1) in points.iter().enumerate() {
-            for (j, p2) in points.iter().enumerate() {
-                if i != j && manhattan(p1, p2) <= 3 {
+            for (j, p2) in points.iter().enumerate().skip(i + 1) {
+                if manhattan(p1, p2) <= 3 {
                     graph.entry(i).or_insert_with(HashSet::new).insert(j);
+                    graph.entry(j).or_insert_with(HashSet::new).insert(i);
                 }
             }
         }
