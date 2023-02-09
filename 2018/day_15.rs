@@ -245,7 +245,6 @@ pub mod part1 {
     }
 }
 
-#[allow(unused)]
 pub mod part2 {
     use std::{cell::RefCell, rc::Rc};
 

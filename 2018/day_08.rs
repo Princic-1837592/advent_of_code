@@ -41,7 +41,6 @@ pub mod part1 {
     }
 }
 
-#[allow(unused)]
 pub mod part2 {
     use crate::day_08::parse;
 
@@ -49,7 +48,6 @@ pub mod part2 {
         if i >= numbers.len() {
             (i, 0)
         } else {
-            let mut total = 0;
             let mut children = vec![0; numbers[i]];
             i += 1;
             let mut mds = vec![0; numbers[i]];
