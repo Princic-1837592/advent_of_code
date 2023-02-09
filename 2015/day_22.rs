@@ -89,78 +89,78 @@ fn parse(input: &str) -> (isize, usize) {
     (boss_hp, boss_damage)
 }
 
-pub mod part1 {
-    use crate::day_22::{parse, Character, SPELLS};
-
-    fn fight(
-        mut player: Character,
-        mut boss: Character,
-        is_player_turn: bool,
-        mut timers: [usize; 5],
-        spent: usize,
-        mut min_spent: usize,
-        level: usize,
-    ) -> usize {
-        if spent >= min_spent {
-            return usize::MAX;
-        }
-        if is_player_turn {
-            player.hp -= 1;
-        }
-        if player.hp <= 0 {
-            return usize::MAX;
-        }
-        for (i, timer) in timers.iter_mut().enumerate() {
-            match *timer {
-                1 => {
-                    *timer = 0;
-                    SPELLS[i].effect(&mut player, &mut boss);
-                    SPELLS[i].end(&mut player, &mut boss);
-                }
-                0 => {}
-                _ => {
-                    *timer -= 1;
-                    SPELLS[i].effect(&mut player, &mut boss);
-                }
+fn fight(
+    mut player: Character,
+    mut boss: Character,
+    is_player_turn: bool,
+    mut timers: [usize; 5],
+    spent: usize,
+    mut min_spent: usize,
+    part2: bool,
+) -> usize {
+    if spent >= min_spent {
+        return usize::MAX;
+    }
+    if part2 && is_player_turn {
+        player.hp -= 1;
+    }
+    if player.hp <= 0 {
+        return usize::MAX;
+    }
+    for (i, timer) in timers.iter_mut().enumerate() {
+        match *timer {
+            1 => {
+                *timer = 0;
+                SPELLS[i].effect(&mut player, &mut boss);
+                SPELLS[i].end(&mut player, &mut boss);
             }
-        }
-        if boss.hp <= 0 {
-            return spent;
-        }
-        if is_player_turn {
-            let mut has_cast = false;
-            for (i, spell) in SPELLS.iter().enumerate() {
-                if player.mana >= spell.cost && timers[i] == 0 {
-                    let (mut player, mut boss) = (player, boss);
-                    player.mana -= spell.cost;
-                    spell.start(&mut player, &mut boss);
-                    has_cast = true;
-                    timers[i] = spell.duration;
-                    let result = fight(
-                        player,
-                        boss,
-                        false,
-                        timers,
-                        spent + spell.cost,
-                        min_spent,
-                        level + 1,
-                    );
-                    if result < min_spent {
-                        min_spent = result;
-                    }
-                    timers[i] = 0;
-                }
+            0 => {}
+            _ => {
+                *timer -= 1;
+                SPELLS[i].effect(&mut player, &mut boss);
             }
-            if has_cast {
-                min_spent
-            } else {
-                usize::MAX
-            }
-        } else {
-            player.hp -= (boss.damage - player.armor).max(1) as isize;
-            fight(player, boss, true, timers, spent, min_spent, level + 1)
         }
     }
+    if boss.hp <= 0 {
+        return spent;
+    }
+    if is_player_turn {
+        let mut has_cast = false;
+        for (i, spell) in SPELLS.iter().enumerate() {
+            if player.mana >= spell.cost && timers[i] == 0 {
+                let (mut player, mut boss) = (player, boss);
+                player.mana -= spell.cost;
+                spell.start(&mut player, &mut boss);
+                has_cast = true;
+                timers[i] = spell.duration;
+                let result = fight(
+                    player,
+                    boss,
+                    false,
+                    timers,
+                    spent + spell.cost,
+                    min_spent,
+                    part2,
+                );
+                if result < min_spent {
+                    min_spent = result;
+                }
+                timers[i] = 0;
+            }
+        }
+        if has_cast {
+            min_spent
+        } else {
+            usize::MAX
+        }
+    } else {
+        player.hp -= (boss.damage - player.armor).max(1) as isize;
+        fight(player, boss, true, timers, spent, min_spent, part2)
+    }
+}
+
+pub mod part1 {
+    use crate::day_22::{fight, parse, Character};
 
     pub fn solve(input: &str, hp: isize, mana: usize) -> usize {
         let boss = parse(input);
@@ -179,18 +179,33 @@ pub mod part1 {
             [0; 5],
             0,
             usize::MAX,
-            0,
+            false,
         )
     }
 }
 
 pub mod part2 {
-    use crate::day_22::parse;
+    use crate::day_22::{fight, parse, Character};
 
-    #[allow(unused)]
     pub fn solve(input: &str, hp: isize, mana: usize) -> usize {
         let boss = parse(input);
-        0
+        fight(
+            Character {
+                hp,
+                mana,
+                ..Default::default()
+            },
+            Character {
+                hp: boss.0,
+                damage: boss.1,
+                ..Default::default()
+            },
+            true,
+            [0; 5],
+            0,
+            usize::MAX,
+            true,
+        )
     }
 }
 
