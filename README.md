@@ -18,7 +18,7 @@ Left day 20 for last (yet another backtracking problem) but in the end it was ea
 
 ## 2018 (Rust)
 
-Almost done.
+Third AoC solved at 100%.
 
 ## 2015 (Rust)
 
