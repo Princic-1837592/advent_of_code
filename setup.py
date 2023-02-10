@@ -123,7 +123,7 @@ pub mod day_{day:0>2};
 """.lstrip()
 
 
-def setup_calendar(year: str, language: str = "python", auto_download=True):
+def setup_calendar(year: str, language: str = "python", auto_download=True, verbose: bool = False):
     def rust():
         cargo = os.path.join(year, "Cargo.toml")
         if not os.path.exists(cargo):
@@ -184,19 +184,27 @@ def setup_calendar(year: str, language: str = "python", auto_download=True):
                         )
                         if response.status_code == 200:
                             day_input.write(response.text.rstrip("\n"))
-                            print(f"Downloaded day {day}")
+                            if verbose:
+                                print(f"Downloaded day {day}")
                         else:
                             keep_downloading = False
-                            print(f"Failed to download day {day}, quitting")
+                            if verbose:
+                                print(f"Failed to download day {day}, quitting")
 
     if not os.path.exists(year):
+        if verbose:
+            print("Creating directory")
         os.mkdir(year)
+    if verbose:
+        print("Creating source files")
     if language == "python":
         python()
     elif language == "rust":
         rust()
+    if verbose:
+        print("Creating inputs")
     inputs()
 
 
 if __name__ == "__main__":
-    setup_calendar("2018", "rust", True)
+    setup_calendar("2017", "rust", True, True)
