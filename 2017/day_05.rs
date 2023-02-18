@@ -46,8 +46,7 @@ pub fn main(test: bool) {
 0
 1
 -3"
-    .to_owned()
-    .replace('\n', "\r\n");
+    .to_owned();
     let puzzle_input = if test {
         test_input
     } else {
