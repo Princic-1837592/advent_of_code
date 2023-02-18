@@ -3,15 +3,6 @@
 
 use std::{fs::read_to_string, time::Instant};
 
-const DIRECTIONS: [Direction; 6] = [
-    Direction::N,
-    Direction::S,
-    Direction::Ne,
-    Direction::Sw,
-    Direction::Nw,
-    Direction::Se,
-];
-
 enum Direction {
     N,
     S,
@@ -53,9 +44,7 @@ fn parse(input: &str) -> Vec<Direction> {
 }
 
 pub mod part1 {
-    use std::collections::{hash_map::Entry, HashMap, VecDeque};
-
-    use crate::day_11::{parse, Direction, DIRECTIONS};
+    use crate::day_11::{parse, Direction};
 
     pub fn solve(input: &str) -> usize {
         let directions = parse(input);
@@ -65,71 +54,29 @@ pub mod part1 {
             y += dy;
             z += dz;
         }
-        let target = (x, y, z);
-        let mut queue = VecDeque::from([(0, 0, 0)]);
-        let mut distances = HashMap::from([((0, 0, 0), 0)]);
-        while let Some(hex @ (x, y, z)) = queue.pop_front() {
-            if hex == target {
-                break;
-            }
-            let distance = *distances.get(&hex).unwrap();
-            for (dx, dy, dz) in DIRECTIONS.iter().map(Direction::to_coord) {
-                let next = (x + dx, y + dy, z + dz);
-                if let Entry::Vacant(e) = distances.entry(next) {
-                    e.insert(distance + 1);
-                    queue.push_back(next);
-                }
-            }
-        }
-        *distances.get(&target).unwrap()
+        (x.unsigned_abs() + y.unsigned_abs() + z.unsigned_abs()) / 2
     }
 }
 
 pub mod part2 {
-    use std::collections::{hash_map::Entry, HashMap, HashSet, VecDeque};
-
-    use crate::day_11::{parse, Direction, DIRECTIONS};
+    use crate::day_11::{parse, Direction};
 
     pub fn solve(input: &str) -> usize {
         let directions = parse(input);
         let (mut x, mut y, mut z) = (0, 0, 0);
-        let mut visited = HashSet::new();
+        let mut max_distance = 0;
         for (dx, dy, dz) in directions.iter().map(Direction::to_coord) {
             x += dx;
             y += dy;
             z += dz;
-            visited.insert((x, y, z));
+            max_distance = max_distance.max((x.abs() + y.abs() + z.abs()) / 2)
         }
-        let mut visited_clone = visited.clone();
-        let mut queue = VecDeque::from([(0, 0, 0)]);
-        let mut distances = HashMap::from([((0, 0, 0), 0)]);
-        while let Some(hex @ (x, y, z)) = queue.pop_front() {
-            if visited_clone.contains(&hex) {
-                visited_clone.remove(&hex);
-            }
-            if visited_clone.is_empty() {
-                break;
-            }
-            let distance = *distances.get(&hex).unwrap();
-            for (dx, dy, dz) in DIRECTIONS.iter().map(Direction::to_coord) {
-                let next = (x + dx, y + dy, z + dz);
-                if let Entry::Vacant(e) = distances.entry(next) {
-                    e.insert(distance + 1);
-                    queue.push_back(next);
-                }
-            }
-        }
-        *distances
-            .iter()
-            .filter(|(hex, _)| visited.contains(hex))
-            .max_by_key(|(_, &d)| d)
-            .unwrap()
-            .1
+        max_distance as usize
     }
 }
 
 pub fn main(test: bool) {
-    let test_input = "ne,ne,s,s".to_owned();
+    let test_input = "ne,ne,sw,sw".to_owned();
     let puzzle_input = if test {
         test_input
     } else {
