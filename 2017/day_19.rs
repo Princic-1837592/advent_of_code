@@ -3,8 +3,6 @@
 
 use std::{collections::HashMap, fs::read_to_string, time::Instant};
 
-const DIRECTIONS: [(isize, isize); 4] = [(1, 0), (0, 1), (-1, 0), (0, -1)];
-
 fn parse(input: &str) -> HashMap<(isize, isize), char> {
     let mut result = HashMap::new();
     for (i, row) in input.lines().enumerate() {
@@ -32,15 +30,10 @@ fn move_packet(map: HashMap<(isize, isize), char>) -> (String, usize) {
         match char {
             'A'..='Z' => result.push(*char),
             '+' => {
-                for &direction @ (ndx, ndy) in DIRECTIONS
-                    .iter()
-                    .filter(|&&direction| direction != (-dx, -dy))
-                {
+                for direction @ (ndx, ndy) in [(dy, dx), (-dy, -dx)] {
                     let next = (x + ndx, y + ndy);
-                    // dbg!((direction, next, map.get(&next)));
                     if map.get(&next).is_some() {
                         (dx, dy) = direction;
-                        // dbg!(direction);
                         break;
                     }
                 }
