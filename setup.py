@@ -104,7 +104,6 @@ fn main() {{
 {single_days}
     println!("Total: {{:?}}", start.elapsed());
 }}
-
 """.lstrip()
 rust_single_day_content = """
     println!("Running day {day}");
