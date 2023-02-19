@@ -52,7 +52,7 @@ pub mod part2 {
             .collect()
     }
 
-    pub fn solve(input: &str) -> String {
+    pub fn hash(input: &str) -> Vec<usize> {
         let lengths = parse(input);
         let mut numbers: Vec<_> = (0..256).collect();
         let (mut cp, mut skip_size) = (0, 0);
@@ -69,9 +69,14 @@ pub mod part2 {
             }
             xors[i] = xor;
         }
+        xors
+    }
+
+    pub fn solve(input: &str) -> String {
+        let hash = hash(input);
         let mut result = String::new();
-        for xor in xors {
-            result.push_str(&*format!("{:0>2x}", xor));
+        for bit in hash {
+            result.push_str(&*format!("{:0>2x}", bit));
         }
         result
     }
