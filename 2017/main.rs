@@ -108,4 +108,3 @@ fn main() {
 
     println!("Total: {:?}", start.elapsed());
 }
-
