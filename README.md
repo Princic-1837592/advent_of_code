@@ -31,6 +31,14 @@ My favourite days:
 - [24](2017/day_24.rs)
 - [25](2017/day_25.rs)
 
+## [2016](2016) (Rust)
+
+Finally, I know why The Easter Bunny is on the Naughty List.\
+The first part of [day 11](2016/day_11.rs) was a pain, but the second part was the easiest second part ever.\
+My favourite days:
+
+- [13](2016/day_13.rs) (an easy BFS after the infamous [day 11](2016/day_11.rs))
+
 ## [2015](2015) (Rust)
 
 First AoC solved at 100%. I took the opportunity to improve my Rust. I am proud of this one.
