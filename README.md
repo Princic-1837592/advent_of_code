@@ -25,9 +25,9 @@ Third AoC solved at 100%.
 Fourth AoC solved at 100%, with the best animation so far.\
 My favourite days:
 
-- [9](2017/day_09.rs) (funny parsing)
+- [9](2017/day_09.rs) funny parsing
 - [12](2017/day_12.rs)
-- [21](2017/day_21.rs) (reminded me of [2020/20](2020/day_20.rs))
+- [21](2017/day_21.rs) reminded me of [2020/20](2020/day_20.rs)
 - [24](2017/day_24.rs)
 - [25](2017/day_25.rs)
 
@@ -37,7 +37,9 @@ Finally, I know why The Easter Bunny is on the Naughty List.\
 The first part of [day 11](2016/day_11.rs) was a pain, but the second part was the easiest second part ever.\
 My favourite days:
 
-- [13](2016/day_13.rs) (an easy BFS after the infamous [day 11](2016/day_11.rs))
+- [13](2016/day_13.rs) an easy BFS after the infamous [day 11](2016/day_11.rs)
+- [20](2016/day_20.rs)
+- [22](2016/day_22.rs) the first time I solved a problem by hand (second part)
 
 ## [2015](2015) (Rust)
 
