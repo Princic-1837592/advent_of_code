@@ -4,7 +4,7 @@ My solutions to the [Advent of Code](https://adventofcode.com/) puzzles.
 
 ## [2022](2022) (Python)
 
-My first "live" AoC. I skipped day 19 because I am too lazy to solve yet another backtracking problem.\
+My first "live" AoC. ~~I skipped day 19 because I am too lazy to solve yet another backtracking problem~~.\
 Day 16 gave me such a headache that I had to skip both 16 and 17, but I went back to them shortly afterwards.
 
 ## [2021](2021) (Python)
