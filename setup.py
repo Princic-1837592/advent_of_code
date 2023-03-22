@@ -187,8 +187,10 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
                                 print(f"Downloaded day {day}")
                         else:
                             keep_downloading = False
-                            if verbose:
-                                print(f"Failed to download day {day}, quitting")
+                            print(
+                                f"Failed to download day {day} with error code "
+                                f"{response.status_code} and response: {response.text}. Quitting"
+                            )
 
     if not os.path.exists(year):
         if verbose:
@@ -206,4 +208,4 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
 
 
 if __name__ == "__main__":
-    setup_calendar("2017", "rust", True, True)
+    setup_calendar("2019", "rust", True, True)
