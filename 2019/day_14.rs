@@ -79,7 +79,7 @@ fn find_ore(
     while let Some((_, chemical)) = queue.pop() {
         if let Some(qty_required) = needs.remove(chemical) {
             let (qty_produced, ingredients) = reactions.get(chemical).unwrap();
-            let n = (qty_required as f32 / *qty_produced as f32).ceil() as usize;
+            let n = (qty_required as f64 / *qty_produced as f64).ceil() as usize;
             for (qty_ingredient, ingredient) in ingredients {
                 if ingredient == "ORE" {
                     ore_required += qty_ingredient * n;
