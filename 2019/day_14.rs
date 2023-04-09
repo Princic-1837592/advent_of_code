@@ -121,7 +121,7 @@ pub mod part2 {
                 result = mid;
                 l = mid + 1;
             } else {
-                r = mid - 1;
+                r = mid;
             }
         }
         result
