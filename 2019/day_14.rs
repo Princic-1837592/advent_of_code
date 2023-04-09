@@ -2,7 +2,7 @@
 //! https://adventofcode.com/2019/day/14/input
 
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{BinaryHeap, HashMap, HashSet},
     fs::read_to_string,
     time::Instant,
 };
@@ -70,25 +70,23 @@ fn topological_order(reactions: &Reactions) -> HashMap<String, usize> {
 fn find_ore(
     reactions: &Reactions,
     order: &HashMap<String, usize>,
-    target: String,
+    target: &String,
     quantity: usize,
 ) -> usize {
     let mut ore_required = 0;
     let mut needs = HashMap::from([(target, quantity)]);
-    while !needs.is_empty() {
-        let chemical = &needs
-            .keys()
-            .min_by_key(|&v| order.get(v).unwrap())
-            .unwrap()
-            .clone();
-        let qty_required = needs.remove(chemical).unwrap();
-        let (qty_produced, ingredients) = reactions.get(chemical).unwrap();
-        let n = (qty_required as f32 / *qty_produced as f32).ceil() as usize;
-        for (qty_ingredient, ingredient) in ingredients {
-            if ingredient == "ORE" {
-                ore_required += qty_ingredient * n;
-            } else {
-                *needs.entry(ingredient.clone()).or_insert(0) += qty_ingredient * n;
+    let mut queue = BinaryHeap::from([(0, target)]);
+    while let Some((_, chemical)) = queue.pop() {
+        if let Some(qty_required) = needs.remove(chemical) {
+            let (qty_produced, ingredients) = reactions.get(chemical).unwrap();
+            let n = (qty_required as f32 / *qty_produced as f32).ceil() as usize;
+            for (qty_ingredient, ingredient) in ingredients {
+                if ingredient == "ORE" {
+                    ore_required += qty_ingredient * n;
+                } else {
+                    *needs.entry(ingredient).or_insert(0) += qty_ingredient * n;
+                    queue.push((-(*order.get(ingredient).unwrap() as isize), ingredient));
+                }
             }
         }
     }
@@ -101,7 +99,7 @@ pub mod part1 {
     pub fn solve(input: &str) -> usize {
         let reactions = parse(input);
         let order = topological_order(&reactions);
-        find_ore(&reactions, &order, "FUEL".into(), 1)
+        find_ore(&reactions, &order, &"FUEL".into(), 1)
     }
 }
 
@@ -111,13 +109,14 @@ pub mod part2 {
     pub fn solve(input: &str) -> usize {
         let reactions = parse(input);
         let order = topological_order(&reactions);
-        let ore_required = find_ore(&reactions, &order, "FUEL".into(), 1);
+        let fuel = &String::from("FUEL");
+        let ore_required = find_ore(&reactions, &order, fuel, 1);
         let ore = 1000000000000;
         let (mut l, mut r) = (ore / ore_required, 82892753);
         let mut result = usize::MAX;
         while l < r {
             let mid = (l + r) / 2;
-            let ore_required = find_ore(&reactions, &order, "FUEL".into(), mid);
+            let ore_required = find_ore(&reactions, &order, fuel, mid);
             if ore_required <= ore {
                 result = mid;
                 l = mid + 1;
