@@ -112,7 +112,11 @@ pub mod part2 {
         let fuel = &String::from("FUEL");
         let ore_required = find_ore(&reactions, &order, fuel, 1);
         let ore = 1000000000000;
-        let (mut l, mut r) = (ore / ore_required, 82892753);
+        let mut l = ore / ore_required;
+        let mut r = l;
+        while find_ore(&reactions, &order, fuel, r) <= ore {
+            r *= 2;
+        }
         let mut result = usize::MAX;
         while l < r {
             let mid = (l + r) / 2;
