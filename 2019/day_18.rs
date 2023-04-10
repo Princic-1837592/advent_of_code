@@ -175,7 +175,7 @@ fn solve_with_robots(
                 }
                 current_keys[robot] = next_key;
                 queue.push(BfsState::new(
-                    steps.saturating_add(steps_needed),
+                    steps + steps_needed,
                     current_keys.clone(),
                     keys | keys_on_path,
                     robot,
