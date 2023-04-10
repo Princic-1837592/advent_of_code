@@ -42,11 +42,45 @@ fn parse(input: &str) -> (Vec<Vec<State>>, Coord, u32) {
 
 pub mod part1 {
     use std::{
-        cmp::Reverse,
-        collections::{BinaryHeap, HashMap, VecDeque},
+        cmp::Ordering,
+        collections::{hash_map::Entry, BinaryHeap, HashMap, VecDeque},
     };
 
     use crate::day_18::{parse, Coord, State, NEIGHBOURS};
+
+    #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+    struct BfsState {
+        steps: usize,
+        current_key: u32,
+        keys: usize,
+    }
+
+    impl BfsState {
+        fn new(steps: usize, current_key: u32, keys: usize) -> Self {
+            Self {
+                steps,
+                current_key,
+                keys,
+            }
+        }
+    }
+
+    impl PartialOrd<Self> for BfsState {
+        fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+            Some(
+                self.steps
+                    .cmp(&other.steps)
+                    .reverse()
+                    .then_with(|| self.keys.count_ones().cmp(&other.keys.count_ones())),
+            )
+        }
+    }
+
+    impl Ord for BfsState {
+        fn cmp(&self, other: &Self) -> Ordering {
+            self.partial_cmp(other).unwrap()
+        }
+    }
 
     fn build_graph(
         maze: &Vec<Vec<State>>,
@@ -100,27 +134,29 @@ pub mod part1 {
     pub fn solve(input: &str) -> usize {
         let (maze, entrance, total_keys) = parse(input);
         let graph = build_graph(&maze, entrance, total_keys);
-        // struct con metodo cmp personalizzato per ordinare prima per steps e poi per chiavi, o viceversa
-        let mut queue = BinaryHeap::from([Reverse((0, total_keys, 0_usize))]);
-        let mut steps_for_tot_keys = vec![usize::MAX; total_keys as usize + 1];
-        let mut max_keys = 0;
-        let mut different_solutions = 0;
-        let mut min_solution = usize::MAX;
-        dbg!(total_keys);
-        while let Some(Reverse((steps, current_key, mut keys))) = queue.pop() {
+        let mut queue = BinaryHeap::from([BfsState::new(0, total_keys, 0)]);
+        let mut seen: HashMap<(usize, u32), usize> = HashMap::new();
+        while let Some(BfsState {
+            steps,
+            current_key,
+            mut keys,
+        }) = queue.pop()
+        {
             if current_key != total_keys {
                 keys |= 1 << current_key;
             }
-            // if steps >= steps_for_tot_keys[keys.count_ones() as usize].saturating_add(40) {
-            //     continue;
-            // }
-            // steps_for_tot_keys[keys.count_ones() as usize] = steps;
             if keys.count_ones() == total_keys {
                 return steps;
             }
-            if keys.count_ones() > max_keys {
-                max_keys = keys.count_ones();
-                dbg!(max_keys);
+            match seen.entry((keys, current_key)) {
+                Entry::Occupied(entry) => {
+                    if *entry.get() <= steps {
+                        continue;
+                    }
+                }
+                Entry::Vacant(entry) => {
+                    entry.insert(steps);
+                }
             }
             for (next_key, &(steps_needed, doors, keys_on_path)) in
                 (0..total_keys).zip(graph[current_key as usize].iter())
@@ -131,15 +167,14 @@ pub mod part1 {
                 if keys & doors != doors {
                     continue;
                 }
-                queue.push(Reverse((
+                queue.push(BfsState::new(
                     steps + steps_needed,
                     next_key,
                     keys | keys_on_path,
-                )))
+                ))
             }
         }
-        //4428 too high
-        min_solution
+        unreachable!()
     }
 }
 
