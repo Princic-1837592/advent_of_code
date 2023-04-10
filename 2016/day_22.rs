@@ -9,7 +9,6 @@ use regex::Regex;
 struct Node {
     x: usize,
     y: usize,
-    #[allow(unused)]
     size: usize,
     used: usize,
     avail: usize,
@@ -69,19 +68,50 @@ pub mod part1 {
     }
 }
 
-#[allow(unused)]
 pub mod part2 {
+    use std::collections::{HashSet, VecDeque};
+
     use crate::day_22::parse;
 
+    const NEIGHBOURS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+
     pub fn solve(input: &str) -> usize {
-        // let nodes = parse(input);
-        // for row in &nodes {
-        //     for node in row {
-        //         print!("{:>3}/{:<3}", node.used, node.size);
-        //     }
-        //     println!();
-        // }
-        0
+        let nodes = parse(input);
+        let mut initial = (0, 0);
+        for (i, row) in nodes.iter().enumerate() {
+            for (j, node) in row.iter().enumerate() {
+                if node.used == 0 {
+                    initial = (i, j);
+                    break;
+                }
+            }
+        }
+        let target = (nodes.len() - 2, 0);
+        let mut queue = VecDeque::from([(initial, 0)]);
+        let mut first_distance = usize::MAX;
+        let mut visited = HashSet::new();
+        while let Some((coord @ (i, j), distance)) = queue.pop_front() {
+            if coord == target {
+                first_distance = distance;
+                break;
+            }
+            if visited.contains(&coord) {
+                continue;
+            }
+            visited.insert(coord);
+            let current = nodes[i][j];
+            for (ni, nj) in NEIGHBOURS.map(|(di, dj)| ((i as isize + di), (j as isize + dj))) {
+                if ni < 0 || ni >= nodes.len() as isize || nj < 0 || nj >= nodes[0].len() as isize {
+                    continue;
+                }
+                let (ni, nj) = (ni as usize, nj as usize);
+                let next = nodes[ni][nj];
+                if current.size >= next.used {
+                    queue.push_back(((ni, nj), distance + 1));
+                }
+            }
+        }
+        first_distance + 1 + (nodes.len() - 2) * 5
     }
 }
 
