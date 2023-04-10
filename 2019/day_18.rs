@@ -55,7 +55,7 @@ fn build_graph(
         coord: Coord,
         total_keys: u32,
     ) -> Vec<(usize, usize, usize)> {
-        let mut queue = VecDeque::from([(coord, 0_usize, 0_usize, 0)]);
+        let mut queue = VecDeque::from([(coord, 0, 0, 0)]);
         let mut result = vec![(usize::MAX, 0, 0); total_keys as usize];
         let mut visited = vec![vec![false; maze[0].len()]; maze.len()];
         let mut keys_found = 0;
@@ -138,7 +138,7 @@ fn solve_with_robots(
     robots: Vec<u32>,
 ) -> usize {
     let mut queue = BinaryHeap::from([BfsState::new(0, robots.clone(), 0, 0)]);
-    let mut seen: HashMap<(usize, u32), usize> = HashMap::new();
+    let mut seen = HashMap::new();
     while let Some(BfsState {
         steps,
         mut current_keys,
