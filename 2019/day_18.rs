@@ -41,7 +41,10 @@ fn parse(input: &str) -> (Vec<Vec<State>>, Coord, u32) {
 }
 
 pub mod part1 {
-    use std::collections::VecDeque;
+    use std::{
+        cmp::Reverse,
+        collections::{BinaryHeap, HashMap, VecDeque},
+    };
 
     use crate::day_18::{parse, Coord, State, NEIGHBOURS};
 
@@ -49,13 +52,17 @@ pub mod part1 {
         maze: &Vec<Vec<State>>,
         entrance: Coord,
         total_keys: u32,
-    ) -> Vec<Vec<(usize, usize)>> {
-        fn keys_bfs(maze: &Vec<Vec<State>>, coord: Coord, total_keys: u32) -> Vec<(usize, usize)> {
-            let mut queue = VecDeque::from([(coord, 0_usize, 0)]);
-            let mut result = vec![(0, 0); total_keys as usize];
+    ) -> Vec<Vec<(usize, usize, usize)>> {
+        fn keys_bfs(
+            maze: &Vec<Vec<State>>,
+            coord: Coord,
+            total_keys: u32,
+        ) -> Vec<(usize, usize, usize)> {
+            let mut queue = VecDeque::from([(coord, 0_usize, 0_usize, 0)]);
+            let mut result = vec![(0, 0, 0); total_keys as usize];
             let mut visited = vec![vec![false; maze[0].len()]; maze.len()];
             let mut keys_found = 0;
-            while let Some(((i, j), mut doors, steps)) = queue.pop_front() {
+            while let Some(((i, j), mut doors, mut keys, steps)) = queue.pop_front() {
                 if visited[i][j] || keys_found == total_keys {
                     continue;
                 }
@@ -64,7 +71,8 @@ pub mod part1 {
                     State::Wall => continue,
                     State::Space => {}
                     State::Key(key) => {
-                        result[key] = (steps, doors);
+                        keys |= 1 << key;
+                        result[key] = (steps, doors, keys);
                         keys_found += 1;
                     }
                     State::Door(door) => doors |= 1 << door,
@@ -72,12 +80,12 @@ pub mod part1 {
                 for next in NEIGHBOURS
                     .map(|(di, dj)| ((i as isize + di) as usize, (j as isize + dj) as usize))
                 {
-                    queue.push_back((next, doors, steps + 1));
+                    queue.push_back((next, doors, keys, steps + 1));
                 }
             }
             result
         }
-        let mut graph = vec![vec![(0, 0); total_keys as usize]; total_keys as usize + 1];
+        let mut graph = vec![vec![(0, 0, 0); total_keys as usize]; total_keys as usize + 1];
         for (i, row) in maze.iter().enumerate() {
             for (j, cell) in row.iter().enumerate() {
                 if let &State::Key(key) = cell {
@@ -92,27 +100,46 @@ pub mod part1 {
     pub fn solve(input: &str) -> usize {
         let (maze, entrance, total_keys) = parse(input);
         let graph = build_graph(&maze, entrance, total_keys);
-        let mut queue = VecDeque::from([(total_keys, 0_usize, 0)]);
-        while let Some((current_key, mut keys, steps)) = queue.pop_front() {
+        // struct con metodo cmp personalizzato per ordinare prima per steps e poi per chiavi, o viceversa
+        let mut queue = BinaryHeap::from([Reverse((0, total_keys, 0_usize))]);
+        let mut steps_for_tot_keys = vec![usize::MAX; total_keys as usize + 1];
+        let mut max_keys = 0;
+        let mut different_solutions = 0;
+        let mut min_solution = usize::MAX;
+        dbg!(total_keys);
+        while let Some(Reverse((steps, current_key, mut keys))) = queue.pop() {
             if current_key != total_keys {
                 keys |= 1 << current_key;
             }
+            // if steps >= steps_for_tot_keys[keys.count_ones() as usize].saturating_add(40) {
+            //     continue;
+            // }
+            // steps_for_tot_keys[keys.count_ones() as usize] = steps;
             if keys.count_ones() == total_keys {
                 return steps;
             }
-            for (next_key, &(steps_needed, doors)) in
-                (0..total_keys).zip(graph[current_key as usize].iter().take(total_keys as usize))
+            if keys.count_ones() > max_keys {
+                max_keys = keys.count_ones();
+                dbg!(max_keys);
+            }
+            for (next_key, &(steps_needed, doors, keys_on_path)) in
+                (0..total_keys).zip(graph[current_key as usize].iter())
             {
-                if keys & (1 << next_key) == 1 {
+                if keys & (1 << next_key) != 0 {
                     continue;
                 }
                 if keys & doors != doors {
                     continue;
                 }
-                queue.push_back((next_key, keys, steps + steps_needed))
+                queue.push(Reverse((
+                    steps + steps_needed,
+                    next_key,
+                    keys | keys_on_path,
+                )))
             }
         }
-        unreachable!()
+        //4428 too high
+        min_solution
     }
 }
 
@@ -125,11 +152,15 @@ pub mod part2 {
 }
 
 pub fn main(test: bool) {
-    let test_input = "########################
-#...............b.C.D.f#
-#.######################
-#.....@.a.B.c.d.A.e.F.g#
-########################"
+    let test_input = "#################
+#i.G..c...e..H.p#
+########.########
+#j.A..b...f..D.o#
+########@########
+#k.E..a...g..B.n#
+########.########
+#l.F..d...h..C.m#
+#################"
         .to_owned();
     let puzzle_input = if test {
         test_input
