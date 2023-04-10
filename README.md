@@ -16,6 +16,18 @@ Going to finish this, ~~sooner~~ or **later**.
 Second AoC solved at 100%.
 Left day 20 for last (yet another backtracking problem) but in the end it was easy to solve.
 
+## [2019](2019) (Rust)
+
+I proudly skipped every day with an `Intcode` problem.
+The day I'm most proud of is [day 18](2019/day_18.rs),
+which I solved without consulting Reddit and runs in 6ms total.
+Other days I liked:
+
+- [6](2019/day_06.rs)
+- [14](2019/day_14.rs)
+- [20](2019/day_20.rs)
+- [24](2019/day_24.rs)
+
 ## [2018](2018) (Rust)
 
 Third AoC solved at 100%.
