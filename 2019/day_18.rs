@@ -40,65 +40,76 @@ fn parse(input: &str) -> (Vec<Vec<State>>, Coord, u32) {
     (maze, entrance, keys)
 }
 
-fn max_distance_bfs(maze: &Vec<Vec<State>>, coord: Coord) -> usize {
-    unimplemented!()
-}
-
 pub mod part1 {
     use std::collections::VecDeque;
 
-    use crate::day_18::{max_distance_bfs, parse, State, NEIGHBOURS};
+    use crate::day_18::{parse, Coord, State, NEIGHBOURS};
+
+    fn build_graph(
+        maze: &Vec<Vec<State>>,
+        entrance: Coord,
+        total_keys: u32,
+    ) -> Vec<Vec<(usize, usize)>> {
+        fn keys_bfs(maze: &Vec<Vec<State>>, coord: Coord, total_keys: u32) -> Vec<(usize, usize)> {
+            let mut queue = VecDeque::from([(coord, 0_usize, 0)]);
+            let mut result = vec![(0, 0); total_keys as usize];
+            let mut visited = vec![vec![false; maze[0].len()]; maze.len()];
+            let mut keys_found = 0;
+            while let Some(((i, j), mut doors, steps)) = queue.pop_front() {
+                if visited[i][j] || keys_found == total_keys {
+                    continue;
+                }
+                visited[i][j] = true;
+                match maze[i][j] {
+                    State::Wall => continue,
+                    State::Space => {}
+                    State::Key(key) => {
+                        result[key] = (steps, doors);
+                        keys_found += 1;
+                    }
+                    State::Door(door) => doors |= 1 << door,
+                }
+                for next in NEIGHBOURS
+                    .map(|(di, dj)| ((i as isize + di) as usize, (j as isize + dj) as usize))
+                {
+                    queue.push_back((next, doors, steps + 1));
+                }
+            }
+            result
+        }
+        let mut graph = vec![vec![(0, 0); total_keys as usize]; total_keys as usize + 1];
+        for (i, row) in maze.iter().enumerate() {
+            for (j, cell) in row.iter().enumerate() {
+                if let &State::Key(key) = cell {
+                    graph[key] = keys_bfs(maze, (i, j), total_keys);
+                }
+            }
+        }
+        graph[total_keys as usize] = keys_bfs(maze, entrance, total_keys);
+        graph
+    }
 
     pub fn solve(input: &str) -> usize {
         let (maze, entrance, total_keys) = parse(input);
-        let mut max_distance = vec![usize::MAX; total_keys as usize + 1];
-        for (i, key) in max_distance
-            .iter_mut()
-            .enumerate()
-            .take(total_keys as usize)
-        {
-            *key = max_distance_bfs(&maze, (0, 0));
-        }
-        max_distance[total_keys as usize] = max_distance_bfs(&maze, entrance);
-        let mut queue = VecDeque::from([(entrance, 0_usize, 0, (usize::MAX, usize::MAX))]);
-        let mut max_collected_keys: u32 = 0;
-        while let Some((coord @ (i, j), mut keys, steps, from)) = queue.pop_front() {
-            if steps > 5 {
-                break;
+        let graph = build_graph(&maze, entrance, total_keys);
+        let mut queue = VecDeque::from([(total_keys, 0_usize, 0)]);
+        while let Some((current_key, mut keys, steps)) = queue.pop_front() {
+            if current_key != total_keys {
+                keys |= 1 << current_key;
             }
-            dbg!((coord, keys.count_ones(), steps));
-            if keys.count_ones() < max_collected_keys.saturating_sub(5) {
-                continue;
-            } else if keys.count_ones() > max_collected_keys {
-                max_collected_keys = keys.count_ones();
-                dbg!(max_collected_keys);
-            }
-            let mut picked_key = false;
-            match maze[i][j] {
-                State::Wall => continue,
-                State::Space => {}
-                State::Key(key) => {
-                    if keys & (1 << key) == 0 {
-                        keys |= 1 << key;
-                        picked_key = true;
-                    }
-                }
-                State::Door(door) => {
-                    if keys & (1 << door) == 0 {
-                        continue;
-                    }
-                }
-            }
-            if picked_key && keys.count_ones() == total_keys {
+            if keys.count_ones() == total_keys {
                 return steps;
             }
-            for next in
-                NEIGHBOURS.map(|(di, dj)| ((i as isize + di) as usize, (j as isize + dj) as usize))
+            for (next_key, &(steps_needed, doors)) in
+                (0..total_keys).zip(graph[current_key as usize].iter().take(total_keys as usize))
             {
-                if next == from && !picked_key {
+                if keys & (1 << next_key) == 1 {
                     continue;
                 }
-                queue.push_back((next, keys, steps + 1, coord));
+                if keys & doors != doors {
+                    continue;
+                }
+                queue.push_back((next_key, keys, steps + steps_needed))
             }
         }
         unreachable!()
@@ -114,15 +125,11 @@ pub mod part2 {
 }
 
 pub fn main(test: bool) {
-    let test_input = "#################
-#i.G..c...e..H.p#
-########.########
-#j.A..b...f..D.o#
-########@########
-#k.E..a...g..B.n#
-########.########
-#l.F..d...h..C.m#
-#################"
+    let test_input = "########################
+#...............b.C.D.f#
+#.######################
+#.....@.a.B.c.d.A.e.F.g#
+########################"
         .to_owned();
     let puzzle_input = if test {
         test_input
