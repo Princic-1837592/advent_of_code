@@ -167,13 +167,10 @@ fn solve_with_robots(
             for (next_key, &(steps_needed, doors, keys_on_path)) in
                 (0..total_keys).zip(graph[current_keys[robot] as usize].iter())
             {
-                if steps_needed == usize::MAX {
-                    continue;
-                }
-                if keys & (1 << next_key) != 0 {
-                    continue;
-                }
-                if keys & doors != doors {
+                if steps_needed == usize::MAX
+                    || keys & (1 << next_key) != 0
+                    || keys & doors != doors
+                {
                     continue;
                 }
                 current_keys[robot] = next_key;
