@@ -1,7 +1,12 @@
 //! https://adventofcode.com/2019/day/18
 //! https://adventofcode.com/2019/day/18/input
 
-use std::{collections::VecDeque, fs::read_to_string, time::Instant};
+use std::{
+    cmp::Ordering,
+    collections::{hash_map::Entry, BinaryHeap, HashMap, VecDeque},
+    fs::read_to_string,
+    time::Instant,
+};
 
 const NEIGHBOURS: [(isize, isize); 4] = [(0, -1), (0, 1), (-1, 0), (1, 0)];
 
@@ -91,138 +96,112 @@ fn build_graph(
     graph
 }
 
-pub mod part1 {
-    use std::{
-        cmp::Ordering,
-        collections::{hash_map::Entry, BinaryHeap, HashMap},
-    };
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct BfsState {
+    steps: usize,
+    current_keys: Vec<u32>,
+    keys: usize,
+    last_robot: usize,
+}
 
-    use crate::day_18::{build_graph, parse};
-
-    #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-    struct BfsState {
-        steps: usize,
-        current_key: u32,
-        keys: usize,
-    }
-
-    impl BfsState {
-        fn new(steps: usize, current_key: u32, keys: usize) -> Self {
-            Self {
-                steps,
-                current_key,
-                keys,
-            }
-        }
-    }
-
-    impl PartialOrd<Self> for BfsState {
-        fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-            Some(
-                self.steps
-                    .cmp(&other.steps)
-                    .reverse()
-                    .then_with(|| self.keys.count_ones().cmp(&other.keys.count_ones())),
-            )
-        }
-    }
-
-    impl Ord for BfsState {
-        fn cmp(&self, other: &Self) -> Ordering {
-            self.partial_cmp(other).unwrap()
-        }
-    }
-
-    pub fn solve(input: &str) -> usize {
-        let (maze, entrance, total_keys) = parse(input);
-        let graph = build_graph(&maze, vec![entrance], total_keys);
-        let mut queue = BinaryHeap::from([BfsState::new(0, total_keys, 0)]);
-        let mut seen: HashMap<(usize, u32), usize> = HashMap::new();
-        while let Some(BfsState {
+impl BfsState {
+    fn new(steps: usize, current_key: Vec<u32>, keys: usize, last_robot: usize) -> Self {
+        Self {
             steps,
-            current_key,
-            mut keys,
-        }) = queue.pop()
-        {
-            if current_key != total_keys {
-                keys |= 1 << current_key;
-            }
-            if keys.count_ones() == total_keys {
-                return steps;
-            }
-            match seen.entry((keys, current_key)) {
-                Entry::Occupied(entry) => {
-                    if *entry.get() <= steps {
-                        continue;
-                    }
+            current_keys: current_key,
+            keys,
+            last_robot,
+        }
+    }
+}
+
+impl PartialOrd<Self> for BfsState {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(
+            self.steps
+                .cmp(&other.steps)
+                .reverse()
+                .then_with(|| self.keys.count_ones().cmp(&other.keys.count_ones())),
+        )
+    }
+}
+
+impl Ord for BfsState {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.partial_cmp(other).unwrap()
+    }
+}
+
+fn solve_with_robots(
+    total_keys: u32,
+    graph: Vec<Vec<(usize, usize, usize)>>,
+    robots: Vec<u32>,
+) -> usize {
+    let mut queue = BinaryHeap::from([BfsState::new(0, robots.clone(), 0, 0)]);
+    let mut seen: HashMap<(usize, u32), usize> = HashMap::new();
+    while let Some(BfsState {
+        steps,
+        mut current_keys,
+        mut keys,
+        last_robot,
+    }) = queue.pop()
+    {
+        let current_key = current_keys[last_robot];
+        if current_key < total_keys {
+            keys |= 1 << current_key;
+        }
+        if keys.count_ones() == total_keys {
+            return steps;
+        }
+        match seen.entry((keys, current_key)) {
+            Entry::Occupied(entry) => {
+                if *entry.get() <= steps {
+                    continue;
                 }
-                Entry::Vacant(entry) => {
-                    entry.insert(steps);
-                }
             }
+            Entry::Vacant(entry) => {
+                entry.insert(steps);
+            }
+        }
+        for robot in 0..robots.len() {
             for (next_key, &(steps_needed, doors, keys_on_path)) in
-                (0..total_keys).zip(graph[current_key as usize].iter())
+                (0..total_keys).zip(graph[current_keys[robot] as usize].iter())
             {
+                if steps_needed == usize::MAX {
+                    continue;
+                }
                 if keys & (1 << next_key) != 0 {
                     continue;
                 }
                 if keys & doors != doors {
                     continue;
                 }
+                current_keys[robot] = next_key;
                 queue.push(BfsState::new(
-                    steps + steps_needed,
-                    next_key,
+                    steps.saturating_add(steps_needed),
+                    current_keys.clone(),
                     keys | keys_on_path,
-                ))
+                    robot,
+                ));
+                current_keys[robot] = current_key;
             }
         }
-        unreachable!()
+    }
+    unreachable!()
+}
+
+pub mod part1 {
+    use crate::day_18::{build_graph, parse, solve_with_robots};
+
+    pub fn solve(input: &str) -> usize {
+        let (maze, entrance, total_keys) = parse(input);
+        let graph = build_graph(&maze, vec![entrance], total_keys);
+        solve_with_robots(total_keys, graph, vec![total_keys])
     }
 }
 
 pub mod part2 {
-    use std::{
-        cmp::Ordering,
-        collections::{hash_map::Entry, BinaryHeap, HashMap},
-    };
-
-    use crate::day_18::{build_graph, parse, State};
-
-    #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-    struct BfsState {
-        steps: usize,
-        current_keys: [u32; 4],
-        keys: usize,
-        last_robot: usize,
-    }
-
-    impl BfsState {
-        fn new(steps: usize, current_key: [u32; 4], keys: usize, last_robot: usize) -> Self {
-            Self {
-                steps,
-                current_keys: current_key,
-                keys,
-                last_robot,
-            }
-        }
-    }
-
-    impl PartialOrd<Self> for BfsState {
-        fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-            Some(
-                self.steps
-                    .cmp(&other.steps)
-                    .reverse()
-                    .then_with(|| self.keys.count_ones().cmp(&other.keys.count_ones())),
-            )
-        }
-    }
-
-    impl Ord for BfsState {
-        fn cmp(&self, other: &Self) -> Ordering {
-            self.partial_cmp(other).unwrap()
-        }
-    }
+    use crate::day_18::{build_graph, parse, solve_with_robots, State};
 
     pub fn solve(input: &str) -> usize {
         let (mut maze, (ei, ej), total_keys) = parse(input);
@@ -245,62 +224,11 @@ pub mod part2 {
             ],
             total_keys,
         );
-        let mut queue = BinaryHeap::from([BfsState::new(
-            0,
-            [total_keys, total_keys + 1, total_keys + 2, total_keys + 3],
-            0,
-            0,
-        )]);
-        let mut seen: HashMap<(usize, u32), usize> = HashMap::new();
-        while let Some(BfsState {
-            steps,
-            mut current_keys,
-            mut keys,
-            last_robot,
-        }) = queue.pop()
-        {
-            let current_key = current_keys[last_robot];
-            if current_key < total_keys {
-                keys |= 1 << current_key;
-            }
-            if keys.count_ones() == total_keys {
-                return steps;
-            }
-            match seen.entry((keys, current_key)) {
-                Entry::Occupied(entry) => {
-                    if *entry.get() <= steps {
-                        continue;
-                    }
-                }
-                Entry::Vacant(entry) => {
-                    entry.insert(steps);
-                }
-            }
-            for robot in 0..4 {
-                for (next_key, &(steps_needed, doors, keys_on_path)) in
-                    (0..total_keys).zip(graph[current_keys[robot] as usize].iter())
-                {
-                    if steps_needed == usize::MAX {
-                        continue;
-                    }
-                    if keys & (1 << next_key) != 0 {
-                        continue;
-                    }
-                    if keys & doors != doors {
-                        continue;
-                    }
-                    current_keys[robot] = next_key;
-                    queue.push(BfsState::new(
-                        steps.saturating_add(steps_needed),
-                        current_keys,
-                        keys | keys_on_path,
-                        robot,
-                    ));
-                    current_keys[robot] = current_key;
-                }
-            }
-        }
-        unreachable!()
+        solve_with_robots(
+            total_keys,
+            graph,
+            vec![total_keys, total_keys + 1, total_keys + 2, total_keys + 3],
+        )
     }
 }
 
