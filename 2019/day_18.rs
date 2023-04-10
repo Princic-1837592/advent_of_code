@@ -60,25 +60,31 @@ fn build_graph(
         let mut visited = vec![vec![false; maze[0].len()]; maze.len()];
         let mut keys_found = 0;
         while let Some(((i, j), mut doors, mut keys, steps)) = queue.pop_front() {
-            if visited[i][j] || keys_found == total_keys {
+            if keys_found == total_keys {
+                break;
+            }
+            if visited[i][j] {
                 continue;
             }
             visited[i][j] = true;
             match maze[i][j] {
                 State::Wall => continue,
-                State::Space => {}
                 State::Key(key) => {
                     keys |= 1 << key;
                     result[key] = (steps, doors, keys);
                     keys_found += 1;
                 }
                 State::Door(door) => doors |= 1 << door,
+                State::Space => {}
             }
-            for next in
-                NEIGHBOURS.map(|(di, dj)| ((i as isize + di) as usize, (j as isize + dj) as usize))
-            {
-                queue.push_back((next, doors, keys, steps + 1));
-            }
+            queue.extend(NEIGHBOURS.map(|(di, dj)| {
+                (
+                    ((i as isize + di) as usize, (j as isize + dj) as usize),
+                    doors,
+                    keys,
+                    steps + 1,
+                )
+            }));
         }
         result
     }
