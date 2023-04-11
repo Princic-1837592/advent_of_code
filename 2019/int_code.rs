@@ -58,7 +58,7 @@ pub(crate) struct IntCode {
     instructions: Vec<isize>,
     pc: usize,
     input_queue: VecDeque<isize>,
-    output: Vec<isize>,
+    output: VecDeque<isize>,
 }
 
 impl IntCode {
@@ -67,7 +67,7 @@ impl IntCode {
             instructions,
             pc: 0,
             input_queue: Default::default(),
-            output: vec![],
+            output: Default::default(),
         }
     }
 
@@ -78,14 +78,14 @@ impl IntCode {
     }
 
     pub(crate) fn last_output(&self) -> Option<isize> {
-        self.output.last().cloned()
+        self.output.back().cloned()
     }
 
     pub(crate) fn run_until_complete(&mut self) {
         loop {
             match self.run_until_interrupt() {
                 Interrupt::Input => {}
-                Interrupt::Output(value) => self.output.push(value),
+                Interrupt::Output(_) => {}
                 Interrupt::Halt => break,
                 Interrupt::Error => break,
             }
@@ -137,7 +137,9 @@ impl IntCode {
                     }
                 }
                 Instruction::Out(value) => {
-                    return Interrupt::Output(value.get(&self.instructions));
+                    let value = value.get(&self.instructions);
+                    self.output.push_back(value);
+                    return Interrupt::Output(value);
                 }
                 Instruction::Jit(cond, dest) => {
                     let (cond, dest) = (cond.get(&self.instructions), dest.get(&self.instructions));
