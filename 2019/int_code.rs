@@ -81,6 +81,10 @@ impl IntCode {
         self.output.back().cloned()
     }
 
+    pub(crate) fn push_input(&mut self, value: isize) {
+        self.input_queue.push_back(value);
+    }
+
     pub(crate) fn run_until_complete(&mut self) {
         loop {
             match self.run_until_interrupt() {
