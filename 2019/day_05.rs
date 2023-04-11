@@ -4,34 +4,22 @@
 use std::{fs::read_to_string, time::Instant};
 
 pub mod part1 {
-    use crate::int_code::{parse, run, Interrupt};
+    use crate::int_code::{parse, IntCode};
 
     pub fn solve(input: &str) -> isize {
-        let mut instructions = parse(input);
-        let mut last_output = 0;
-        loop {
-            match run(instructions.clone(), [1].into()) {
-                Interrupt::Output(new_instructions, _, output) => {
-                    instructions = new_instructions;
-                    last_output = output;
-                }
-                Interrupt::Halt(_, _) => break,
-                _ => {}
-            }
-        }
-        last_output
+        let mut vm = IntCode::with_input(parse(input), [1].into());
+        vm.run_until_complete();
+        vm.last_output().unwrap()
     }
 }
 
 pub mod part2 {
-    use crate::int_code::{parse, run, Interrupt};
+    use crate::int_code::{parse, IntCode};
 
     pub fn solve(input: &str) -> isize {
-        let mut instructions = parse(input);
-        if let Interrupt::Output(_, _, result) = run(instructions, [1].into()) {
-            return result;
-        }
-        unreachable!()
+        let mut vm = IntCode::with_input(parse(input), [5].into());
+        vm.run_until_complete();
+        vm.last_output().unwrap()
     }
 }
 
@@ -42,9 +30,9 @@ pub fn main(test: bool) {
     } else {
         read_to_string("inputs/day_05_input.txt").unwrap()
     };
-    let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    // let start = Instant::now();
+    // println!("{}", part1::solve(&puzzle_input));
+    // println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
     println!("{}", part2::solve(&puzzle_input));
     println!("Run in {:?}", start.elapsed());

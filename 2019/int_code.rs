@@ -47,10 +47,139 @@ pub(crate) enum Instruction {
 
 #[derive(Clone, Debug)]
 pub(crate) enum Interrupt {
-    Input(Vec<isize>, usize),
-    Output(Vec<isize>, usize, isize),
-    Halt(Vec<isize>, usize),
+    Input,
+    Output(isize),
+    Halt,
     Error,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct IntCode {
+    instructions: Vec<isize>,
+    pc: usize,
+    input_queue: VecDeque<isize>,
+    output: Vec<isize>,
+}
+
+impl IntCode {
+    pub(crate) fn new(instructions: Vec<isize>) -> Self {
+        Self {
+            instructions,
+            pc: 0,
+            input_queue: Default::default(),
+            output: vec![],
+        }
+    }
+
+    pub(crate) fn with_input(instructions: Vec<isize>, input: VecDeque<isize>) -> Self {
+        let mut result = Self::new(instructions);
+        result.input_queue = input;
+        result
+    }
+
+    pub(crate) fn last_output(&self) -> Option<isize> {
+        self.output.last().cloned()
+    }
+
+    pub(crate) fn run_until_complete(&mut self) {
+        loop {
+            match self.run_until_interrupt() {
+                Interrupt::Input => {}
+                Interrupt::Output(value) => self.output.push(value),
+                Interrupt::Halt => break,
+                Interrupt::Error => break,
+            }
+        }
+    }
+
+    fn run_until_interrupt(&mut self) -> Interrupt {
+        while self.pc < self.instructions.len() {
+            let (consumed, instruction) = Instruction::parse(&self.instructions[self.pc..]);
+            self.pc += consumed;
+            match instruction {
+                Instruction::Add(l, r, dest) => {
+                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
+                    if let Parameter {
+                        value,
+                        mode: Mode::Position,
+                    } = dest
+                    {
+                        self.instructions[value as usize] = l + r;
+                    } else {
+                        panic!("Invalid mode for writing: {:?}", dest.mode)
+                    }
+                }
+                Instruction::Mul(l, r, dest) => {
+                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
+                    if let Parameter {
+                        value,
+                        mode: Mode::Position,
+                    } = dest
+                    {
+                        self.instructions[value as usize] = l * r;
+                    } else {
+                        panic!("Invalid mode for writing: {:?}", dest.mode)
+                    }
+                }
+                Instruction::In(dest) => {
+                    if let Parameter {
+                        value,
+                        mode: Mode::Position,
+                    } = dest
+                    {
+                        if let Some(input) = self.input_queue.pop_front() {
+                            self.instructions[value as usize] = input
+                        } else {
+                            return Interrupt::Input;
+                        }
+                    } else {
+                        panic!("Invalid mode for writing: {:?}", dest.mode)
+                    }
+                }
+                Instruction::Out(value) => {
+                    return Interrupt::Output(value.get(&self.instructions));
+                }
+                Instruction::Jit(cond, dest) => {
+                    let (cond, dest) = (cond.get(&self.instructions), dest.get(&self.instructions));
+                    if cond != 0 {
+                        self.pc = dest as usize;
+                    }
+                }
+                Instruction::Jif(cond, dest) => {
+                    let (cond, dest) = (cond.get(&self.instructions), dest.get(&self.instructions));
+                    if cond == 0 {
+                        self.pc = dest as usize;
+                    }
+                }
+                Instruction::Lt(l, r, dest) => {
+                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
+                    if let Parameter {
+                        value,
+                        mode: Mode::Position,
+                    } = dest
+                    {
+                        self.instructions[value as usize] = if l < r { 1 } else { 0 };
+                    } else {
+                        panic!("Invalid mode for writing: {:?}", dest.mode)
+                    }
+                }
+                Instruction::Eq(l, r, dest) => {
+                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
+                    if let Parameter {
+                        value,
+                        mode: Mode::Position,
+                    } = dest
+                    {
+                        self.instructions[value as usize] = if l == r { 1 } else { 0 };
+                    } else {
+                        panic!("Invalid mode for writing: {:?}", dest.mode)
+                    }
+                }
+                Instruction::Halt => return Interrupt::Halt,
+            }
+        }
+        Interrupt::Halt
+    }
 }
 
 fn ith_digit(n: isize, i: u32) -> isize {
@@ -86,14 +215,14 @@ impl Instruction {
             3 => (2, Self::In(Parameter::from(first, instructions[1]))),
             4 => (2, Self::Out(Parameter::from(first, instructions[1]))),
             5 => (
-                0,
+                3,
                 Self::Jit(
                     Parameter::from(first, instructions[1]),
                     Parameter::from(second, instructions[2]),
                 ),
             ),
             6 => (
-                0,
+                3,
                 Self::Jif(
                     Parameter::from(first, instructions[1]),
                     Parameter::from(second, instructions[2]),
@@ -125,95 +254,4 @@ impl Instruction {
 
 pub(crate) fn parse(input: &str) -> Vec<isize> {
     input.split(',').map(|n| n.parse().unwrap()).collect()
-}
-
-pub(crate) fn run(mut instructions: Vec<isize>, mut input_queue: VecDeque<isize>) -> Interrupt {
-    let mut pc = 0;
-    while pc < instructions.len() {
-        let (consumed, instruction) = Instruction::parse(&instructions[pc..]);
-        pc += consumed;
-        match instruction {
-            Instruction::Add(l, r, dest) => {
-                let (l, r) = (l.get(&instructions), r.get(&instructions));
-                if let Parameter {
-                    value,
-                    mode: Mode::Position,
-                } = dest
-                {
-                    instructions[value as usize] = l + r;
-                } else {
-                    panic!("Invalid mode for writing: {:?}", dest.mode)
-                }
-            }
-            Instruction::Mul(l, r, dest) => {
-                let (l, r) = (l.get(&instructions), r.get(&instructions));
-                if let Parameter {
-                    value,
-                    mode: Mode::Position,
-                } = dest
-                {
-                    instructions[value as usize] = l * r;
-                } else {
-                    panic!("Invalid mode for writing: {:?}", dest.mode)
-                }
-            }
-            Instruction::In(dest) => {
-                if let Parameter {
-                    value,
-                    mode: Mode::Position,
-                } = dest
-                {
-                    if let Some(input) = input_queue.pop_front() {
-                        instructions[value as usize] = input
-                    } else {
-                        return Interrupt::Input(instructions, pc);
-                    }
-                } else {
-                    panic!("Invalid mode for writing: {:?}", dest.mode)
-                }
-            }
-            Instruction::Out(value) => {
-                let value = value.get(&instructions);
-                return Interrupt::Output(instructions, pc, value);
-            }
-            Instruction::Jit(cond, dest) => {
-                let (cond, dest) = (cond.get(&instructions), dest.get(&instructions));
-                if cond != 0 {
-                    pc = dest as usize;
-                }
-            }
-            Instruction::Jif(cond, dest) => {
-                let (cond, dest) = (cond.get(&instructions), dest.get(&instructions));
-                if cond == 0 {
-                    pc = dest as usize;
-                }
-            }
-            Instruction::Lt(l, r, dest) => {
-                let (l, r) = (l.get(&instructions), r.get(&instructions));
-                if let Parameter {
-                    value,
-                    mode: Mode::Position,
-                } = dest
-                {
-                    instructions[value as usize] = if l < r { 1 } else { 0 };
-                } else {
-                    panic!("Invalid mode for writing: {:?}", dest.mode)
-                }
-            }
-            Instruction::Eq(l, r, dest) => {
-                let (l, r) = (l.get(&instructions), r.get(&instructions));
-                if let Parameter {
-                    value,
-                    mode: Mode::Position,
-                } = dest
-                {
-                    instructions[value as usize] = if l == r { 1 } else { 0 };
-                } else {
-                    panic!("Invalid mode for writing: {:?}", dest.mode)
-                }
-            }
-            Instruction::Halt => return Interrupt::Halt(instructions, pc),
-        }
-    }
-    Interrupt::Halt(instructions, pc)
 }
