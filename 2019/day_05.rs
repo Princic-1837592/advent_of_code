@@ -3,124 +3,7 @@
 
 use std::{collections::VecDeque, fs::read_to_string, time::Instant};
 
-#[derive(Copy, Clone, Debug)]
-enum Mode {
-    Position,
-    Immediate,
-}
-
-#[derive(Copy, Clone, Debug)]
-struct Parameter {
-    value: isize,
-    mode: Mode,
-}
-
-impl Parameter {
-    fn from(mode: isize, value: isize) -> Self {
-        Self {
-            mode: match mode {
-                0 => Mode::Position,
-                1 => Mode::Immediate,
-                _ => panic!("Invalid mode: {}", mode),
-            },
-            value,
-        }
-    }
-
-    fn get(&self, instructions: &[isize]) -> isize {
-        match self.mode {
-            Mode::Position => instructions[self.value as usize],
-            Mode::Immediate => self.value,
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug)]
-enum Instruction {
-    Add(Parameter, Parameter, Parameter),
-    Mul(Parameter, Parameter, Parameter),
-    In(Parameter),
-    Out(Parameter),
-    Jit(Parameter, Parameter),
-    Jif(Parameter, Parameter),
-    Lt(Parameter, Parameter, Parameter),
-    Eq(Parameter, Parameter, Parameter),
-    Halt,
-}
-
-fn ith_digit(n: isize, i: u32) -> isize {
-    (n / 10_isize.pow(i - 1)) % 10
-}
-
-impl Instruction {
-    fn parse(instructions: &[isize]) -> (usize, Self) {
-        let op_and_params = instructions[0];
-        let op = 10 * ith_digit(op_and_params, 2) + ith_digit(op_and_params, 1);
-        let (first, second, third) = (
-            ith_digit(op_and_params, 3),
-            ith_digit(op_and_params, 4),
-            ith_digit(op_and_params, 5),
-        );
-        match op {
-            1 => (
-                4,
-                Self::Add(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
-            2 => (
-                4,
-                Self::Mul(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
-            3 => (2, Self::In(Parameter::from(first, instructions[1]))),
-            4 => (2, Self::Out(Parameter::from(first, instructions[1]))),
-            5 => (
-                0,
-                Self::Jit(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                ),
-            ),
-            6 => (
-                0,
-                Self::Jif(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                ),
-            ),
-            7 => (
-                4,
-                Self::Lt(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
-            8 => (
-                4,
-                Self::Eq(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
-            99 => (1, Self::Halt),
-            _ => {
-                panic!("Invalid instruction: {}", instructions[0])
-            }
-        }
-    }
-}
-
-fn parse(input: &str) -> Vec<isize> {
-    input.split(',').map(|n| n.parse().unwrap()).collect()
-}
+use crate::int_code::{Instruction, Mode, Parameter};
 
 fn run(instructions: &mut Vec<isize>, mut input_queue: VecDeque<isize>) -> isize {
     let mut pc = 0;
@@ -217,7 +100,7 @@ fn run(instructions: &mut Vec<isize>, mut input_queue: VecDeque<isize>) -> isize
 }
 
 pub mod part1 {
-    use crate::day_05::{parse, run};
+    use crate::{day_05::run, int_code::parse};
 
     pub fn solve(input: &str) -> isize {
         let mut instructions = parse(input);
@@ -226,7 +109,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_05::{parse, run};
+    use crate::{day_05::run, int_code::parse};
 
     pub fn solve(input: &str) -> isize {
         let mut instructions = parse(input);

@@ -23,6 +23,7 @@ pub mod day_22;
 pub mod day_23;
 pub mod day_24;
 pub mod day_25;
+pub(crate) mod int_code;
 
 #[cfg(windows)]
 pub const LINE_ENDING: &str = "\r\n";
