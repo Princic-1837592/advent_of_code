@@ -1,9 +1,10 @@
-use std::collections::VecDeque;
+use std::collections::{HashMap, VecDeque};
 
 #[derive(Copy, Clone, Debug)]
 pub(crate) enum Mode {
     Position,
     Immediate,
+    Relative,
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -18,16 +19,10 @@ impl Parameter {
             mode: match mode {
                 0 => Mode::Position,
                 1 => Mode::Immediate,
+                2 => Mode::Relative,
                 _ => panic!("Invalid mode: {}", mode),
             },
             value,
-        }
-    }
-
-    pub(crate) fn get(&self, instructions: &[isize]) -> isize {
-        match self.mode {
-            Mode::Position => instructions[self.value as usize],
-            Mode::Immediate => self.value,
         }
     }
 }
@@ -42,6 +37,7 @@ pub(crate) enum Instruction {
     Jif(Parameter, Parameter),
     Lt(Parameter, Parameter, Parameter),
     Eq(Parameter, Parameter, Parameter),
+    Arb(Parameter),
     Halt,
 }
 
@@ -55,19 +51,25 @@ pub(crate) enum Interrupt {
 
 #[derive(Clone, Debug)]
 pub(crate) struct IntCode {
-    instructions: Vec<isize>,
+    instructions: HashMap<isize, isize>,
     pc: usize,
     input_queue: VecDeque<isize>,
     output: VecDeque<isize>,
+    relative_base: isize,
 }
 
 impl IntCode {
     pub(crate) fn new(instructions: Vec<isize>) -> Self {
         Self {
-            instructions,
+            instructions: instructions
+                .into_iter()
+                .enumerate()
+                .map(|(i, v)| (i as isize, v))
+                .collect(),
             pc: 0,
             input_queue: Default::default(),
             output: Default::default(),
+            relative_base: 0,
         }
     }
 
@@ -85,6 +87,17 @@ impl IntCode {
         self.input_queue.push_back(value);
     }
 
+    fn get_param(&self, param: Parameter) -> isize {
+        match param.mode {
+            Mode::Position => *self.instructions.get(&param.value).unwrap_or(&0),
+            Mode::Immediate => param.value,
+            Mode::Relative => *self
+                .instructions
+                .get(&(param.value + self.relative_base))
+                .unwrap_or(&0),
+        }
+    }
+
     pub(crate) fn run_until_complete(&mut self) {
         loop {
             match self.run_until_interrupt() {
@@ -98,88 +111,53 @@ impl IntCode {
 
     pub(crate) fn run_until_interrupt(&mut self) -> Interrupt {
         while self.pc < self.instructions.len() {
-            let (consumed, instruction) = Instruction::parse(&self.instructions[self.pc..]);
+            let (consumed, instruction) = Instruction::parse(&self.instructions, self.pc as isize);
             self.pc += consumed;
             match instruction {
                 Instruction::Add(l, r, dest) => {
-                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
-                    if let Parameter {
-                        value,
-                        mode: Mode::Position,
-                    } = dest
-                    {
-                        self.instructions[value as usize] = l + r;
-                    } else {
-                        panic!("Invalid mode for writing: {:?}", dest.mode)
-                    }
+                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    *self.instructions.entry(dest).or_insert(0) = l + r;
                 }
                 Instruction::Mul(l, r, dest) => {
-                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
-                    if let Parameter {
-                        value,
-                        mode: Mode::Position,
-                    } = dest
-                    {
-                        self.instructions[value as usize] = l * r;
-                    } else {
-                        panic!("Invalid mode for writing: {:?}", dest.mode)
-                    }
+                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    *self.instructions.entry(dest).or_insert(0) = l * r;
                 }
-                Instruction::In(dest) => {
-                    if let Parameter {
-                        value,
-                        mode: Mode::Position,
-                    } = dest
-                    {
-                        if let Some(input) = self.input_queue.pop_front() {
-                            self.instructions[value as usize] = input
-                        } else {
-                            return Interrupt::Input;
-                        }
+                Instruction::In(value) => {
+                    let value = self.get_param(value);
+                    if let Some(input) = self.input_queue.pop_front() {
+                        *self.instructions.entry(value).or_insert(0) = input;
                     } else {
-                        panic!("Invalid mode for writing: {:?}", dest.mode)
+                        return Interrupt::Input;
                     }
                 }
                 Instruction::Out(value) => {
-                    let value = value.get(&self.instructions);
+                    let value = self.get_param(value);
                     self.output.push_back(value);
                     return Interrupt::Output(value);
                 }
                 Instruction::Jit(cond, dest) => {
-                    let (cond, dest) = (cond.get(&self.instructions), dest.get(&self.instructions));
+                    let (cond, dest) = (self.get_param(cond), self.get_param(dest));
                     if cond != 0 {
                         self.pc = dest as usize;
                     }
                 }
                 Instruction::Jif(cond, dest) => {
-                    let (cond, dest) = (cond.get(&self.instructions), dest.get(&self.instructions));
+                    let (cond, dest) = (self.get_param(cond), self.get_param(dest));
                     if cond == 0 {
                         self.pc = dest as usize;
                     }
                 }
                 Instruction::Lt(l, r, dest) => {
-                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
-                    if let Parameter {
-                        value,
-                        mode: Mode::Position,
-                    } = dest
-                    {
-                        self.instructions[value as usize] = if l < r { 1 } else { 0 };
-                    } else {
-                        panic!("Invalid mode for writing: {:?}", dest.mode)
-                    }
+                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    *self.instructions.entry(dest).or_insert(0) = if l < r { 1 } else { 0 };
                 }
                 Instruction::Eq(l, r, dest) => {
-                    let (l, r) = (l.get(&self.instructions), r.get(&self.instructions));
-                    if let Parameter {
-                        value,
-                        mode: Mode::Position,
-                    } = dest
-                    {
-                        self.instructions[value as usize] = if l == r { 1 } else { 0 };
-                    } else {
-                        panic!("Invalid mode for writing: {:?}", dest.mode)
-                    }
+                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    *self.instructions.entry(dest).or_insert(0) = if l == r { 1 } else { 0 };
+                }
+                Instruction::Arb(value) => {
+                    let value = self.get_param(value);
+                    self.relative_base += value;
                 }
                 Instruction::Halt => return Interrupt::Halt,
             }
@@ -193,66 +171,36 @@ fn ith_digit(n: isize, i: u32) -> isize {
 }
 
 impl Instruction {
-    pub(crate) fn parse(instructions: &[isize]) -> (usize, Self) {
-        let op_and_params = instructions[0];
+    pub(crate) fn parse(instructions: &HashMap<isize, isize>, index: isize) -> (usize, Self) {
+        let op_and_params = *instructions.get(&index).unwrap_or(&0);
         let op = 10 * ith_digit(op_and_params, 2) + ith_digit(op_and_params, 1);
         let (first, second, third) = (
-            ith_digit(op_and_params, 3),
-            ith_digit(op_and_params, 4),
-            ith_digit(op_and_params, 5),
+            Parameter::from(
+                ith_digit(op_and_params, 3),
+                *instructions.get(&index).unwrap_or(&1),
+            ),
+            Parameter::from(
+                ith_digit(op_and_params, 4),
+                *instructions.get(&index).unwrap_or(&2),
+            ),
+            Parameter::from(
+                ith_digit(op_and_params, 5),
+                *instructions.get(&index).unwrap_or(&3),
+            ),
         );
         match op {
-            1 => (
-                4,
-                Self::Add(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
-            2 => (
-                4,
-                Self::Mul(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
-            3 => (2, Self::In(Parameter::from(first, instructions[1]))),
-            4 => (2, Self::Out(Parameter::from(first, instructions[1]))),
-            5 => (
-                3,
-                Self::Jit(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                ),
-            ),
-            6 => (
-                3,
-                Self::Jif(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                ),
-            ),
-            7 => (
-                4,
-                Self::Lt(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
-            8 => (
-                4,
-                Self::Eq(
-                    Parameter::from(first, instructions[1]),
-                    Parameter::from(second, instructions[2]),
-                    Parameter::from(third, instructions[3]),
-                ),
-            ),
+            1 => (4, Self::Add(first, second, third)),
+            2 => (4, Self::Mul(first, second, third)),
+            3 => (2, Self::In(first)),
+            4 => (2, Self::Out(first)),
+            5 => (3, Self::Jit(first, second)),
+            6 => (3, Self::Jif(first, second)),
+            7 => (4, Self::Lt(first, second, third)),
+            8 => (4, Self::Eq(first, second, third)),
+            9 => (2, Self::Arb(first)),
             99 => (1, Self::Halt),
             _ => {
-                panic!("Invalid instruction: {}", instructions[0])
+                panic!("Invalid instruction: {}", op_and_params)
             }
         }
     }
