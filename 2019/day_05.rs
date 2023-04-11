@@ -8,7 +8,7 @@ pub mod part1 {
 
     pub fn solve(input: &str) -> isize {
         let mut instructions = parse(input);
-        run(&mut instructions, [1].into(), false)
+        *run(&mut instructions, [1].into(), false).last().unwrap()
     }
 }
 
@@ -17,7 +17,7 @@ pub mod part2 {
 
     pub fn solve(input: &str) -> isize {
         let mut instructions = parse(input);
-        run(&mut instructions, [5].into(), false)
+        run(&mut instructions, [5].into(), false)[0]
     }
 }
 

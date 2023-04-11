@@ -123,9 +123,9 @@ pub(crate) fn run(
     instructions: &mut Vec<isize>,
     mut input_queue: VecDeque<isize>,
     show_output: bool,
-) -> isize {
+) -> Vec<isize> {
     let mut pc = 0;
-    let mut last_output = 0;
+    let mut output = vec![];
     while pc < instructions.len() {
         let (consumed, instruction) = Instruction::parse(&instructions[pc..]);
         match instruction {
@@ -171,7 +171,7 @@ pub(crate) fn run(
                 if show_output {
                     println!("{}", value);
                 }
-                last_output = value;
+                output.push(value);
             }
             Instruction::Jit(cond, dest) => {
                 let (cond, dest) = (cond.get(instructions), dest.get(instructions));
@@ -217,5 +217,5 @@ pub(crate) fn run(
         }
         pc += consumed;
     }
-    last_output
+    output
 }
