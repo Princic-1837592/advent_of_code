@@ -52,7 +52,7 @@ pub(crate) enum Interrupt {
 #[derive(Clone, Debug)]
 pub(crate) struct IntCode {
     instructions: HashMap<isize, isize>,
-    pc: usize,
+    pc: isize,
     input_queue: VecDeque<isize>,
     output: VecDeque<isize>,
     relative_base: isize,
@@ -88,6 +88,7 @@ impl IntCode {
     }
 
     fn get_param(&self, param: Parameter) -> isize {
+        // dbg!(param, self.instructions.get(&param.value));
         match param.mode {
             Mode::Position => *self.instructions.get(&param.value).unwrap_or(&0),
             Mode::Immediate => param.value,
@@ -110,12 +111,16 @@ impl IntCode {
     }
 
     pub(crate) fn run_until_interrupt(&mut self) -> Interrupt {
-        while self.pc < self.instructions.len() {
-            let (consumed, instruction) = Instruction::parse(&self.instructions, self.pc as isize);
+        while self.instructions.contains_key(&self.pc) {
+            let (consumed, instruction) = Instruction::parse(&self.instructions, self.pc);
+            dbg!(self.instructions.get(&225));
+            dbg!(instruction);
             self.pc += consumed;
             match instruction {
                 Instruction::Add(l, r, dest) => {
+                    // dbg!(l, r, dest);
                     let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    // dbg!(l, r, dest);
                     *self.instructions.entry(dest).or_insert(0) = l + r;
                 }
                 Instruction::Mul(l, r, dest) => {
@@ -126,6 +131,12 @@ impl IntCode {
                     let value = self.get_param(value);
                     if let Some(input) = self.input_queue.pop_front() {
                         *self.instructions.entry(value).or_insert(0) = input;
+                        println!(
+                            "inputed {} {:?} {}",
+                            input,
+                            self.instructions.get(&value),
+                            value
+                        );
                     } else {
                         return Interrupt::Input;
                     }
@@ -138,13 +149,13 @@ impl IntCode {
                 Instruction::Jit(cond, dest) => {
                     let (cond, dest) = (self.get_param(cond), self.get_param(dest));
                     if cond != 0 {
-                        self.pc = dest as usize;
+                        self.pc = dest;
                     }
                 }
                 Instruction::Jif(cond, dest) => {
                     let (cond, dest) = (self.get_param(cond), self.get_param(dest));
                     if cond == 0 {
-                        self.pc = dest as usize;
+                        self.pc = dest;
                     }
                 }
                 Instruction::Lt(l, r, dest) => {
@@ -171,21 +182,21 @@ fn ith_digit(n: isize, i: u32) -> isize {
 }
 
 impl Instruction {
-    pub(crate) fn parse(instructions: &HashMap<isize, isize>, index: isize) -> (usize, Self) {
+    pub(crate) fn parse(instructions: &HashMap<isize, isize>, index: isize) -> (isize, Self) {
         let op_and_params = *instructions.get(&index).unwrap_or(&0);
         let op = 10 * ith_digit(op_and_params, 2) + ith_digit(op_and_params, 1);
         let (first, second, third) = (
             Parameter::from(
                 ith_digit(op_and_params, 3),
-                *instructions.get(&index).unwrap_or(&1),
+                *instructions.get(&(index + 1)).unwrap_or(&0),
             ),
             Parameter::from(
                 ith_digit(op_and_params, 4),
-                *instructions.get(&index).unwrap_or(&2),
+                *instructions.get(&(index + 2)).unwrap_or(&0),
             ),
             Parameter::from(
                 ith_digit(op_and_params, 5),
-                *instructions.get(&index).unwrap_or(&3),
+                *instructions.get(&(index + 3)).unwrap_or(&0),
             ),
         );
         match op {
