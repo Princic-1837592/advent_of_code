@@ -96,7 +96,7 @@ impl IntCode {
         }
     }
 
-    fn run_until_interrupt(&mut self) -> Interrupt {
+    pub(crate) fn run_until_interrupt(&mut self) -> Interrupt {
         while self.pc < self.instructions.len() {
             let (consumed, instruction) = Instruction::parse(&self.instructions[self.pc..]);
             self.pc += consumed;
