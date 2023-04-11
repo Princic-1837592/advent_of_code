@@ -88,7 +88,6 @@ impl IntCode {
     }
 
     fn get_param(&self, param: Parameter) -> isize {
-        // dbg!(param, self.instructions.get(&param.value));
         match param.mode {
             Mode::Position => *self.instructions.get(&param.value).unwrap_or(&0),
             Mode::Immediate => param.value,
@@ -113,30 +112,34 @@ impl IntCode {
     pub(crate) fn run_until_interrupt(&mut self) -> Interrupt {
         while self.instructions.contains_key(&self.pc) {
             let (consumed, instruction) = Instruction::parse(&self.instructions, self.pc);
-            dbg!(self.instructions.get(&225));
-            dbg!(instruction);
             self.pc += consumed;
             match instruction {
                 Instruction::Add(l, r, dest) => {
-                    // dbg!(l, r, dest);
-                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
-                    // dbg!(l, r, dest);
+                    let (l, r) = (self.get_param(l), self.get_param(r));
+                    let dest = match dest.mode {
+                        Mode::Position => dest.value,
+                        Mode::Relative => dest.value + self.relative_base,
+                        _ => panic!("Invalid mode for writing: {:?}", dest.mode),
+                    };
                     *self.instructions.entry(dest).or_insert(0) = l + r;
                 }
                 Instruction::Mul(l, r, dest) => {
-                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    let (l, r) = (self.get_param(l), self.get_param(r));
+                    let dest = match dest.mode {
+                        Mode::Position => dest.value,
+                        Mode::Relative => dest.value + self.relative_base,
+                        _ => panic!("Invalid mode for writing: {:?}", dest.mode),
+                    };
                     *self.instructions.entry(dest).or_insert(0) = l * r;
                 }
-                Instruction::In(value) => {
-                    let value = self.get_param(value);
+                Instruction::In(dest) => {
+                    let dest = match dest.mode {
+                        Mode::Position => dest.value,
+                        Mode::Relative => dest.value + self.relative_base,
+                        _ => panic!("Invalid mode for writing: {:?}", dest.mode),
+                    };
                     if let Some(input) = self.input_queue.pop_front() {
-                        *self.instructions.entry(value).or_insert(0) = input;
-                        println!(
-                            "inputed {} {:?} {}",
-                            input,
-                            self.instructions.get(&value),
-                            value
-                        );
+                        *self.instructions.entry(dest).or_insert(0) = input;
                     } else {
                         return Interrupt::Input;
                     }
@@ -159,11 +162,21 @@ impl IntCode {
                     }
                 }
                 Instruction::Lt(l, r, dest) => {
-                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    let (l, r) = (self.get_param(l), self.get_param(r));
+                    let dest = match dest.mode {
+                        Mode::Position => dest.value,
+                        Mode::Relative => dest.value + self.relative_base,
+                        _ => panic!("Invalid mode for writing: {:?}", dest.mode),
+                    };
                     *self.instructions.entry(dest).or_insert(0) = if l < r { 1 } else { 0 };
                 }
                 Instruction::Eq(l, r, dest) => {
-                    let (l, r, dest) = (self.get_param(l), self.get_param(r), self.get_param(dest));
+                    let (l, r) = (self.get_param(l), self.get_param(r));
+                    let dest = match dest.mode {
+                        Mode::Position => dest.value,
+                        Mode::Relative => dest.value + self.relative_base,
+                        _ => panic!("Invalid mode for writing: {:?}", dest.mode),
+                    };
                     *self.instructions.entry(dest).or_insert(0) = if l == r { 1 } else { 0 };
                 }
                 Instruction::Arb(value) => {
