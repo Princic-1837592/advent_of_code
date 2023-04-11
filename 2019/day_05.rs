@@ -4,20 +4,34 @@
 use std::{fs::read_to_string, time::Instant};
 
 pub mod part1 {
-    use crate::int_code::{parse, run};
+    use crate::int_code::{parse, run, Interrupt};
 
     pub fn solve(input: &str) -> isize {
         let mut instructions = parse(input);
-        *run(&mut instructions, [1].into(), false).last().unwrap()
+        let mut last_output = 0;
+        loop {
+            match run(instructions.clone(), [1].into()) {
+                Interrupt::Output(new_instructions, _, output) => {
+                    instructions = new_instructions;
+                    last_output = output;
+                }
+                Interrupt::Halt(_, _) => break,
+                _ => {}
+            }
+        }
+        last_output
     }
 }
 
 pub mod part2 {
-    use crate::int_code::{parse, run};
+    use crate::int_code::{parse, run, Interrupt};
 
     pub fn solve(input: &str) -> isize {
         let mut instructions = parse(input);
-        run(&mut instructions, [5].into(), false)[0]
+        if let Interrupt::Output(_, _, result) = run(instructions, [1].into()) {
+            return result;
+        }
+        unreachable!()
     }
 }
 

@@ -45,6 +45,14 @@ pub(crate) enum Instruction {
     Halt,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) enum Interrupt {
+    Input(Vec<isize>, usize),
+    Output(Vec<isize>, usize, isize),
+    Halt(Vec<isize>, usize),
+    Error,
+}
+
 fn ith_digit(n: isize, i: u32) -> isize {
     (n / 10_isize.pow(i - 1)) % 10
 }
@@ -119,18 +127,14 @@ pub(crate) fn parse(input: &str) -> Vec<isize> {
     input.split(',').map(|n| n.parse().unwrap()).collect()
 }
 
-pub(crate) fn run(
-    instructions: &mut Vec<isize>,
-    mut input_queue: VecDeque<isize>,
-    show_output: bool,
-) -> Vec<isize> {
+pub(crate) fn run(mut instructions: Vec<isize>, mut input_queue: VecDeque<isize>) -> Interrupt {
     let mut pc = 0;
-    let mut output = vec![];
     while pc < instructions.len() {
         let (consumed, instruction) = Instruction::parse(&instructions[pc..]);
+        pc += consumed;
         match instruction {
             Instruction::Add(l, r, dest) => {
-                let (l, r) = (l.get(instructions), r.get(instructions));
+                let (l, r) = (l.get(&instructions), r.get(&instructions));
                 if let Parameter {
                     value,
                     mode: Mode::Position,
@@ -142,7 +146,7 @@ pub(crate) fn run(
                 }
             }
             Instruction::Mul(l, r, dest) => {
-                let (l, r) = (l.get(instructions), r.get(instructions));
+                let (l, r) = (l.get(&instructions), r.get(&instructions));
                 if let Parameter {
                     value,
                     mode: Mode::Position,
@@ -159,38 +163,33 @@ pub(crate) fn run(
                     mode: Mode::Position,
                 } = dest
                 {
-                    instructions[value as usize] = input_queue
-                        .pop_front()
-                        .expect("Expected input but queue is empty");
+                    if let Some(input) = input_queue.pop_front() {
+                        instructions[value as usize] = input
+                    } else {
+                        return Interrupt::Input(instructions, pc);
+                    }
                 } else {
                     panic!("Invalid mode for writing: {:?}", dest.mode)
                 }
             }
             Instruction::Out(value) => {
-                let value = value.get(instructions);
-                if show_output {
-                    println!("{}", value);
-                }
-                output.push(value);
+                let value = value.get(&instructions);
+                return Interrupt::Output(instructions, pc, value);
             }
             Instruction::Jit(cond, dest) => {
-                let (cond, dest) = (cond.get(instructions), dest.get(instructions));
+                let (cond, dest) = (cond.get(&instructions), dest.get(&instructions));
                 if cond != 0 {
                     pc = dest as usize;
-                } else {
-                    pc += 3;
                 }
             }
             Instruction::Jif(cond, dest) => {
-                let (cond, dest) = (cond.get(instructions), dest.get(instructions));
+                let (cond, dest) = (cond.get(&instructions), dest.get(&instructions));
                 if cond == 0 {
                     pc = dest as usize;
-                } else {
-                    pc += 3;
                 }
             }
             Instruction::Lt(l, r, dest) => {
-                let (l, r) = (l.get(instructions), r.get(instructions));
+                let (l, r) = (l.get(&instructions), r.get(&instructions));
                 if let Parameter {
                     value,
                     mode: Mode::Position,
@@ -202,7 +201,7 @@ pub(crate) fn run(
                 }
             }
             Instruction::Eq(l, r, dest) => {
-                let (l, r) = (l.get(instructions), r.get(instructions));
+                let (l, r) = (l.get(&instructions), r.get(&instructions));
                 if let Parameter {
                     value,
                     mode: Mode::Position,
@@ -213,9 +212,8 @@ pub(crate) fn run(
                     panic!("Invalid mode for writing: {:?}", dest.mode)
                 }
             }
-            Instruction::Halt => break,
+            Instruction::Halt => return Interrupt::Halt(instructions, pc),
         }
-        pc += consumed;
     }
-    output
+    Interrupt::Halt(instructions, pc)
 }
