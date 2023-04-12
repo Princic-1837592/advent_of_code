@@ -87,6 +87,10 @@ impl IntCode {
         self.input_queue.push_back(value);
     }
 
+    pub(crate) fn get_output(&self) -> &VecDeque<isize> {
+        &self.output
+    }
+
     fn get_param(&self, param: Parameter) -> isize {
         match param.mode {
             Mode::Position => *self.instructions.get(&param.value).unwrap_or(&0),
