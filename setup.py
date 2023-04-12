@@ -1,5 +1,6 @@
 import os
 from configparser import ConfigParser
+
 from requests import get
 
 python_src_content = """
@@ -53,14 +54,14 @@ rust_src_content = """
 //! https://adventofcode.com/{year}/day/{day}
 //! https://adventofcode.com/{year}/day/{day}/input
 
+#![allow(unused)]
+
 use std::{{fs::read_to_string, time::Instant}};
 
-#[allow(unused)]
 fn parse(input: &str) -> usize {{
     0
 }}
 
-#[allow(unused)]
 pub mod part1 {{
     use crate::day_{day:0>2}::parse;
 
@@ -69,7 +70,6 @@ pub mod part1 {{
     }}
 }}
 
-#[allow(unused)]
 pub mod part2 {{
     use crate::day_{day:0>2}::parse;
 
