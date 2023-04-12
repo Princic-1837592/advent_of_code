@@ -141,6 +141,7 @@ impl IntCode {
                     if let Some(input) = self.input_queue.pop_front() {
                         *self.instructions.entry(dest).or_insert(0) = input;
                     } else {
+                        self.pc -= consumed;
                         return Interrupt::Input;
                     }
                 }
