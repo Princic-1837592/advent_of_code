@@ -46,6 +46,7 @@ pub(crate) enum Interrupt {
     Input,
     Output(isize),
     Halt,
+    #[allow(unused)]
     Error,
 }
 
