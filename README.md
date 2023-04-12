@@ -5,7 +5,7 @@ My solutions to the [Advent of Code](https://adventofcode.com/) puzzles.
 ## [2022](2022) (Python)
 
 My first "live" AoC. ~~I skipped day 19 because I am too lazy to solve yet another backtracking problem~~.\
-Day 16 gave me such a headache that I had to skip both 16 and 17, but I went back to them shortly afterwards.
+Day 16 gave me such a headache that I had to skip both 16 and 17, but I went back to them shortly afterward.
 
 ## [2021](2021) (Python)
 
@@ -18,7 +18,7 @@ Left day 20 for last (yet another backtracking problem) but in the end it was ea
 
 ## [2019](2019) (Rust)
 
-~~I proudly skipped every day with an `Intcode` problem~~.
+~~I proudly skipped every day with an `Intcode` problem~~. In the end I really enjoyed them.\
 The day I'm most proud of is [day 18](2019/day_18.rs),
 which I solved without consulting Reddit and runs in 6ms total.\
 Other days I liked:
@@ -26,6 +26,7 @@ Other days I liked:
 - [6](2019/day_06.rs)
 - [13](2019/day_13.rs)
 - [14](2019/day_14.rs)
+- [15](2019/day_15.rs)
 - [20](2019/day_20.rs)
 - [24](2019/day_24.rs)
 
