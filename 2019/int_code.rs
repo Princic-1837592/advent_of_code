@@ -230,6 +230,13 @@ impl Instruction {
     }
 }
 
-pub(crate) fn parse(input: &str) -> Vec<isize> {
-    input.split(',').map(|n| n.parse().unwrap()).collect()
+pub(crate) fn parse(input: &str) -> IntCode {
+    parse_with_input(input, VecDeque::new())
+}
+
+pub(crate) fn parse_with_input(input: &str, input_queue: VecDeque<isize>) -> IntCode {
+    IntCode::with_input(
+        input.split(',').map(|n| n.parse().unwrap()).collect(),
+        input_queue,
+    )
 }

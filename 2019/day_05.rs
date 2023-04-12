@@ -3,10 +3,10 @@
 
 use std::{fs::read_to_string, time::Instant};
 
-use crate::int_code::{parse, IntCode};
+use crate::int_code::parse_with_input;
 
 fn generic_solve(input: &str, first_input: isize) -> isize {
-    let mut vm = IntCode::with_input(parse(input), [first_input].into());
+    let mut vm = parse_with_input(input, [first_input].into());
     vm.run_until_complete();
     vm.last_output().unwrap()
 }

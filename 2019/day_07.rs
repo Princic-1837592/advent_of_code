@@ -9,10 +9,12 @@ pub mod part1 {
 
     use crate::int_code::{parse, IntCode};
 
-    fn run_with_phases(instructions: Vec<isize>, phases: Vec<isize>) -> isize {
+    fn run_with_phases(vm: &IntCode, phases: Vec<isize>) -> isize {
         let mut output = 0;
         for phase in &phases {
-            let mut vm = IntCode::with_input(instructions.clone(), [*phase, output].into());
+            let mut vm = vm.clone();
+            vm.push_input(*phase);
+            vm.push_input(output);
             vm.run_until_complete();
             output = vm.last_output().unwrap();
         }
@@ -20,12 +22,12 @@ pub mod part1 {
     }
 
     pub fn solve(input: &str) -> isize {
-        let instructions = parse(input);
+        let vm = parse(input);
         (0..=4)
             .permutations(5)
             .collect::<Vec<_>>()
             .into_par_iter()
-            .map(|comb| run_with_phases(instructions.clone(), comb))
+            .map(|comb| run_with_phases(&vm, comb))
             .max()
             .unwrap()
     }
@@ -39,14 +41,13 @@ pub mod part2 {
 
     use crate::int_code::{parse, IntCode, Interrupt};
 
-    fn run_with_phases(instructions: Vec<isize>, phases: Vec<isize>) -> isize {
+    fn run_with_phases(vm: &IntCode, phases: Vec<isize>) -> isize {
         let vms: Vec<_> = phases
             .into_iter()
             .map(|phase| {
-                Rc::new(RefCell::new(IntCode::with_input(
-                    instructions.clone(),
-                    [phase].into(),
-                )))
+                let mut vm = vm.clone();
+                vm.push_input(phase);
+                Rc::new(RefCell::new(vm))
             })
             .collect();
         vms[0].borrow_mut().push_input(0);
@@ -65,12 +66,12 @@ pub mod part2 {
     }
 
     pub fn solve(input: &str) -> isize {
-        let instructions = parse(input);
+        let vm = parse(input);
         (5..=9)
             .permutations(5)
             .collect::<Vec<_>>()
             .into_par_iter()
-            .map(|comb| run_with_phases(instructions.clone(), comb))
+            .map(|comb| run_with_phases(&vm, comb))
             .max()
             .unwrap()
     }
