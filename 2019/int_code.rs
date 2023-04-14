@@ -1,4 +1,6 @@
 use std::collections::{HashMap, VecDeque};
+#[allow(unused)]
+use std::io;
 
 #[derive(Copy, Clone, Debug)]
 pub(crate) enum Mode {
@@ -106,8 +108,19 @@ impl IntCode {
     pub(crate) fn run_until_complete(&mut self) {
         loop {
             match self.run_until_interrupt() {
-                Interrupt::Input => {}
-                Interrupt::Output(_) => {}
+                Interrupt::Input => {
+                    // break;
+                    let mut buffer = String::new();
+                    let stdin = io::stdin();
+                    stdin.read_line(&mut buffer).unwrap();
+                    buffer
+                        .chars()
+                        .for_each(|char| self.input_queue.push_back(char as isize));
+                }
+                #[allow(unused)]
+                Interrupt::Output(value) => {
+                    print!("{}", value as u8 as char);
+                }
                 Interrupt::Halt => break,
                 Interrupt::Error => break,
             }
