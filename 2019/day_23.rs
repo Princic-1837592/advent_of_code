@@ -29,8 +29,7 @@ pub mod part1 {
                         input_queues[address].push_back(x);
                         input_queues[address].push_back(y);
                     }
-                    Interrupt::Halt => {}
-                    Interrupt::Error => {}
+                    _ => {}
                 }
             }
         }
