@@ -34,7 +34,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use std::{cell::RefCell, rc::Rc};
+    use std::collections::VecDeque;
 
     use itertools::Itertools;
     use rayon::prelude::*;
@@ -42,27 +42,32 @@ pub mod part2 {
     use crate::int_code::{parse, IntCode, Interrupt};
 
     fn run_with_phases(vm: &IntCode, phases: Vec<isize>) -> isize {
-        let vms: Vec<_> = phases
-            .into_iter()
-            .map(|phase| {
-                let mut vm = vm.clone();
-                vm.push_input(phase);
-                Rc::new(RefCell::new(vm))
-            })
+        let mut vms: Vec<_> = vec![vm.clone(); phases.len()];
+        let mut input_queues: Vec<_> = phases
+            .iter()
+            .map(|&phase| VecDeque::from([phase]))
             .collect();
-        vms[0].borrow_mut().push_input(0);
+        input_queues[0].push_back(0);
         let mut run = true;
         while run {
             run = false;
-            for (i, vm) in vms.iter().enumerate() {
-                if let Interrupt::Output(value) = vm.borrow_mut().run_until_interrupt() {
-                    vms[(i + 1) % vms.len()].borrow_mut().push_input(value);
-                    run = true;
+            for (i, vm) in vms.iter_mut().enumerate() {
+                match vm.run_until_interrupt() {
+                    Interrupt::Input => {
+                        if let Some(value) = input_queues[i].pop_front() {
+                            vm.push_input(value);
+                            run = true;
+                        }
+                    }
+                    Interrupt::Output(value) => {
+                        input_queues[(i + 1) % phases.len()].push_back(value);
+                        run = true;
+                    }
+                    _ => {}
                 }
             }
         }
-        let last = vms[vms.len() - 1].borrow();
-        last.last_output().unwrap()
+        vms[vms.len() - 1].last_output().unwrap()
     }
 
     pub fn solve(input: &str) -> isize {
