@@ -10,6 +10,9 @@ class State:
         self.amphipods = [-1] * amphipods
 
 
+NEIGHBORS = ((0, 1), (0, -1), (1, 0), (-1, 0))
+
+
 def parse(data: str) -> State:
     spaces = []
     matrix = [list(line) for line in data.splitlines()]
@@ -18,6 +21,25 @@ def parse(data: str) -> State:
             if c in "ABCD" or c == "." and i + 1 < len(matrix) and matrix[i + 1][j] not in "ABCD":
                 spaces.append((i, j))
     print(spaces)
+    distances = [[0] * len(spaces) for _ in range(len(spaces))]
+    print(distances)
+    for src in range(len(spaces)):
+        queue = deque([(spaces[src], 0)])
+        visited = {src}
+        while queue:
+            pos, dist = queue.popleft()
+            if matrix[pos[0]][pos[1]] not in ".ABCD":
+                continue
+            if pos in visited:
+                continue
+            if pos in spaces:
+                distances[src][spaces.index(pos)] = dist
+            visited.add(pos)
+            i, j = pos
+            for di, dj in NEIGHBORS:
+                queue.append(((i + di, j + dj), dist + 1))
+    from pprint import pprint
+    pprint(distances)
     # return result
 
 
