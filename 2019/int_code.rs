@@ -110,16 +110,19 @@ impl IntCode {
             match self.run_until_interrupt() {
                 Interrupt::Input => {
                     // break;
-                    let mut buffer = String::new();
-                    let stdin = io::stdin();
-                    stdin.read_line(&mut buffer).unwrap();
-                    buffer
-                        .chars()
-                        .for_each(|char| self.input_queue.push_back(char as isize));
+
+                    // enable for day 25
+                    // let mut buffer = String::new();
+                    // let stdin = io::stdin();
+                    // stdin.read_line(&mut buffer).unwrap();
+                    // buffer
+                    //     .chars()
+                    //     .for_each(|char| self.input_queue.push_back(char as isize));
                 }
                 #[allow(unused)]
                 Interrupt::Output(value) => {
-                    print!("{}", value as u8 as char);
+                    //enable when you need live output, like in day 25
+                    // print!("{}", value as u8 as char);
                 }
                 Interrupt::Halt => break,
                 Interrupt::Error => break,
