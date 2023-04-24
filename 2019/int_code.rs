@@ -109,9 +109,10 @@ impl IntCode {
         loop {
             match self.run_until_interrupt() {
                 Interrupt::Input => {
-                    // break;
+                    // enable for day 25 (automatic solution)
+                    break;
 
-                    // enable for day 25
+                    // enable for day 25 (manual solution)
                     // let mut buffer = String::new();
                     // let stdin = io::stdin();
                     // stdin.read_line(&mut buffer).unwrap();
