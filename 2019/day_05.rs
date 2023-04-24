@@ -5,7 +5,7 @@ use std::{fs::read_to_string, time::Instant};
 
 use crate::int_code::parse_with_input;
 
-fn generic_solve(input: &str, first_input: isize) -> isize {
+fn generic_solve(input: &str, first_input: i64) -> i64 {
     let mut vm = parse_with_input(input, [first_input].into());
     vm.run_until_complete();
     vm.last_output().unwrap()
@@ -14,7 +14,7 @@ fn generic_solve(input: &str, first_input: isize) -> isize {
 pub mod part1 {
     use crate::day_05::generic_solve;
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         generic_solve(input, 1)
     }
 }
@@ -22,7 +22,7 @@ pub mod part1 {
 pub mod part2 {
     use crate::day_05::generic_solve;
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         generic_solve(input, 5)
     }
 }

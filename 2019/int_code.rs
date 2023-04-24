@@ -11,12 +11,12 @@ pub(crate) enum Mode {
 
 #[derive(Copy, Clone, Debug)]
 pub(crate) struct Parameter {
-    pub(crate) value: isize,
+    pub(crate) value: i64,
     pub(crate) mode: Mode,
 }
 
 impl Parameter {
-    pub(crate) fn from(mode: isize, value: isize) -> Self {
+    pub(crate) fn from(mode: i64, value: i64) -> Self {
         Self {
             mode: match mode {
                 0 => Mode::Position,
@@ -46,7 +46,7 @@ pub(crate) enum Instruction {
 #[derive(Clone, Debug)]
 pub(crate) enum Interrupt {
     Input,
-    Output(isize),
+    Output(i64),
     Halt,
     #[allow(unused)]
     Error,
@@ -54,20 +54,20 @@ pub(crate) enum Interrupt {
 
 #[derive(Clone, Debug)]
 pub(crate) struct IntCode {
-    instructions: HashMap<isize, isize>,
-    pc: isize,
-    input_queue: VecDeque<isize>,
-    output: VecDeque<isize>,
-    relative_base: isize,
+    instructions: HashMap<i64, i64>,
+    pc: i64,
+    input_queue: VecDeque<i64>,
+    output: VecDeque<i64>,
+    relative_base: i64,
 }
 
 impl IntCode {
-    pub(crate) fn new(instructions: Vec<isize>) -> Self {
+    pub(crate) fn new(instructions: Vec<i64>) -> Self {
         Self {
             instructions: instructions
                 .into_iter()
                 .enumerate()
-                .map(|(i, v)| (i as isize, v))
+                .map(|(i, v)| (i as i64, v))
                 .collect(),
             pc: 0,
             input_queue: Default::default(),
@@ -76,25 +76,25 @@ impl IntCode {
         }
     }
 
-    pub(crate) fn with_input(instructions: Vec<isize>, input: VecDeque<isize>) -> Self {
+    pub(crate) fn with_input(instructions: Vec<i64>, input: VecDeque<i64>) -> Self {
         let mut result = Self::new(instructions);
         result.input_queue = input;
         result
     }
 
-    pub(crate) fn last_output(&self) -> Option<isize> {
+    pub(crate) fn last_output(&self) -> Option<i64> {
         self.output.back().cloned()
     }
 
-    pub(crate) fn push_input(&mut self, value: isize) {
+    pub(crate) fn push_input(&mut self, value: i64) {
         self.input_queue.push_back(value);
     }
 
-    pub(crate) fn get_output(&self) -> &VecDeque<isize> {
+    pub(crate) fn get_output(&self) -> &VecDeque<i64> {
         &self.output
     }
 
-    fn get_param(&self, param: Parameter) -> isize {
+    fn get_param(&self, param: Parameter) -> i64 {
         match param.mode {
             Mode::Position => *self.instructions.get(&param.value).unwrap_or(&0),
             Mode::Immediate => param.value,
@@ -117,7 +117,7 @@ impl IntCode {
                     // stdin.read_line(&mut buffer).unwrap();
                     // buffer
                     //     .chars()
-                    //     .for_each(|char| self.input_queue.push_back(char as isize));
+                    //     .for_each(|char| self.input_queue.push_back(char as i64));
                 }
                 #[allow(unused)]
                 Interrupt::Output(value) => {
@@ -212,12 +212,12 @@ impl IntCode {
     }
 }
 
-fn ith_digit(n: isize, i: u32) -> isize {
-    (n / 10_isize.pow(i - 1)) % 10
+fn ith_digit(n: i64, i: u32) -> i64 {
+    (n / 10_i64.pow(i - 1)) % 10
 }
 
 impl Instruction {
-    pub(crate) fn parse(instructions: &HashMap<isize, isize>, index: isize) -> (isize, Self) {
+    pub(crate) fn parse(instructions: &HashMap<i64, i64>, index: i64) -> (i64, Self) {
         let op_and_params = *instructions.get(&index).unwrap_or(&0);
         let op = 10 * ith_digit(op_and_params, 2) + ith_digit(op_and_params, 1);
         let (first, second, third) = (
@@ -256,7 +256,7 @@ pub(crate) fn parse(input: &str) -> IntCode {
     parse_with_input(input, VecDeque::new())
 }
 
-pub(crate) fn parse_with_input(input: &str, input_queue: VecDeque<isize>) -> IntCode {
+pub(crate) fn parse_with_input(input: &str, input_queue: VecDeque<i64>) -> IntCode {
     IntCode::with_input(
         input.split(',').map(|n| n.parse().unwrap()).collect(),
         input_queue,

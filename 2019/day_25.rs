@@ -56,7 +56,7 @@ drop hypercube
         ];
         take_items
             .chars()
-            .for_each(|char| vm.push_input(char as isize));
+            .for_each(|char| vm.push_input(char as i64));
         vm.run_until_complete();
         for k in 1..=items.len() {
             if let Some(result) = items
@@ -69,10 +69,10 @@ drop hypercube
                         .map(|item| format!("take {}\n", item))
                         .join("")
                         .chars()
-                        .for_each(|char| vm.push_input(char as isize));
+                        .for_each(|char| vm.push_input(char as i64));
                     "south\n"
                         .chars()
-                        .for_each(|char| vm.push_input(char as isize));
+                        .for_each(|char| vm.push_input(char as i64));
                     vm.run_until_complete();
                     let result: String = vm
                         .get_output()

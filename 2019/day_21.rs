@@ -5,25 +5,25 @@ use std::{fs::read_to_string, time::Instant};
 
 use crate::int_code::parse_with_input;
 
-fn solve_with_program(input: &str, program: &str) -> usize {
+fn solve_with_program(input: &str, program: &str) -> i64 {
     let inputs: Vec<_> = program
         .lines()
         .into_iter()
         .flat_map(|line| {
             let mut line = line.to_owned();
             line.push('\n');
-            line.chars().map(|char| char as isize).collect::<Vec<_>>()
+            line.chars().map(|char| char as i64).collect::<Vec<_>>()
         })
         .collect();
     let mut spring_droid = parse_with_input(input, inputs.into());
     spring_droid.run_until_complete();
-    spring_droid.last_output().unwrap() as usize
+    spring_droid.last_output().unwrap()
 }
 
 pub mod part1 {
     use crate::day_21::solve_with_program;
 
-    pub fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> i64 {
         let program = r"OR C T
 AND A T
 NOT T J
@@ -36,7 +36,7 @@ WALK";
 pub mod part2 {
     use crate::day_21::solve_with_program;
 
-    pub fn solve(input: &str) -> usize {
+    pub fn solve(input: &str) -> i64 {
         let program = r"NOT B J
 NOT C T
 OR T J

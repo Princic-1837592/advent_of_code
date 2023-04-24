@@ -79,7 +79,7 @@ pub mod part2 {
             "n\n",
         ]
         .into_iter()
-        .flat_map(|line| line.chars().map(|char| char as isize))
+        .flat_map(|line| line.chars().map(|char| char as i64))
         .collect();
         let mut robot = parse_with_input(
             &"2".chars().chain(input.chars().skip(1)).collect::<String>(),

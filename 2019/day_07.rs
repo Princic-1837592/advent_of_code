@@ -9,7 +9,7 @@ pub mod part1 {
 
     use crate::int_code::{parse, IntCode};
 
-    fn run_with_phases(vm: &IntCode, phases: Vec<isize>) -> isize {
+    fn run_with_phases(vm: &IntCode, phases: Vec<i64>) -> i64 {
         let mut output = 0;
         for phase in &phases {
             let mut vm = vm.clone();
@@ -21,7 +21,7 @@ pub mod part1 {
         output
     }
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         let vm = parse(input);
         (0..=4)
             .permutations(5)
@@ -41,7 +41,7 @@ pub mod part2 {
 
     use crate::int_code::{parse, IntCode, Interrupt};
 
-    fn run_with_phases(vm: &IntCode, phases: Vec<isize>) -> isize {
+    fn run_with_phases(vm: &IntCode, phases: Vec<i64>) -> i64 {
         let mut vms: Vec<_> = vec![vm.clone(); phases.len()];
         let mut input_queues: Vec<_> = phases
             .iter()
@@ -70,7 +70,7 @@ pub mod part2 {
         vms[vms.len() - 1].last_output().unwrap()
     }
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         let vm = parse(input);
         (5..=9)
             .permutations(5)

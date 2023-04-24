@@ -8,7 +8,7 @@ pub mod part1 {
 
     use crate::int_code::{parse, Interrupt};
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         let mut computers = vec![parse(input); 50];
         let mut input_queues: Vec<_> = (0..50).map(|address| VecDeque::from([address])).collect();
         loop {
@@ -41,10 +41,10 @@ pub mod part2 {
 
     use crate::int_code::{parse, Interrupt};
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         let mut computers = vec![parse(input); 50];
         let mut input_queues: Vec<_> = (0..50).map(|address| VecDeque::from([address])).collect();
-        let mut nat = (isize::MIN, isize::MIN);
+        let mut nat = (i64::MIN, i64::MIN);
         let mut last_y_sent = 0;
         loop {
             let mut idle = true;

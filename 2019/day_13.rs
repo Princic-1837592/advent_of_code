@@ -20,15 +20,15 @@ pub mod part1 {
 pub mod part2 {
     use crate::int_code::{parse, Interrupt};
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         let mut vm = parse(&"2".chars().chain(input.chars().skip(1)).collect::<String>());
-        let (mut ball, mut pad): (isize, isize) = (0, 0);
+        let (mut ball, mut pad): (i64, i64) = (0, 0);
         let mut outputs = [0; 3];
         let mut output = 0;
         let mut points = 0;
         loop {
             match vm.run_until_interrupt() {
-                Interrupt::Input => vm.push_input((ball - pad).signum() as isize),
+                Interrupt::Input => vm.push_input((ball - pad).signum()),
                 Interrupt::Output(value) => {
                     outputs[output] = value;
                     output += 1;

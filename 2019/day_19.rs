@@ -32,9 +32,9 @@ pub mod part2 {
 
     use crate::int_code::{parse, IntCode};
 
-    type Coord = (isize, isize);
+    type Coord = (i64, i64);
 
-    fn next(vm: IntCode, (mut x, mut y): Coord, check: isize, dx: isize) -> Coord {
+    fn next(vm: IntCode, (mut x, mut y): Coord, check: i64, dx: i64) -> Coord {
         y += 1;
         while {
             let mut vm = vm.clone();
@@ -76,7 +76,7 @@ pub mod part2 {
         unreachable!()
     }
 
-    pub fn solve(input: &str) -> isize {
+    pub fn solve(input: &str) -> i64 {
         let vm = parse(input);
         let (mut left, mut right) = find_first(vm.clone());
         for _ in 0..99 {
@@ -90,7 +90,7 @@ pub mod part2 {
     }
 
     #[allow(unused)]
-    fn to_string(vm: IntCode, size: isize) -> String {
+    fn to_string(vm: IntCode, size: i64) -> String {
         let beam: Vec<_> = (0..size)
             .cartesian_product(0..size)
             .collect::<Vec<_>>()
@@ -111,7 +111,7 @@ pub mod part2 {
         let mut result = vec![vec![' '; w as usize]; h as usize];
         for (i, row) in result.iter_mut().enumerate() {
             for (j, panel) in row.iter_mut().enumerate() {
-                if beam.contains(&(j as isize + min_col, i as isize + min_row)) {
+                if beam.contains(&(j as i64 + min_col, i as i64 + min_row)) {
                     *panel = '#';
                 }
             }
