@@ -5,8 +5,8 @@ from collections import deque
 
 
 class State:
-    def __init__(self, spaces: int, amphipods: int):
-        self.matrix = [-1] * spaces
+    def __init__(self, positions: int, amphipods: int):
+        self.positions = [-1] * positions
         self.amphipods = [-1] * amphipods
 
 
