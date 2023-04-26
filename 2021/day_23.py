@@ -5,10 +5,21 @@ from collections import deque
 
 
 class State:
-    def __init__(self, positions: int, amphipods: int, adjacency: List[List[Tuple[int, int]]]):
+    def __init__(self, positions: int, amphipods: int, adjacency: List[List[Tuple[int, int]]], depth: int):
         self.positions = [-1] * positions
         self.amphipods = [-1] * amphipods
         self.adjacency = adjacency
+        self.depth = depth
+
+    @staticmethod
+    def is_hallway(pos: int) -> bool:
+        return pos <= 6
+
+    def is_correct_room(self, amphipod: int, pos: int) -> bool:
+        return (pos - 7) // self.depth == amphipod // self.depth
+
+    def unitary_move_cost(self, amphipod: int) -> int:
+        return 10 ** (amphipod // self.depth)
 
     def __str__(self):
         return f"State({self.positions}, {self.amphipods}, {self.adjacency})"
@@ -22,15 +33,17 @@ def parse(data: str) -> State:
     depth = len(lines) - 3
     positions = 7 + depth * 4
     state = State(
-        positions, depth * 4, [
+        positions,
+        depth * 4,
+        [
             [(1, 1)],
             [(0, 1), (2, 2)],
             [(1, 2), (3, 2)],
             [(2, 2), (4, 2)],
             [(3, 2), (5, 2)],
             [(4, 2), (6, 1)],
-            [(5, 1)],
-        ]
+            [(5, 1)], ],
+        depth
     )
     for room in range(4):
         room_index = room * depth + 7
@@ -42,10 +55,10 @@ def parse(data: str) -> State:
             input_i = row + 2
             input_j = room * 2 + 3
             amphipod_type = ord(lines[input_i][input_j]) - ord('A')
-            state.positions[position_index] = amphipod_type
             amphipod_index = amphipod_type * depth
             while state.amphipods[amphipod_index] != -1:
                 amphipod_index += 1
+            state.positions[position_index] = amphipod_index
             state.amphipods[amphipod_index] = position_index
             if row > 0:
                 state.adjacency.append([(position_index - 1, 1)])
