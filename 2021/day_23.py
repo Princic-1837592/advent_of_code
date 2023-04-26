@@ -9,6 +9,9 @@ class State:
         self.positions = [-1] * positions
         self.amphipods = [-1] * amphipods
 
+    def __str__(self):
+        return f"State({self.positions}, {self.amphipods})"
+
 
 NEIGHBORS = ((0, 1), (0, -1), (1, 0), (-1, 0))
 
