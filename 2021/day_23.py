@@ -44,8 +44,8 @@ def part2(data: str):
 
 
 if __name__ == "__main__":
-    # test = True
-    test = False
+    test = True
+    # test = False
     test_input = """#############
 #...........#
 ###B#C#B#D###
