@@ -17,33 +17,18 @@ NEIGHBORS = ((0, 1), (0, -1), (1, 0), (-1, 0))
 
 
 def parse(data: str) -> State:
-    spaces = []
-    matrix = [list(line) for line in data.splitlines()]
-    for i, row in enumerate(matrix):
-        for j, c in enumerate(row):
-            if c in "ABCD" or c == "." and i + 1 < len(matrix) and matrix[i + 1][j] not in "ABCD":
-                spaces.append((i, j))
-    print(spaces)
-    distances = [[0] * len(spaces) for _ in range(len(spaces))]
-    print(distances)
-    for src in range(len(spaces)):
-        queue = deque([(spaces[src], 0)])
-        visited = {src}
-        while queue:
-            pos, dist = queue.popleft()
-            if matrix[pos[0]][pos[1]] not in ".ABCD":
-                continue
-            if pos in visited:
-                continue
-            if pos in spaces:
-                distances[src][spaces.index(pos)] = dist
-            visited.add(pos)
-            i, j = pos
-            for di, dj in NEIGHBORS:
-                queue.append(((i + di, j + dj), dist + 1))
-    from pprint import pprint
-    pprint(distances)
-    # return result
+    lines = data.splitlines()
+    depth = len(lines) - 3
+    positions = 7 + depth * 4
+    state = State(positions, depth * 4)
+    for room in range(4):
+        for row in range(depth):
+            position_index = room * depth + row + 7
+            input_i = row + 2
+            input_j = room * 2 + 3
+            amphipod_type = ord(lines[input_i][input_j]) - ord('A')
+            state.positions[position_index] = amphipod_type
+    return state
 
 
 def part1(data: str):
