@@ -93,6 +93,10 @@ def parse(data: str) -> State:
             input_j = room * 2 + 3
             amphipod_type = ord(lines[input_i][input_j]) - ord('A')
             state.positions[position_index] = amphipod_type
+            amphipod_index = amphipod_type * depth
+            while state.amphipods[amphipod_index] != -1:
+                amphipod_index += 1
+            state.amphipods[amphipod_index] = position_index
     return state
 
 
