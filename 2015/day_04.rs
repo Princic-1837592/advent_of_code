@@ -7,16 +7,15 @@ pub mod part1 {
     use md5::compute;
 
     pub fn solve(input: &str) -> usize {
-        let input = input.to_owned();
-        let mut hash;
-        let mut i = 0;
-        loop {
-            hash = format!("{:?}", compute(input.clone() + &*i.to_string()));
-            if hash.starts_with("00000") {
+        for i in 0.. {
+            let digest = compute(format!("{}{}", input, i));
+            if (((digest[0] as u32) << 16) | ((digest[1] as u32) << 8) | (digest[2] as u32))
+                < 0b00000000_00000000_00010000
+            {
                 return i;
             }
-            i += 1;
         }
+        unreachable!()
     }
 }
 
@@ -24,16 +23,13 @@ pub mod part2 {
     use md5::compute;
 
     pub fn solve(input: &str) -> usize {
-        let input = input.to_owned();
-        let mut hash;
-        let mut i = 0;
-        loop {
-            hash = format!("{:?}", compute(input.clone() + &*i.to_string()));
-            if hash.starts_with("000000") {
+        for i in 0.. {
+            let digest = compute(format!("{}{}", input, i));
+            if (((digest[0] as u32) << 16) | ((digest[1] as u32) << 8) | (digest[2] as u32)) == 0 {
                 return i;
             }
-            i += 1;
         }
+        unreachable!()
     }
 }
 
