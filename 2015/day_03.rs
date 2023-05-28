@@ -44,9 +44,10 @@ pub mod part2 {
         houses.insert(santa_coord);
         houses.insert(robot_coord);
         let (mut santa, mut robot);
-        for i in (0..input.len()).step_by(2) {
-            santa = input.chars().nth(i).unwrap();
-            robot = input.chars().nth(i + 1).unwrap();
+        let mut chars = input.chars();
+        for _ in (0..input.len()).step_by(2) {
+            santa = chars.next().unwrap();
+            robot = chars.next().unwrap();
             move_coord(&mut santa_coord, santa);
             move_coord(&mut robot_coord, robot);
             houses.insert(santa_coord);
