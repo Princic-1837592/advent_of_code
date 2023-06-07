@@ -73,7 +73,7 @@ fn main() {
     println!("Running day 17");
     aoc::day_17::main(test);
     println!();
-    //
+
     println!("Running day 18");
     aoc::day_18::main(test);
     println!();
