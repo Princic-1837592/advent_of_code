@@ -11,70 +11,59 @@ fn parse(input: &str) -> Vec<usize> {
         .collect()
 }
 
-pub mod part1 {
-    use crate::day_24::parse;
+fn explore<const G: usize>(
+    packages: &[usize],
+    package: usize,
+    max_per_group: usize,
+    groups: &mut [usize; G],
+    state @ (legroom, qe): (usize, usize),
+    mut min_state: (usize, usize),
+) -> (usize, usize) {
+    if package == packages.len() && groups.iter().all(|&weight| weight == max_per_group) {
+        return state;
+    }
+    if state >= min_state {
+        return (usize::MAX, usize::MAX);
+    }
 
-    fn explore(
-        packages: &[usize],
-        package: usize,
-        max_per_group: usize,
-        groups: &mut [usize; 3],
-        state @ (legroom, qe): (usize, usize),
-        mut min_state: (usize, usize),
-    ) -> (usize, usize) {
-        if package == packages.len() && groups[0] == groups[1] && groups[1] == groups[2] {
-            return state;
-        }
-        if state >= min_state || package >= packages.len() {
-            return (usize::MAX, usize::MAX);
-        }
-        if groups.iter().any(|&weight| weight > max_per_group) {
-            return (usize::MAX, usize::MAX);
-        }
-        let weight = packages[package];
+    let weight = packages[package];
+    if groups[0] + weight <= max_per_group {
         groups[0] += weight;
         let first = explore(
             packages,
             package + 1,
             max_per_group,
             groups,
-            (legroom + 1, qe.saturating_mul(weight)),
+            (legroom + 1, qe * weight),
             min_state,
         );
         groups[0] -= weight;
         if first < min_state {
             min_state = first;
         }
-
-        groups[1] += weight;
-        let second = explore(
-            packages,
-            package + 1,
-            max_per_group,
-            groups,
-            state,
-            min_state,
-        );
-        groups[1] -= weight;
-        if second <= min_state {
-            min_state = second;
-        }
-
-        groups[2] += weight;
-        let third = explore(
-            packages,
-            package + 1,
-            max_per_group,
-            groups,
-            state,
-            min_state,
-        );
-        groups[2] -= weight;
-        if third <= min_state {
-            min_state = third;
-        }
-        min_state
     }
+    for group in 1..G {
+        if groups[group] + weight <= max_per_group {
+            groups[group] += weight;
+            let result = explore(
+                packages,
+                package + 1,
+                max_per_group,
+                groups,
+                state,
+                min_state,
+            );
+            groups[group] -= weight;
+            if result <= min_state {
+                min_state = result;
+            }
+        }
+    }
+    min_state
+}
+
+pub mod part1 {
+    use crate::day_24::{explore, parse};
 
     pub fn solve(input: &str) -> usize {
         let packages = parse(input);
@@ -91,88 +80,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_24::parse;
-
-    fn explore(
-        packages: &[usize],
-        package: usize,
-        max_per_group: usize,
-        groups: &mut [usize; 4],
-        state @ (legroom, qe): (usize, usize),
-        mut min_state: (usize, usize),
-    ) -> (usize, usize) {
-        if package == packages.len()
-            && groups[0] == groups[1]
-            && groups[1] == groups[2]
-            && groups[2] == groups[3]
-        {
-            return state;
-        }
-        if state >= min_state
-            || package >= packages.len()
-            || groups.iter().any(|&weight| weight > max_per_group)
-        {
-            return (usize::MAX, usize::MAX);
-        }
-        let weight = packages[package];
-        groups[0] += weight;
-        let first = explore(
-            packages,
-            package + 1,
-            max_per_group,
-            groups,
-            (legroom + 1, qe.saturating_mul(weight)),
-            min_state,
-        );
-        groups[0] -= weight;
-        if first < min_state {
-            min_state = first;
-        }
-
-        groups[1] += weight;
-        let second = explore(
-            packages,
-            package + 1,
-            max_per_group,
-            groups,
-            state,
-            min_state,
-        );
-        groups[1] -= weight;
-        if second <= min_state {
-            min_state = second;
-        }
-
-        groups[2] += weight;
-        let third = explore(
-            packages,
-            package + 1,
-            max_per_group,
-            groups,
-            state,
-            min_state,
-        );
-        groups[2] -= weight;
-        if third <= min_state {
-            min_state = third;
-        }
-
-        groups[3] += weight;
-        let fourth = explore(
-            packages,
-            package + 1,
-            max_per_group,
-            groups,
-            state,
-            min_state,
-        );
-        groups[3] -= weight;
-        if fourth <= min_state {
-            min_state = fourth;
-        }
-
-        min_state
-    }
+    use crate::day_24::{explore, parse};
 
     pub fn solve(input: &str) -> usize {
         let packages = parse(input);
