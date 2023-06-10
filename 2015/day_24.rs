@@ -19,7 +19,7 @@ fn explore<const G: usize>(
     state @ (legroom, qe): (usize, usize),
     mut min_state: (usize, usize),
 ) -> (usize, usize) {
-    if package == packages.len() && groups.iter().all(|&weight| weight == max_per_group) {
+    if package == packages.len() {
         return state;
     }
     if state >= min_state {
