@@ -11,12 +11,12 @@ pub mod part1 {
     pub fn solve(input: &str) -> usize {
         let target = input.parse().unwrap();
         let mut houses = vec![0; MAX];
-        for i in 1..=MAX {
-            let addition = i * 10;
-            let mut j = i;
-            while j < MAX {
-                houses[j] += addition;
-                j += i;
+        for elf in 1..=MAX {
+            let addition = elf * 10;
+            let mut house = elf;
+            while house < MAX {
+                houses[house] += addition;
+                house += elf;
             }
         }
         houses
@@ -34,13 +34,13 @@ pub mod part2 {
     pub fn solve(input: &str) -> usize {
         let target = input.parse().unwrap();
         let mut houses = vec![0; MAX];
-        for i in 1..=MAX {
-            let addition = i * 11;
-            let mut j = i;
+        for elf in 1..=MAX {
+            let addition = elf * 11;
+            let mut house = elf;
             let mut delivered = 0;
-            while j < MAX && delivered < 50 {
-                houses[j] += addition;
-                j += i;
+            while house < MAX && delivered < 50 {
+                houses[house] += addition;
+                house += elf;
                 delivered += 1;
             }
         }
