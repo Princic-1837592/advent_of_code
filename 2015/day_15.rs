@@ -82,52 +82,67 @@ fn parse(input: &str) -> Vec<Ingredient> {
         .collect()
 }
 
-pub mod part1 {
-    use itertools::Itertools;
+fn solve_generic(ingredients: Vec<Ingredient>, check_calories: bool) -> isize {
+    let n = ingredients.len();
+    let mut max = 0;
+    let mut spoons = vec![0; n];
+    let mut total = 0;
+    for _ in 1.. {
+        if add_one(&mut spoons, &mut total) {
+            break;
+        }
+        if total != 100 {
+            continue;
+        }
+        let recipe = ingredients
+            .iter()
+            .zip(&spoons)
+            .map(|(&ingredient, &spoons)| (ingredient * spoons))
+            .sum::<Ingredient>();
+        if recipe.capacity <= 0
+            || recipe.durability <= 0
+            || recipe.flavor <= 0
+            || recipe.texture <= 0
+            || check_calories && recipe.calories != 500
+        {
+            continue;
+        }
+        max = max.max(Ingredient::mul(&recipe));
+    }
+    max
+}
 
-    use crate::day_15::{parse, Ingredient};
+fn add_one(spoons: &mut [isize], total: &mut isize) -> bool {
+    let mut carry = true;
+    for spoon in spoons {
+        if carry {
+            *spoon += 1;
+            *total += 1;
+            carry = *spoon > 100;
+            if carry {
+                *spoon = 0;
+                *total -= 101;
+            }
+        }
+    }
+    carry
+}
+
+pub mod part1 {
+    use crate::day_15::{parse, solve_generic};
 
     pub fn solve(input: &str) -> isize {
         let ingredients = parse(input);
-        (1..=ingredients.len())
-            .map(|_| 0..=100)
-            .multi_cartesian_product()
-            .filter(|spoons| spoons.iter().sum::<isize>() == 100)
-            .map(|spoons| {
-                ingredients
-                    .iter()
-                    .zip(spoons)
-                    .map(|(&ingredient, spoons)| (ingredient * spoons))
-                    .sum::<Ingredient>()
-                    .mul()
-            })
-            .max()
-            .unwrap()
+        solve_generic(ingredients, false)
     }
 }
 
 pub mod part2 {
-    use itertools::Itertools;
-
-    use crate::day_15::{parse, Ingredient};
+    use crate::day_15::{parse, solve_generic};
 
     pub fn solve(input: &str) -> isize {
         let ingredients = parse(input);
-        (1..=ingredients.len())
-            .map(|_| 0..=100)
-            .multi_cartesian_product()
-            .filter(|spoons| spoons.iter().sum::<isize>() == 100)
-            .map(|spoons| {
-                ingredients
-                    .iter()
-                    .zip(spoons)
-                    .map(|(&ingredient, spoons)| (ingredient * spoons))
-                    .sum::<Ingredient>()
-            })
-            .filter(|recipe| recipe.calories == 500)
-            .map(|recipe| recipe.mul())
-            .max()
-            .unwrap()
+        solve_generic(ingredients, true)
     }
 }
 
