@@ -3,6 +3,8 @@
 
 use std::{fs::read_to_string, time::Instant};
 
+use itertools::Itertools;
+
 fn parse(input: &str) -> Vec<usize> {
     input
         .lines()
@@ -11,88 +13,54 @@ fn parse(input: &str) -> Vec<usize> {
         .collect()
 }
 
-fn explore<const G: usize>(
-    packages: &[usize],
-    package: usize,
-    max_per_group: usize,
-    groups: &mut [usize; G],
-    state @ (legroom, qe): (usize, usize),
-    mut min_state: (usize, usize),
-) -> (usize, usize) {
-    if package == packages.len() {
-        return state;
-    }
-    if state >= min_state {
-        return (usize::MAX, usize::MAX);
-    }
-
-    let weight = packages[package];
-    if groups[0] + weight <= max_per_group {
-        groups[0] += weight;
-        let first = explore(
-            packages,
-            package + 1,
-            max_per_group,
-            groups,
-            (legroom + 1, qe * weight),
-            min_state,
-        );
-        groups[0] -= weight;
-        if first < min_state {
-            min_state = first;
-        }
-    }
-    for group in 1..G {
-        if groups[group] + weight <= max_per_group {
-            groups[group] += weight;
-            let result = explore(
-                packages,
-                package + 1,
-                max_per_group,
-                groups,
-                state,
-                min_state,
-            );
-            groups[group] -= weight;
-            if result <= min_state {
-                min_state = result;
+fn solve_locking_k(packages: &[usize], target: usize, min_len: usize, k: usize) -> Option<usize> {
+    let mut results = Vec::new();
+    for locked in packages[..min_len].iter().combinations(k) {
+        let partial_weight: usize = locked.iter().copied().sum();
+        let partial_qe: usize = locked.iter().copied().product();
+        for o in 1..=min_len - k + 1 {
+            for group in packages[min_len..].iter().combinations(o) {
+                if group.iter().copied().sum::<usize>() + partial_weight == target {
+                    results.push(group.into_iter().product::<usize>() * partial_qe);
+                }
             }
         }
     }
-    min_state
+    results.into_iter().min()
+}
+
+fn solve_greedy(input: &str, groups: usize) -> usize {
+    let mut packages = parse(input);
+    packages.sort();
+    packages.reverse();
+    let target = packages.iter().sum::<usize>() / groups;
+    let mut weight = 0;
+    let mut min_len = 0;
+    while weight < target {
+        weight += packages[min_len];
+        min_len += 1;
+    }
+    for k in (1..=min_len - 1).rev() {
+        if let Some(qe) = solve_locking_k(&packages, target, min_len, k) {
+            return qe;
+        }
+    }
+    unreachable!("No solution found");
 }
 
 pub mod part1 {
-    use crate::day_24::{explore, parse};
+    use crate::day_24::solve_greedy;
 
     pub fn solve(input: &str) -> usize {
-        let packages = parse(input);
-        explore(
-            &packages,
-            0,
-            packages.iter().sum::<usize>() / 3,
-            &mut [0; 3],
-            (0, 1),
-            (usize::MAX, usize::MAX),
-        )
-        .1
+        solve_greedy(input, 3)
     }
 }
 
 pub mod part2 {
-    use crate::day_24::{explore, parse};
+    use crate::day_24::solve_greedy;
 
     pub fn solve(input: &str) -> usize {
-        let packages = parse(input);
-        explore(
-            &packages,
-            0,
-            packages.iter().sum::<usize>() / 4,
-            &mut [0; 4],
-            (0, 1),
-            (usize::MAX, usize::MAX),
-        )
-        .1
+        solve_greedy(input, 4)
     }
 }
 
