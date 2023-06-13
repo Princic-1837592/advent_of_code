@@ -21,15 +21,17 @@ pub mod part1 {
 
 pub mod part2 {
     use md5::compute;
+    use rayon::prelude::*;
 
     pub fn solve(input: &str) -> usize {
-        for i in 0.. {
-            let digest = compute(format!("{}{}", input, i));
-            if (((digest[0] as u32) << 16) | ((digest[1] as u32) << 8) | (digest[2] as u32)) == 0 {
-                return i;
-            }
-        }
-        unreachable!()
+        (0..=10_000_000)
+            .into_par_iter()
+            .filter(|i| {
+                let digest = compute(format!("{}{}", input, i));
+                (((digest[0] as u32) << 16) | ((digest[1] as u32) << 8) | (digest[2] as u32)) == 0
+            })
+            .min()
+            .unwrap()
     }
 }
 
