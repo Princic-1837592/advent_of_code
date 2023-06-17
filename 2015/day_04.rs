@@ -10,7 +10,8 @@ pub mod part1 {
         for i in 0.. {
             let digest = compute(format!("{}{}", input, i));
             if (((digest[0] as u32) << 16) | ((digest[1] as u32) << 8) | (digest[2] as u32))
-                < 0b00000000_00000000_00010000
+                & 0b11111111_11111111_11110000
+                == 0
             {
                 return i;
             }
