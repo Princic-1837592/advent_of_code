@@ -3,18 +3,25 @@
 
 use std::{fs::read_to_string, time::Instant};
 
+const CHARS: [char; 16] = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
+];
+
 pub mod part1 {
     use md5::compute;
     use rayon::prelude::*;
 
+    use crate::day_05::CHARS;
+
     pub fn solve(input: &str) -> String {
-        let input = input.to_owned();
         let result: String = (0..20_000_000)
             .into_par_iter()
             .flat_map(|i| {
-                let hash = format!("{:?}", compute(input.clone() + &*i.to_string()));
-                hash.starts_with("00000")
-                    .then_some(hash.chars().nth(5).unwrap())
+                let digest = compute(format!("{}{}", input, i));
+                ((((digest[0] as u32) << 16) | ((digest[1] as u32) << 8) | (digest[2] as u32))
+                    & 0b11111111_11111111_11110000
+                    == 0)
+                    .then(|| CHARS[(digest[2] & 0b1111) as usize])
             })
             .collect();
         result.chars().take(8).collect()
@@ -25,19 +32,27 @@ pub mod part2 {
     use md5::compute;
     use rayon::prelude::*;
 
+    use crate::day_05::CHARS;
+
     pub fn solve(input: &str) -> String {
         let input = input.to_owned();
-        let mut result = [' '; 8];
-        let hashes: Vec<_> = (0..200_000_000)
+        let hashes: Vec<_> = (0..40_000_000)
             .into_par_iter()
             .flat_map(|i| {
-                let hash = format!("{:?}", compute(input.clone() + &*i.to_string()));
-                let mut chars = hash.chars();
-                let index = chars.nth(5).unwrap();
-                (hash.starts_with("00000") && index.is_ascii_digit() && index < '8')
-                    .then(|| (index.to_digit(10).unwrap() as usize, chars.next().unwrap()))
+                let digest = compute(format!("{}{}", input, i));
+                if (((digest[0] as u32) << 16) | ((digest[1] as u32) << 8) | (digest[2] as u32))
+                    & 0b11111111_11111111_11110000
+                    == 0
+                {
+                    let index = digest[2] & 0b1111;
+                    if index < 10 {
+                        return Some((index as usize, CHARS[(digest[3] >> 4) as usize]));
+                    }
+                }
+                None
             })
             .collect();
+        let mut result = [' '; 8];
         for (i, char) in hashes {
             if i < result.len() && result[i] == ' ' {
                 result[i] = char
