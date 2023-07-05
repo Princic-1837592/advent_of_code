@@ -168,7 +168,6 @@ fn move_one(
     mut min_floor: usize,
     state: &[Vec<Item>; 4],
 ) -> usize {
-    let mut moved = 0;
     for (i, &item) in state[floor].clone().iter().enumerate() {
         let mut next_state = state.clone();
         next_state[floor].swap_remove(i);
@@ -178,10 +177,10 @@ fn move_one(
         }
         if is_valid(&next_state) {
             queue.push_back((step + 1, next_floor, next_state, min_floor));
-            moved += 1
+            return 1;
         }
     }
-    moved
+    0
 }
 
 fn move_two(
