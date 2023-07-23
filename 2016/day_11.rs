@@ -2,227 +2,195 @@
 //! https://adventofcode.com/2016/day/11/input
 
 use std::{
-    collections::{HashSet, VecDeque},
+    collections::{hash_map::Entry, HashMap},
     fs::read_to_string,
     time::Instant,
 };
 
 use regex::Regex;
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
-enum Item {
-    G(usize),
-    M(usize),
+const UP: usize = 0;
+const DOWN: usize = 1;
+const GENERATOR: usize = 0;
+const MICROCHIP: usize = 1;
+const FIRST_FLOOR: usize = 0;
+const LAST_FLOOR: usize = 3;
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
+struct State {
+    items: usize,
+    elevator: usize,
 }
 
-type StateQueue = VecDeque<(usize, usize, [Vec<Item>; 4], usize)>;
+fn gm(generator: usize, microchip: usize) -> usize {
+    1 << (generator << 4) << (microchip << 2)
+}
 
-fn parse(input: &str) -> [Vec<Item>; 4] {
-    let pattern = Regex::new(r"(\w+)(?:-compatible)? (generator|microchip)").unwrap();
-    let mut result = [vec![], vec![], vec![], vec![]];
-    let mut types: Vec<&str> = vec![];
-    for (i, line) in input.lines().enumerate() {
-        let floor = &mut result[i];
+fn parse(input: &str) -> (State, State) {
+    #[derive(Debug, Clone, Copy)]
+    struct Pair {
+        generator: usize,
+        microchip: usize,
+    }
+
+    let mut elements: HashMap<&str, Pair> = HashMap::new();
+    let pattern = Regex::new(r"a (\w+)( generator|-compatible microchip)").unwrap();
+    for (floor, line) in input.lines().enumerate() {
         for capture in pattern.captures_iter(line) {
-            let (name, item_type) = (
-                capture.get(1).unwrap().as_str(),
-                capture.get(2).unwrap().as_str(),
-            );
-            let index = if let Some(i) = types.iter().position(|&item| name == item) {
-                i
-            } else {
-                let i = types.len();
-                types.push(name);
-                i
-            };
-            floor.push(if item_type.starts_with('g') {
-                Item::G(index)
-            } else {
-                Item::M(index)
-            });
+            let element = capture.get(1).unwrap().as_str();
+            let item = capture.get(2).unwrap().as_str().chars().nth(1).unwrap();
+            match elements.entry(element) {
+                Entry::Occupied(mut entry) => {
+                    let entry = entry.get_mut();
+                    if item == 'g' {
+                        entry.generator = floor;
+                    } else {
+                        entry.microchip = floor;
+                    }
+                }
+                Entry::Vacant(entry) => {
+                    if item == 'g' {
+                        entry.insert(Pair {
+                            generator: floor,
+                            microchip: 0,
+                        });
+                    } else {
+                        entry.insert(Pair {
+                            generator: 0,
+                            microchip: floor,
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    let mut start = State {
+        items: 0,
+        elevator: FIRST_FLOOR,
+    };
+    let mut end = State {
+        items: 0,
+        elevator: LAST_FLOOR,
+    };
+    for pair in elements.values() {
+        start.items += gm(pair.generator, pair.microchip);
+        end.items += gm(LAST_FLOOR, LAST_FLOOR);
+    }
+    (start, end)
+}
+
+fn udgmo(up_down: usize, gen_or_micro: usize, other: usize) -> usize {
+    (up_down << 3) | (gen_or_micro << 2) | other
+}
+
+fn move_table() -> [[usize; 16]; 4] {
+    let mut result = [[0x8888888888888888; 16]; 4];
+    for (floor, row) in result.iter_mut().enumerate() {
+        for other in FIRST_FLOOR..=LAST_FLOOR {
+            if floor > FIRST_FLOOR {
+                row[udgmo(DOWN, GENERATOR, other)] =
+                    gm(floor - 1, other).wrapping_sub(gm(floor, other));
+                row[udgmo(DOWN, MICROCHIP, other)] =
+                    gm(other, floor - 1).wrapping_sub(gm(other, floor));
+            }
+            if floor < LAST_FLOOR {
+                row[udgmo(UP, GENERATOR, other)] =
+                    gm(floor + 1, other).wrapping_sub(gm(floor, other));
+                row[udgmo(UP, MICROCHIP, other)] =
+                    gm(other, floor + 1).wrapping_sub(gm(other, floor));
+            }
         }
     }
     result
 }
 
-#[allow(unused)]
-fn to_string(step: usize, floor: usize, state: &[Vec<Item>]) -> String {
-    let mut result = String::from(&format!("{}\n", step));
-    for i in (0..state.len()).rev() {
-        let mut line = String::new();
-        line.push('F');
-        line.push_str(&(i + 1).to_string());
-        line.push(' ');
-        line.push_str(if floor == i { "E " } else { "  " });
-        line.push_str(&format!("{:?}\n", state[i]));
-        result.push_str(&line);
-    }
-    result
+fn legal(state: usize) -> bool {
+    state & 0x8888888888888888 == 0
 }
 
-fn is_valid(floors: &[Vec<Item>; 4]) -> bool {
-    for floor in floors {
-        for i in floor.iter().filter_map(|item| {
-            if let &Item::M(i) = item {
-                Some(i)
-            } else {
-                None
-            }
-        }) {
-            if !floor.contains(&Item::G(i))
-                && floor
-                    .iter()
-                    .filter_map(|item| {
-                        if let &Item::G(i) = item {
-                            Some(i)
-                        } else {
-                            None
-                        }
-                    })
-                    .any(|other| other != i)
-            {
-                return false;
-            }
-        }
-    }
-    true
+fn compatible(state: usize) -> bool {
+    !(state & 0x000000000000ffff != 0 && state & 0x000f000f000f0000 != 0
+        || state & 0x00000000ffff0000 != 0 && state & 0x00f000f0000000f0 != 0
+        || state & 0x0000ffff00000000 != 0 && state & 0x0f0000000f000f00 != 0
+        || state & 0xffff000000000000 != 0 && state & 0x0000f000f000f000 != 0)
 }
 
-fn hash_state(state: &[Vec<Item>; 4]) -> [Vec<Item>; 4] {
-    let mut hash = [vec![], vec![], vec![], vec![]];
-    let mut types: Vec<usize> = vec![];
-    for (i, floor) in state.iter().enumerate() {
-        for &item in floor {
-            let id = match item {
-                Item::G(i) | Item::M(i) => i,
-            };
-            let index = if let Some(i) = types.iter().position(|&item| id == item) {
-                i
-            } else {
-                let i = types.len();
-                types.push(id);
-                i
-            };
-            hash[i].push(match item {
-                Item::G(_) => Item::G(index),
-                Item::M(_) => Item::M(index),
-            });
-        }
-    }
-    hash
+fn sign(depth: isize) -> isize {
+    (depth * 2 + 1).signum()
 }
 
-fn solve_generic(floors: [Vec<Item>; 4]) -> usize {
-    let mut queue = VecDeque::from([(0, 0, floors, 0)]);
-    let mut visited = HashSet::new();
-    while let Some((step, floor, state, min_floor)) = queue.pop_front() {
-        let hash = hash_state(&state);
-        if visited.contains(&(floor, hash.clone())) {
-            continue;
-        }
-        visited.insert((floor, hash));
-        if min_floor == state.len() - 1 {
-            return step;
-        }
-        if floor != state.len() - 1 {
-            move_up(&mut queue, step, floor, &state, min_floor);
-        }
-        if floor > min_floor {
-            move_down(&mut queue, step, floor, &state, min_floor);
-        }
-    }
-    unreachable!()
-}
-
-fn move_up(
-    queue: &mut StateQueue,
-    step: usize,
-    floor: usize,
-    state: &[Vec<Item>; 4],
-    min_floor: usize,
-) {
-    let next_floor = floor + 1;
-    if move_two(queue, step, floor, next_floor, min_floor, state) == 0 {
-        move_one(queue, step, floor, next_floor, min_floor, state);
-    }
-}
-
-fn move_down(
-    queue: &mut StateQueue,
-    step: usize,
-    floor: usize,
-    state: &[Vec<Item>; 4],
-    min_floor: usize,
-) {
-    let next_floor = floor - 1;
-    if move_one(queue, step, floor, next_floor, min_floor, state) == 0 {
-        move_two(queue, step, floor, next_floor, min_floor, state);
-    }
-}
-
-fn move_one(
-    queue: &mut StateQueue,
-    step: usize,
-    floor: usize,
-    next_floor: usize,
-    mut min_floor: usize,
-    state: &[Vec<Item>; 4],
-) -> usize {
-    for (i, &item) in state[floor].clone().iter().enumerate() {
-        let mut next_state = state.clone();
-        next_state[floor].swap_remove(i);
-        next_state[next_floor].push(item);
-        if next_floor > floor && floor == min_floor && next_state[floor].is_empty() {
-            min_floor += 1;
-        }
-        if is_valid(&next_state) {
-            queue.push_back((step + 1, next_floor, next_state, min_floor));
-            return 1;
-        }
-    }
-    0
-}
-
-fn move_two(
-    queue: &mut StateQueue,
-    step: usize,
-    floor: usize,
-    next_floor: usize,
-    mut min_floor: usize,
-    state: &[Vec<Item>; 4],
-) -> usize {
-    let mut pairs_moved = 0;
-    for (i, &first) in state[floor].clone().iter().enumerate() {
-        for (j, &second) in state[floor].clone().iter().enumerate().skip(i + 1) {
-            if match (first, second) {
-                (Item::M(_), Item::M(_)) | (Item::G(_), Item::G(_)) => true,
-                (Item::M(i), Item::G(j)) | (Item::G(i), Item::M(j)) if i == j => true,
-                _ => false,
-            } {
-                let mut next_state = state.clone();
-                next_state[floor].swap_remove(j);
-                next_state[floor].swap_remove(i);
-                next_state[next_floor].push(first);
-                next_state[next_floor].push(second);
-                if next_floor > floor && floor == min_floor && next_state[floor].is_empty() {
-                    min_floor += 1;
+fn solve_generic(start: State, end: State) -> usize {
+    let move_table = move_table();
+    let (mut prev, mut curr, mut next) = (
+        HashMap::new(),
+        HashMap::from([(start, 0), (end, -1)]),
+        HashMap::new(),
+    );
+    for _ in 0..1000 {
+        for (&State { items, elevator }, &depth) in &curr {
+            for c1 in 0..16 {
+                let items = items.wrapping_add(move_table[elevator][c1]);
+                if !legal(items) {
+                    continue;
                 }
-                if is_valid(&next_state) {
-                    queue.push_back((step + 1, next_floor, next_state, min_floor));
-                    pairs_moved += 1;
+                let next_elevator = elevator.wrapping_sub((c1 >> 2) & 2).wrapping_add(1);
+                for c2 in 0..=8 {
+                    let mut items = items;
+                    if c2 != 8 {
+                        items = items.wrapping_add(move_table[elevator][c2 | (c1 & 8)]);
+                    }
+                    if !legal(items) || !compatible(items) {
+                        continue;
+                    }
+                    let state = State {
+                        items,
+                        elevator: next_elevator,
+                    };
+                    let mut contained;
+                    if !{
+                        contained = prev.get(&state);
+                        contained.is_some()
+                    } && !{
+                        contained = curr.get(&state);
+                        contained.is_some()
+                    } && !{
+                        contained = next.get(&state);
+                        contained.is_some()
+                    } {
+                        next.insert(state, depth + sign(depth));
+                    } else if sign(depth) != sign(*contained.unwrap()) {
+                        return depth.unsigned_abs() + contained.unwrap().unsigned_abs();
+                    }
                 }
             }
         }
+        let tmp = prev;
+        prev = curr;
+        curr = next;
+        next = tmp;
+        next.clear();
     }
-    pairs_moved
+    usize::MAX
 }
 
 pub mod part1 {
     use crate::day_11::{parse, solve_generic};
 
     pub fn solve(input: &str) -> usize {
-        let floors = parse(input);
-        solve_generic(floors)
+        let (start, end) = parse(input);
+        solve_generic(start, end)
+    }
+}
+
+pub mod part2 {
+    use crate::day_11::{gm, parse, solve_generic, FIRST_FLOOR, LAST_FLOOR};
+
+    pub fn solve(input: &str) -> usize {
+        let (mut start, mut end) = parse(input);
+        start.items += 2 * gm(FIRST_FLOOR, FIRST_FLOOR);
+        end.items += 2 * gm(LAST_FLOOR, LAST_FLOOR);
+        solve_generic(start, end)
     }
 }
 
@@ -237,10 +205,9 @@ The fourth floor contains nothing relevant.".to_owned();
         read_to_string("inputs/day_11_input.txt").unwrap()
     };
     let start = Instant::now();
-    let first_part = part1::solve(&puzzle_input);
-    println!("{}", first_part);
+    println!("{}", part1::solve(&puzzle_input));
     println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", first_part + 12 + 12);
+    println!("{}", part2::solve(&puzzle_input));
     println!("Run in {:?}", start.elapsed());
 }
