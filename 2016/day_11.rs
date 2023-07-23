@@ -9,33 +9,33 @@ use std::{
 
 use regex::Regex;
 
-const UP: usize = 0;
-const DOWN: usize = 1;
-const GENERATOR: usize = 0;
-const MICROCHIP: usize = 1;
-const FIRST_FLOOR: usize = 0;
-const LAST_FLOOR: usize = 3;
+const UP: u64 = 0;
+const DOWN: u64 = 1;
+const GENERATOR: u64 = 0;
+const MICROCHIP: u64 = 1;
+const FIRST_FLOOR: u64 = 0;
+const LAST_FLOOR: u64 = 3;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 struct State {
-    items: usize,
-    elevator: usize,
+    items: u64,
+    elevator: u8,
 }
 
-fn gm(generator: usize, microchip: usize) -> usize {
+fn gm(generator: u64, microchip: u64) -> u64 {
     1 << (generator << 4) << (microchip << 2)
 }
 
 fn parse(input: &str) -> (State, State) {
     #[derive(Debug, Clone, Copy)]
     struct Pair {
-        generator: usize,
-        microchip: usize,
+        generator: u64,
+        microchip: u64,
     }
 
     let mut elements: HashMap<&str, Pair> = HashMap::new();
     let pattern = Regex::new(r"a (\w+)( generator|-compatible microchip)").unwrap();
-    for (floor, line) in input.lines().enumerate() {
+    for (floor, line) in input.lines().enumerate().map(|(i, l)| (i as u64, l)) {
         for capture in pattern.captures_iter(line) {
             let element = capture.get(1).unwrap().as_str();
             let item = capture.get(2).unwrap().as_str().chars().nth(1).unwrap();
@@ -67,11 +67,11 @@ fn parse(input: &str) -> (State, State) {
 
     let mut start = State {
         items: 0,
-        elevator: FIRST_FLOOR,
+        elevator: FIRST_FLOOR as u8,
     };
     let mut end = State {
         items: 0,
-        elevator: LAST_FLOOR,
+        elevator: LAST_FLOOR as u8,
     };
     for pair in elements.values() {
         start.items += gm(pair.generator, pair.microchip);
@@ -80,24 +80,24 @@ fn parse(input: &str) -> (State, State) {
     (start, end)
 }
 
-fn udgmo(up_down: usize, gen_or_micro: usize, other: usize) -> usize {
+fn udgmo(up_down: u64, gen_or_micro: u64, other: u64) -> u64 {
     (up_down << 3) | (gen_or_micro << 2) | other
 }
 
-fn move_table() -> [[usize; 16]; 4] {
+fn move_table() -> [[u64; 16]; 4] {
     let mut result = [[0x8888888888888888; 16]; 4];
-    for (floor, row) in result.iter_mut().enumerate() {
+    for (floor, row) in result.iter_mut().enumerate().map(|(i, r)| (i as u64, r)) {
         for other in FIRST_FLOOR..=LAST_FLOOR {
             if floor > FIRST_FLOOR {
-                row[udgmo(DOWN, GENERATOR, other)] =
+                row[udgmo(DOWN, GENERATOR, other) as usize] =
                     gm(floor - 1, other).wrapping_sub(gm(floor, other));
-                row[udgmo(DOWN, MICROCHIP, other)] =
+                row[udgmo(DOWN, MICROCHIP, other) as usize] =
                     gm(other, floor - 1).wrapping_sub(gm(other, floor));
             }
             if floor < LAST_FLOOR {
-                row[udgmo(UP, GENERATOR, other)] =
+                row[udgmo(UP, GENERATOR, other) as usize] =
                     gm(floor + 1, other).wrapping_sub(gm(floor, other));
-                row[udgmo(UP, MICROCHIP, other)] =
+                row[udgmo(UP, MICROCHIP, other) as usize] =
                     gm(other, floor + 1).wrapping_sub(gm(other, floor));
             }
         }
@@ -105,11 +105,11 @@ fn move_table() -> [[usize; 16]; 4] {
     result
 }
 
-fn legal(state: usize) -> bool {
+fn legal(state: u64) -> bool {
     state & 0x8888888888888888 == 0
 }
 
-fn compatible(state: usize) -> bool {
+fn compatible(state: u64) -> bool {
     !(state & 0x000000000000ffff != 0 && state & 0x000f000f000f0000 != 0
         || state & 0x00000000ffff0000 != 0 && state & 0x00f000f0000000f0 != 0
         || state & 0x0000ffff00000000 != 0 && state & 0x0f0000000f000f00 != 0
@@ -130,15 +130,15 @@ fn solve_generic(start: State, end: State) -> usize {
     for _ in 0..1000 {
         for (&State { items, elevator }, &depth) in &curr {
             for c1 in 0..16 {
-                let items = items.wrapping_add(move_table[elevator][c1]);
+                let items = items.wrapping_add(move_table[elevator as usize][c1]);
                 if !legal(items) {
                     continue;
                 }
-                let next_elevator = elevator.wrapping_sub((c1 >> 2) & 2).wrapping_add(1);
+                let next_elevator = elevator.wrapping_sub(((c1 >> 2) & 2) as u8).wrapping_add(1);
                 for c2 in 0..=8 {
                     let mut items = items;
                     if c2 != 8 {
-                        items = items.wrapping_add(move_table[elevator][c2 | (c1 & 8)]);
+                        items = items.wrapping_add(move_table[elevator as usize][c2 | (c1 & 8)]);
                     }
                     if !legal(items) || !compatible(items) {
                         continue;
