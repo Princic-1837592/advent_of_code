@@ -120,7 +120,7 @@ fn sign(depth: isize) -> isize {
     (depth * 2 + 1).signum()
 }
 
-fn find_min_floor(state: u64) -> u64 {
+fn find_min_floor(state: u64) -> usize {
     if state & 0x000f_000f_000f_ffff != 0 {
         0
     } else if state & 0x00f0_00f0_ffff_00f0 != 0 {
@@ -132,7 +132,7 @@ fn find_min_floor(state: u64) -> u64 {
     }
 }
 
-fn find_max_floor(state: u64) -> u64 {
+fn find_max_floor(state: u64) -> usize {
     if state & 0xffff_f000_f000_f000 != 0 {
         3
     } else if state & 0x0f00_ffff_0f00_0f00 != 0 {
@@ -181,10 +181,8 @@ fn solve_generic(start: State, end: State) -> usize {
                     if !legal(items) || !compatible(items) {
                         continue;
                     }
-                    let end_min_floor = find_min_floor(items);
-                    let end_max_floor = find_max_floor(items);
-                    if cur_sign == -1 && end_max_floor > start_max_floor
-                        || cur_sign == 1 && end_min_floor < start_min_floor
+                    if cur_sign == -1 && next_elevator > start_max_floor
+                        || cur_sign == 1 && next_elevator < start_min_floor
                     {
                         continue;
                     }
