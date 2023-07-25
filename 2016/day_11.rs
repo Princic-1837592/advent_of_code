@@ -19,7 +19,7 @@ const LAST_FLOOR: u64 = 3;
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 struct State {
     items: u64,
-    elevator: u8,
+    elevator: usize,
 }
 
 fn gm(generator: u64, microchip: u64) -> u64 {
@@ -67,11 +67,11 @@ fn parse(input: &str) -> (State, State) {
 
     let mut start = State {
         items: 0,
-        elevator: FIRST_FLOOR as u8,
+        elevator: FIRST_FLOOR as usize,
     };
     let mut end = State {
         items: 0,
-        elevator: LAST_FLOOR as u8,
+        elevator: LAST_FLOOR as usize,
     };
     for pair in elements.values() {
         start.items += gm(pair.generator, pair.microchip);
@@ -142,15 +142,15 @@ fn solve_generic(start: State, end: State) -> usize {
         for (&State { items, elevator }, &depth) in &curr {
             let cur_sign = sign(depth);
             for c1 in 0..16 {
-                let items = items.wrapping_add(move_table[elevator as usize][c1]);
+                let items = items.wrapping_add(move_table[elevator][c1]);
                 if !legal(items) {
                     continue;
                 }
-                let next_elevator = elevator.wrapping_sub(((c1 >> 2) & 2) as u8).wrapping_add(1);
+                let next_elevator = elevator.wrapping_sub((c1 >> 2) & 2).wrapping_add(1);
                 for c2 in 0..=8 {
                     let mut items = items;
                     if c2 != 8 {
-                        items = items.wrapping_add(move_table[elevator as usize][c2 | (c1 & 8)]);
+                        items = items.wrapping_add(move_table[elevator][c2 | (c1 & 8)]);
                     }
                     if !legal(items) || !compatible(items) {
                         continue;
