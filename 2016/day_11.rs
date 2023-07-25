@@ -140,6 +140,7 @@ fn solve_generic(start: State, end: State) -> usize {
     );
     while !curr.is_empty() {
         for (&State { items, elevator }, &depth) in &curr {
+            let cur_sign = sign(depth);
             for c1 in 0..16 {
                 let items = items.wrapping_add(move_table[elevator as usize][c1]);
                 if !legal(items) {
@@ -169,8 +170,8 @@ fn solve_generic(start: State, end: State) -> usize {
                         contained = next.get(&state);
                         contained.is_some()
                     } {
-                        next.insert(state, depth + sign(depth));
-                    } else if sign(depth) != sign(*contained.unwrap()) {
+                        next.insert(state, depth + cur_sign);
+                    } else if cur_sign != sign(*contained.unwrap()) {
                         return depth.unsigned_abs() + contained.unwrap().unsigned_abs();
                     }
                 }
