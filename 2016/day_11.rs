@@ -120,6 +120,17 @@ fn sign(depth: isize) -> isize {
     (depth * 2 + 1).signum()
 }
 
+#[allow(unused)]
+fn pretty_print(state: u64) -> String {
+    format!(
+        "0x_{:0>4x}_{:0>4x}_{:0>4x}_{:0>4x}",
+        (state & 0xffff_0000_0000_0000) >> 48,
+        (state & 0x0000_ffff_0000_0000) >> 32,
+        (state & 0x0000_0000_ffff_0000) >> 16,
+        (state & 0x0000_0000_0000_ffff)
+    )
+}
+
 fn solve_generic(start: State, end: State) -> usize {
     let move_table = move_table();
     let (mut prev, mut curr, mut next) = (
