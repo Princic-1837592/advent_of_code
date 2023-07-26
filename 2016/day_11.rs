@@ -85,7 +85,7 @@ fn udgmo(up_down: u64, gen_or_micro: u64, other: u64) -> u64 {
 }
 
 fn move_table() -> [[u64; 16]; 4] {
-    let mut result = [[0x8888888888888888; 16]; 4];
+    let mut result = [[0x8888_8888_8888_8888; 16]; 4];
     for (floor, row) in result.iter_mut().enumerate().map(|(i, r)| (i as u64, r)) {
         for other in FIRST_FLOOR..=LAST_FLOOR {
             if floor > FIRST_FLOOR {
@@ -106,14 +106,14 @@ fn move_table() -> [[u64; 16]; 4] {
 }
 
 fn legal(state: u64) -> bool {
-    state & 0x8888888888888888 == 0
+    state & 0x8888_8888_8888_8888 == 0
 }
 
 fn compatible(state: u64) -> bool {
-    !(state & 0x000000000000ffff != 0 && state & 0x000f000f000f0000 != 0
-        || state & 0x00000000ffff0000 != 0 && state & 0x00f000f0000000f0 != 0
-        || state & 0x0000ffff00000000 != 0 && state & 0x0f0000000f000f00 != 0
-        || state & 0xffff000000000000 != 0 && state & 0x0000f000f000f000 != 0)
+    !(state & 0x0000_0000_0000_ffff != 0 && state & 0x000f_000f_000f_0000 != 0
+        || state & 0x0000_0000_ffff_0000 != 0 && state & 0x00f0_00f0_0000_00f0 != 0
+        || state & 0x0000_ffff_0000_0000 != 0 && state & 0x0f00_0000_0f00_0f00 != 0
+        || state & 0xffff_0000_0000_0000 != 0 && state & 0x0000_f000_f000_f000 != 0)
 }
 
 fn sign(depth: isize) -> isize {
