@@ -159,20 +159,18 @@ fn solve_generic(start: State, end: State) -> usize {
                         items,
                         elevator: next_elevator,
                     };
-                    let mut contained;
-                    if !{
-                        contained = prev.get(&state);
-                        contained.is_some()
-                    } && !{
-                        contained = curr.get(&state);
-                        contained.is_some()
-                    } && !{
-                        contained = next.get(&state);
-                        contained.is_some()
-                    } {
-                        next.insert(state, depth + cur_sign);
-                    } else if cur_sign != sign(*contained.unwrap()) {
-                        return depth.unsigned_abs() + contained.unwrap().unsigned_abs();
+                    match prev
+                        .get(&state)
+                        .or_else(|| curr.get(&state))
+                        .or_else(|| next.get(&state))
+                    {
+                        None => {
+                            next.insert(state, depth + cur_sign);
+                        }
+                        Some(&contained) if cur_sign != sign(contained) => {
+                            return depth.unsigned_abs() + contained.unsigned_abs();
+                        }
+                        _ => {}
                     }
                 }
             }
