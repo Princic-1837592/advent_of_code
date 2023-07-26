@@ -124,8 +124,8 @@ fn sign(depth: isize) -> isize {
 fn pretty_print(state: u64) -> String {
     format!(
         "0x_{:0>4x}_{:0>4x}_{:0>4x}_{:0>4x}",
-        (state & 0xffff_0000_0000_0000) >> 48,
-        (state & 0x0000_ffff_0000_0000) >> 32,
+        (state & 0xffff_0000_0000_0000) >> (16 * 3),
+        (state & 0x0000_ffff_0000_0000) >> (16 * 2),
         (state & 0x0000_0000_ffff_0000) >> 16,
         (state & 0x0000_0000_0000_ffff)
     )
