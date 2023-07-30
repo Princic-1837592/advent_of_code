@@ -3,6 +3,8 @@
 
 use std::{collections::VecDeque, fs::read_to_string, time::Instant};
 
+use itertools::Itertools;
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Cell {
     Wall,
@@ -81,57 +83,43 @@ fn bfs(cells: &Cells, number: usize, numbers: &Vec<Coord>) -> Vec<usize> {
     distances
 }
 
-pub mod part1 {
-    use itertools::Itertools;
+fn solve_generic(input: &str, go_back: bool) -> usize {
+    let (cells, numbers) = parse(input);
+    let mut distances = Vec::with_capacity(numbers.len());
+    for number in 0..numbers.len() {
+        distances.push(bfs(&cells, number, &numbers));
+    }
+    (1..numbers.len())
+        .permutations(numbers.len() - 1)
+        .map(|perm| {
+            let mut distance = 0;
+            let mut node = 0;
+            for dest in perm {
+                distance += distances[node][dest];
+                node = dest;
+            }
+            if go_back {
+                distance += distances[node][0];
+            }
+            distance
+        })
+        .min()
+        .unwrap()
+}
 
-    use crate::day_24::{bfs, parse};
+pub mod part1 {
+    use crate::day_24::solve_generic;
 
     pub fn solve(input: &str) -> usize {
-        let (cells, numbers) = parse(input);
-        let mut distances = Vec::with_capacity(numbers.len());
-        for number in 0..numbers.len() {
-            distances.push(bfs(&cells, number, &numbers));
-        }
-        (1..numbers.len())
-            .permutations(numbers.len() - 1)
-            .map(|perm| {
-                let mut distance = 0;
-                let mut node = 0;
-                for dest in perm {
-                    distance += distances[node][dest];
-                    node = dest;
-                }
-                distance
-            })
-            .min()
-            .unwrap()
+        solve_generic(input, false)
     }
 }
 
 pub mod part2 {
-    use itertools::Itertools;
-
-    use crate::day_24::{bfs, parse};
+    use crate::day_24::solve_generic;
 
     pub fn solve(input: &str) -> usize {
-        let (cells, numbers) = parse(input);
-        let mut distances = Vec::with_capacity(numbers.len());
-        for number in 0..numbers.len() {
-            distances.push(bfs(&cells, number, &numbers));
-        }
-        (1..numbers.len())
-            .permutations(numbers.len() - 1)
-            .map(|perm| {
-                let mut distance = 0;
-                let mut node = 0;
-                for dest in perm {
-                    distance += distances[node][dest];
-                    node = dest;
-                }
-                distance + distances[node][0]
-            })
-            .min()
-            .unwrap()
+        solve_generic(input, true)
     }
 }
 
