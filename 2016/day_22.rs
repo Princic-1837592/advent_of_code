@@ -18,31 +18,35 @@ struct Node {
 
 impl From<&str> for Node {
     fn from(string: &str) -> Self {
-        let pattern =
-            Regex::new(r"/dev/grid/node-x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+(\d+)%")
-                .unwrap();
-        let captures = pattern.captures(string).unwrap();
+        let mut parts = string.split_whitespace();
+        let mut location = parts.next().unwrap().split('-');
+        let x = location.nth(1).unwrap()[1..].parse().unwrap();
+        let y = location.next().unwrap()[1..].parse().unwrap();
+        let mut part = parts.next().unwrap();
+        let size = part[..part.len() - 1].parse().unwrap();
+        part = parts.next().unwrap();
+        let used = part[..part.len() - 1].parse().unwrap();
+        part = parts.next().unwrap();
+        let avail = part[..part.len() - 1].parse().unwrap();
+        part = parts.next().unwrap();
+        let used_percentage = part[..part.len() - 1].parse().unwrap();
         Node {
-            x: captures.get(1).unwrap().as_str().parse().unwrap(),
-            y: captures.get(2).unwrap().as_str().parse().unwrap(),
-            size: captures.get(3).unwrap().as_str().parse().unwrap(),
-            used: captures.get(4).unwrap().as_str().parse().unwrap(),
-            avail: captures.get(5).unwrap().as_str().parse().unwrap(),
-            used_percentage: captures.get(6).unwrap().as_str().parse().unwrap(),
+            x,
+            y,
+            size,
+            used,
+            avail,
+            used_percentage,
         }
     }
 }
 
 fn parse(input: &str) -> Vec<Vec<Node>> {
     let nodes: Vec<_> = input.lines().skip(2).map(Node::from).collect();
-    let mut result = vec![];
+    let width = nodes.iter().map(|node| node.y).max().unwrap() + 1;
+    let height = nodes.iter().map(|node| node.x).max().unwrap() + 1;
+    let mut result = vec![vec![Node::default(); width]; height];
     for node in nodes {
-        if node.x >= result.len() {
-            result.resize(node.x + 1, vec![]);
-        }
-        if node.y >= result[node.x].len() {
-            result[node.x].resize(node.y + 1, Node::default());
-        }
         result[node.x][node.y] = node;
     }
     result
