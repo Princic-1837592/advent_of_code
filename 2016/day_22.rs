@@ -124,7 +124,8 @@ pub mod part2 {
 }
 
 pub fn main(test: bool) {
-    let test_input = "Filesystem            Size  Used  Avail  Use%
+    let test_input = "root@ebhq-gridcenter# df -h
+Filesystem            Size  Used  Avail  Use%
 /dev/grid/node-x0-y0   10T    8T     2T   80%
 /dev/grid/node-x0-y1   11T    6T     5T   54%
 /dev/grid/node-x0-y2   32T   28T     4T   87%
