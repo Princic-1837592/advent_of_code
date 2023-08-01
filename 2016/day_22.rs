@@ -3,8 +3,6 @@
 
 use std::{fs::read_to_string, time::Instant};
 
-use regex::Regex;
-
 #[derive(Copy, Clone, Debug, Default)]
 struct Node {
     x: usize,
@@ -53,20 +51,26 @@ fn parse(input: &str) -> Vec<Vec<Node>> {
 }
 
 pub mod part1 {
+    use std::cmp::Ordering;
+
     use crate::day_22::parse;
 
     pub fn solve(input: &str) -> usize {
         let nodes = parse(input);
+        let mut ordered: Vec<_> = nodes.iter().flatten().collect();
+        ordered.sort_by_key(|node| -(node.used as isize));
+        let last = ordered
+            .binary_search_by(|node| node.used.cmp(&0).reverse())
+            .unwrap_or(ordered.len());
+        ordered.truncate(last);
+        ordered.reverse();
         let mut pairs = 0;
-        for (i, a) in nodes.iter().flatten().enumerate() {
-            for b in nodes.iter().flatten().skip(i + 1) {
-                if a.used != 0 && b.avail >= a.used {
-                    pairs += 1
-                }
-                if b.used != 0 && a.avail >= b.used {
-                    pairs += 1
-                }
-            }
+        for node in nodes.iter().flatten() {
+            let can_contain = ordered.binary_search_by(|other| match node.avail.cmp(&other.used) {
+                Ordering::Less => Ordering::Greater,
+                Ordering::Equal | Ordering::Greater => Ordering::Less,
+            });
+            pairs += can_contain.unwrap_err();
         }
         pairs
     }
