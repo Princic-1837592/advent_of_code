@@ -64,13 +64,22 @@ pub mod part1 {
             .unwrap_or(ordered.len());
         ordered.truncate(last);
         ordered.reverse();
+        let mut positions = vec![vec![usize::MAX; nodes[0].len()]; nodes.len()];
+        for (i, node) in ordered.iter().enumerate() {
+            positions[node.x][node.y] = i;
+        }
         let mut pairs = 0;
         for node in nodes.iter().flatten() {
-            let can_contain = ordered.binary_search_by(|other| match node.avail.cmp(&other.used) {
-                Ordering::Less => Ordering::Greater,
-                Ordering::Equal | Ordering::Greater => Ordering::Less,
-            });
-            pairs += can_contain.unwrap_err();
+            let can_contain = ordered
+                .binary_search_by(|other| match node.avail.cmp(&other.used) {
+                    Ordering::Less => Ordering::Greater,
+                    Ordering::Equal | Ordering::Greater => Ordering::Less,
+                })
+                .unwrap_err();
+            pairs += can_contain;
+            if can_contain > positions[node.x][node.y] {
+                pairs -= 1;
+            }
         }
         pairs
     }
