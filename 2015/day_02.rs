@@ -17,18 +17,12 @@ fn parse(input: &str) -> Vec<(usize, usize, usize)> {
         .collect()
 }
 
-fn find_wrapping((l, w, h): &(usize, usize, usize)) -> usize {
-    2 * l * w + 2 * w * h + 2 * h * l + (l * w).min((w * h).min(h * l))
-}
-
-fn find_ribbon((l, w, h): &(usize, usize, usize)) -> usize {
-    let total = l + w + h;
-    let perimeter = total - l.max(w.max(h));
-    perimeter * 2 + l * w * h
-}
-
 pub mod part1 {
-    use crate::day_02::{find_wrapping, parse};
+    use crate::day_02::parse;
+
+    fn find_wrapping((l, w, h): &(usize, usize, usize)) -> usize {
+        2 * l * w + 2 * w * h + 2 * h * l + (l * w).min((w * h).min(h * l))
+    }
 
     pub fn solve(input: &str) -> usize {
         parse(input).iter().map(find_wrapping).sum()
@@ -36,7 +30,13 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_02::{find_ribbon, parse};
+    use crate::day_02::parse;
+
+    fn find_ribbon((l, w, h): &(usize, usize, usize)) -> usize {
+        let total = l + w + h;
+        let perimeter = total - l.max(w.max(h));
+        perimeter * 2 + l * w * h
+    }
 
     pub fn solve(input: &str) -> usize {
         parse(input).iter().map(find_ribbon).sum()
