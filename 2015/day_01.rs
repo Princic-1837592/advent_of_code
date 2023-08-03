@@ -5,11 +5,14 @@ use std::{fs::read_to_string, time::Instant};
 
 pub mod part1 {
     pub fn solve(input: &str) -> isize {
-        input.chars().fold(0, |acc, c| match c {
-            '(' => acc + 1,
-            ')' => acc - 1,
-            _ => acc,
-        })
+        input
+            .chars()
+            .map(|c| match c {
+                '(' => 1,
+                ')' => -1,
+                _ => 0,
+            })
+            .sum()
     }
 }
 
