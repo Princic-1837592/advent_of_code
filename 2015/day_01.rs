@@ -15,26 +15,18 @@ pub mod part1 {
 
 pub mod part2 {
     pub fn solve(input: &str) -> usize {
-        input
-            .chars()
-            .enumerate()
-            .map(|(i, c)| (i + 1, c))
-            .fold((false, 0, 0), |acc @ (mut found, mut floor, _), (i, c)| {
-                if found {
-                    acc
-                } else {
-                    floor += match c {
-                        '(' => 1,
-                        ')' => -1,
-                        _ => 0,
-                    };
-                    if floor <= -1 {
-                        found = true
-                    }
-                    (found, floor, i)
-                }
-            })
-            .2
+        let mut floor = 0;
+        for (i, c) in input.chars().enumerate() {
+            floor += match c {
+                ')' => -1,
+                '(' => 1,
+                _ => 0,
+            };
+            if floor <= -1 {
+                return i + 1;
+            }
+        }
+        unreachable!()
     }
 }
 
