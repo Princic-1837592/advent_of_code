@@ -3,40 +3,41 @@
 
 use std::{fs::read_to_string, time::Instant};
 
+fn find_difference(string: &str) -> usize {
+    let (code, memory, _, _) = string[1..string.len() - 1].chars().fold(
+        (2, 0, false, 0),
+        |(code, memory, last_escaped, skip), char| {
+            if skip > 0 {
+                (code + 1, memory, false, skip - 1)
+            } else if last_escaped {
+                if char == 'x' {
+                    (code + 1, memory + 1, false, 2)
+                } else {
+                    (code + 1, memory + 1, false, 0)
+                }
+            } else if char == '\\' {
+                (code + 1, memory, true, 0)
+            } else {
+                (code + 1, memory + 1, false, 0)
+            }
+        },
+    );
+    code - memory
+}
+
 pub mod part1 {
+    use crate::day_08::find_difference;
+
     pub fn solve(input: &str) -> usize {
-        let (code, memory) = input
-            .lines()
-            .map(|line| {
-                line[1..line.len() - 1].chars().fold(
-                    (2, 0, false, 0),
-                    |(code, memory, last_escaped, skip), char| {
-                        if skip > 0 {
-                            (code + 1, memory, false, skip - 1)
-                        } else if last_escaped {
-                            if char == 'x' {
-                                (code + 1, memory + 1, false, 2)
-                            } else {
-                                (code + 1, memory + 1, false, 0)
-                            }
-                        } else if char == '\\' {
-                            (code + 1, memory, true, 0)
-                        } else {
-                            (code + 1, memory + 1, false, 0)
-                        }
-                    },
-                )
-            })
-            .fold((0, 0), |(tot_code, tot_memory), (code, memory, _, _)| {
-                (tot_code + code, tot_memory + memory)
-            });
-        code - memory
+        input.lines().map(find_difference).sum()
     }
 }
 
 pub mod part2 {
+    use crate::day_08::find_difference;
+
     pub fn solve(input: &str) -> usize {
-        let (code, memory) = input
+        input
             .lines()
             .map(|line| {
                 let mut result = String::from('"');
@@ -49,30 +50,8 @@ pub mod part2 {
                 result.push('"');
                 result
             })
-            .map(|line| {
-                line[1..line.len() - 1].chars().fold(
-                    (2, 0, false, 0),
-                    |(code, memory, last_escaped, skip), char| {
-                        if skip > 0 {
-                            (code + 1, memory, false, skip - 1)
-                        } else if last_escaped {
-                            if char == 'x' {
-                                (code + 1, memory + 1, false, 2)
-                            } else {
-                                (code + 1, memory + 1, false, 0)
-                            }
-                        } else if char == '\\' {
-                            (code + 1, memory, true, 0)
-                        } else {
-                            (code + 1, memory + 1, false, 0)
-                        }
-                    },
-                )
-            })
-            .fold((0, 0), |(tot_code, tot_memory), (code, memory, _, _)| {
-                (tot_code + code, tot_memory + memory)
-            });
-        code - memory
+            .map(|string| find_difference(&string))
+            .sum()
     }
 }
 
