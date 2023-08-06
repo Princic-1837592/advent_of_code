@@ -4,25 +4,25 @@
 use std::{fs::read_to_string, time::Instant};
 
 fn find_difference(string: &str) -> usize {
-    let (code, memory, _, _) = string[1..string.len() - 1].chars().fold(
-        (2, 0, false, 0),
-        |(code, memory, last_escaped, skip), char| {
+    let (memory, _, _) = string[1..string.len() - 1].chars().fold(
+        (0, false, 0),
+        |(memory, last_escaped, skip), char| {
             if skip > 0 {
-                (code + 1, memory, false, skip - 1)
+                (memory, false, skip - 1)
             } else if last_escaped {
                 if char == 'x' {
-                    (code + 1, memory + 1, false, 2)
+                    (memory + 1, false, 2)
                 } else {
-                    (code + 1, memory + 1, false, 0)
+                    (memory + 1, false, 0)
                 }
             } else if char == '\\' {
-                (code + 1, memory, true, 0)
+                (memory, true, 0)
             } else {
-                (code + 1, memory + 1, false, 0)
+                (memory + 1, false, 0)
             }
         },
     );
-    code - memory
+    string.len() - memory
 }
 
 pub mod part1 {
