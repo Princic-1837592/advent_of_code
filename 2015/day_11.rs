@@ -11,6 +11,7 @@ type Password = Vec<usize>;
 
 fn parse(input: &str) -> Password {
     input
+        .trim()
         .chars()
         .rev()
         .map(|char| (char as u8 - b'a') as usize)
