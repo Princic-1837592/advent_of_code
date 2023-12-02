@@ -1,32 +1,89 @@
 //! https://adventofcode.com/2023/day/2
 //! https://adventofcode.com/2023/day/2/input
 
-#![allow(unused)]
-
 use std::{fs::read_to_string, time::Instant};
 
-fn parse(input: &str) -> usize {
-    0
+use regex::Regex;
+
+#[derive(Copy, Clone, Default, Debug)]
+struct Cubes {
+    red: usize,
+    green: usize,
+    blue: usize,
+}
+
+type Game = Vec<Cubes>;
+
+fn parse(input: &str) -> Vec<Game> {
+    let red = Regex::new(r"(\d+) red").unwrap();
+    let green = Regex::new(r"(\d+) green").unwrap();
+    let blue = Regex::new(r"(\d+) blue").unwrap();
+    input
+        .lines()
+        .map(|line| {
+            line.split(';')
+                .map(|s| {
+                    let mut cubes = Cubes::default();
+                    if let Some(red) = red.captures(s) {
+                        cubes.red = red[1].parse().unwrap();
+                    }
+                    if let Some(green) = green.captures(s) {
+                        cubes.green = green[1].parse().unwrap();
+                    }
+                    if let Some(blue) = blue.captures(s) {
+                        cubes.blue = blue[1].parse().unwrap();
+                    }
+                    cubes
+                })
+                .collect()
+        })
+        .collect()
 }
 
 pub mod part1 {
     use crate::day_02::parse;
 
     pub fn solve(input: &str) -> usize {
-        0
+        let games = parse(input);
+        games
+            .iter()
+            .enumerate()
+            .filter_map(|(id, game)| {
+                game.iter()
+                    .all(|cubes| cubes.red <= 12 && cubes.green <= 13 && cubes.blue <= 14)
+                    .then_some(id + 1)
+            })
+            .sum()
     }
 }
 
 pub mod part2 {
-    use crate::day_02::parse;
+    use crate::day_02::{parse, Cubes};
 
     pub fn solve(input: &str) -> usize {
-        0
+        let games = parse(input);
+        games
+            .iter()
+            .map(|game| {
+                let max = game.iter().fold(Cubes::default(), |mut acc, cubes| {
+                    acc.red = acc.red.max(cubes.red);
+                    acc.green = acc.green.max(cubes.green);
+                    acc.blue = acc.blue.max(cubes.blue);
+                    acc
+                });
+                max.red * max.green * max.blue
+            })
+            .sum()
     }
 }
 
 pub fn main(test: bool) {
-    let test_input = "".to_owned();
+    let test_input = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
+        .to_owned();
     let puzzle_input = if test {
         test_input
     } else {
