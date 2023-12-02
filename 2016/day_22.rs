@@ -3,8 +3,6 @@
 
 use std::{fs::read_to_string, time::Instant};
 
-use regex::Regex;
-
 #[derive(Copy, Clone, Debug, Default)]
 struct Node {
     x: usize,
@@ -18,50 +16,69 @@ struct Node {
 
 impl From<&str> for Node {
     fn from(string: &str) -> Self {
-        let pattern =
-            Regex::new(r"/dev/grid/node-x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+(\d+)%")
-                .unwrap();
-        let captures = pattern.captures(string).unwrap();
+        let mut parts = string.split_whitespace();
+        let mut location = parts.next().unwrap().split('-');
+        let x = location.nth(1).unwrap()[1..].parse().unwrap();
+        let y = location.next().unwrap()[1..].parse().unwrap();
+        let mut part = parts.next().unwrap();
+        let size = part[..part.len() - 1].parse().unwrap();
+        part = parts.next().unwrap();
+        let used = part[..part.len() - 1].parse().unwrap();
+        part = parts.next().unwrap();
+        let avail = part[..part.len() - 1].parse().unwrap();
+        part = parts.next().unwrap();
+        let used_percentage = part[..part.len() - 1].parse().unwrap();
         Node {
-            x: captures.get(1).unwrap().as_str().parse().unwrap(),
-            y: captures.get(2).unwrap().as_str().parse().unwrap(),
-            size: captures.get(3).unwrap().as_str().parse().unwrap(),
-            used: captures.get(4).unwrap().as_str().parse().unwrap(),
-            avail: captures.get(5).unwrap().as_str().parse().unwrap(),
-            used_percentage: captures.get(6).unwrap().as_str().parse().unwrap(),
+            x,
+            y,
+            size,
+            used,
+            avail,
+            used_percentage,
         }
     }
 }
 
 fn parse(input: &str) -> Vec<Vec<Node>> {
     let nodes: Vec<_> = input.lines().skip(2).map(Node::from).collect();
-    let mut result = vec![];
+    let width = nodes.iter().map(|node| node.y).max().unwrap() + 1;
+    let height = nodes.iter().map(|node| node.x).max().unwrap() + 1;
+    let mut result = vec![vec![Node::default(); width]; height];
     for node in nodes {
-        if node.x >= result.len() {
-            result.resize(node.x + 1, vec![]);
-        }
-        if node.y >= result[node.x].len() {
-            result[node.x].resize(node.y + 1, Node::default());
-        }
         result[node.x][node.y] = node;
     }
     result
 }
 
 pub mod part1 {
+    use std::cmp::Ordering;
+
     use crate::day_22::parse;
 
     pub fn solve(input: &str) -> usize {
         let nodes = parse(input);
+        let mut ordered: Vec<_> = nodes.iter().flatten().collect();
+        ordered.sort_by_key(|node| -(node.used as isize));
+        let last = ordered
+            .binary_search_by(|node| node.used.cmp(&0).reverse())
+            .unwrap_or(ordered.len());
+        ordered.truncate(last);
+        ordered.reverse();
+        let mut positions = vec![vec![usize::MAX; nodes[0].len()]; nodes.len()];
+        for (i, node) in ordered.iter().enumerate() {
+            positions[node.x][node.y] = i;
+        }
         let mut pairs = 0;
-        for (i, a) in nodes.iter().flatten().enumerate() {
-            for b in nodes.iter().flatten().skip(i + 1) {
-                if a.used != 0 && b.avail >= a.used {
-                    pairs += 1
-                }
-                if b.used != 0 && a.avail >= b.used {
-                    pairs += 1
-                }
+        for node in nodes.iter().flatten() {
+            let can_contain = ordered
+                .binary_search_by(|other| match node.avail.cmp(&other.used) {
+                    Ordering::Less => Ordering::Greater,
+                    Ordering::Equal | Ordering::Greater => Ordering::Less,
+                })
+                .unwrap_err();
+            pairs += can_contain;
+            if can_contain > positions[node.x][node.y] {
+                pairs -= 1;
             }
         }
         pairs
@@ -116,7 +133,8 @@ pub mod part2 {
 }
 
 pub fn main(test: bool) {
-    let test_input = "Filesystem            Size  Used  Avail  Use%
+    let test_input = "root@ebhq-gridcenter# df -h
+Filesystem            Size  Used  Avail  Use%
 /dev/grid/node-x0-y0   10T    8T     2T   80%
 /dev/grid/node-x0-y1   11T    6T     5T   54%
 /dev/grid/node-x0-y2   32T   28T     4T   87%
