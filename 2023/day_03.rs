@@ -10,13 +10,21 @@ type Coord = (usize, usize);
 #[derive(Clone, Debug)]
 struct Number {
     value: usize,
-    near: Vec<Coord>,
+    top_left: Coord,
+    bottom_right: Coord,
 }
 
 #[derive(Copy, Clone, Debug)]
 struct Symbol {
     char: char,
     coord: Coord,
+}
+
+impl Number {
+    fn contains(&self, symbol: &Symbol) -> bool {
+        (self.top_left.0..=self.bottom_right.0).contains(&symbol.coord.0)
+            && (self.top_left.1..=self.bottom_right.1).contains(&symbol.coord.1)
+    }
 }
 
 fn parse(input: &str) -> (Vec<Number>, Vec<Symbol>) {
@@ -27,15 +35,11 @@ fn parse(input: &str) -> (Vec<Number>, Vec<Symbol>) {
         for capture in number.find_iter(line) {
             match capture.as_str().chars().next().unwrap() {
                 '0'..='9' => {
-                    let mut near: Vec<_> = (capture.start().saturating_sub(1)
-                        ..=capture.start() + capture.len())
-                        .flat_map(|j| vec![(i.saturating_sub(1), j), (i + 1, j)])
-                        .collect();
-                    near.push((i, capture.start().saturating_sub(1)));
-                    near.push((i, capture.start() + capture.len()));
+                    let j = capture.start();
                     numbers.push(Number {
                         value: capture.as_str().parse().unwrap(),
-                        near,
+                        top_left: (i.saturating_sub(1), j.saturating_sub(1)),
+                        bottom_right: (i + 1, j + capture.len()),
                     })
                 }
                 symbol => symbols.push(Symbol {
@@ -55,12 +59,7 @@ pub mod part1 {
         let (numbers, symbols) = parse(input);
         numbers
             .iter()
-            .filter_map(|n| {
-                symbols
-                    .iter()
-                    .any(|s| n.near.contains(&s.coord))
-                    .then_some(n.value)
-            })
+            .filter_map(|n| symbols.iter().any(|s| n.contains(s)).then_some(n.value))
             .sum()
     }
 }
@@ -74,10 +73,7 @@ pub mod part2 {
             .iter()
             .filter_map(|s| {
                 if s.char == '*' {
-                    let ns: Vec<_> = numbers
-                        .iter()
-                        .filter(|n| n.near.contains(&s.coord))
-                        .collect();
+                    let ns: Vec<_> = numbers.iter().filter(|n| n.contains(&s)).collect();
                     if ns.len() == 2 {
                         Some(ns.iter().map(|n| n.value).product::<usize>())
                     } else {
