@@ -59,7 +59,21 @@ pub mod part1 {
         let (numbers, symbols) = parse(input);
         numbers
             .iter()
-            .filter_map(|n| symbols.iter().any(|s| n.contains(s)).then_some(n.value))
+            .filter_map(|n| {
+                let first = symbols.binary_search_by_key(&n.top_left, |s| s.coord);
+                match first {
+                    Ok(_) => Some(n.value),
+                    Err(mut s) => {
+                        while s < symbols.len() && symbols[s].coord <= n.bottom_right {
+                            if n.contains(&symbols[s]) {
+                                return Some(n.value);
+                            }
+                            s += 1;
+                        }
+                        None
+                    }
+                }
+            })
             .sum()
     }
 }
@@ -73,7 +87,7 @@ pub mod part2 {
             .iter()
             .filter_map(|s| {
                 if s.char == '*' {
-                    let ns: Vec<_> = numbers.iter().filter(|n| n.contains(&s)).collect();
+                    let ns: Vec<_> = numbers.iter().filter(|n| n.contains(s)).collect();
                     if ns.len() == 2 {
                         Some(ns.iter().map(|n| n.value).product::<usize>())
                     } else {
