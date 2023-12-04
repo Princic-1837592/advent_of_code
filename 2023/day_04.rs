@@ -1,7 +1,10 @@
 //! https://adventofcode.com/2023/day/4
 //! https://adventofcode.com/2023/day/4/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Card {
@@ -74,7 +77,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
 Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
@@ -87,11 +90,24 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
     } else {
         read_to_string("inputs/day_04_input.txt").unwrap()
     };
+
     let parsed = parse(&puzzle_input);
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input, parsed.clone()));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, parsed.clone());
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Run in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input, parsed));
-    println!("Run in {:?}", start.elapsed());
+    let result = part2::solve(&puzzle_input, parsed);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Run in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }
