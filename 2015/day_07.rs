@@ -134,9 +134,9 @@ fn resolve(wire: usize, wires: &mut [Option<Wire>; 676], values: &mut [Option<u1
 }
 
 pub mod part1 {
-    use crate::day_07::{resolve, Parsed};
+    use super::{resolve, Parsed};
 
-    pub fn solve(_input: &str, mut wires: Parsed) -> u16 {
+    pub fn solve(mut wires: Parsed) -> u16 {
         let mut values = [None; 676];
         resolve(1, &mut wires, &mut values);
         values[1].unwrap()
@@ -144,9 +144,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_07::{resolve, Operand, Parsed, Wire};
+    use super::{resolve, Operand, Parsed, Wire};
 
-    pub fn solve(_input: &str, mut wires: Parsed) -> u16 {
+    pub fn solve(mut wires: Parsed) -> u16 {
         let mut values = [None; 676];
         resolve(1, &mut wires, &mut values);
         wires[2] = Some(Wire::Const(Operand::Const(values[1].unwrap())));
@@ -173,14 +173,14 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

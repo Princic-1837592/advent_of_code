@@ -30,7 +30,7 @@ fn parse(input: &str) -> Vec<Vec<Movement>> {
 }
 
 pub mod part1 {
-    use crate::day_02::{parse, Movement};
+    use super::{parse, Movement};
 
     pub fn solve(input: &str) -> String {
         let movements = parse(input);
@@ -69,7 +69,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_02::{parse, Movement};
+    use super::{parse, Movement};
 
     pub fn solve(input: &str) -> String {
         let movements = parse(input);

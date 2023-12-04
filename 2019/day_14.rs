@@ -99,7 +99,7 @@ fn find_ore(
 }
 
 pub mod part1 {
-    use crate::day_14::{find_ore, parse, topological_order};
+    use super::{find_ore, parse, topological_order};
 
     pub fn solve(input: &str) -> usize {
         let reactions = parse(input);
@@ -109,7 +109,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_14::{find_ore, parse, topological_order};
+    use super::{find_ore, parse, topological_order};
 
     pub fn solve(input: &str) -> usize {
         let reactions = parse(input);

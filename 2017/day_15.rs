@@ -11,7 +11,7 @@ fn parse(input: &str) -> (usize, usize) {
 }
 
 pub mod part1 {
-    use crate::day_15::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let (mut a, mut b) = parse(input);
@@ -28,7 +28,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_15::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let (mut a, mut b) = parse(input);

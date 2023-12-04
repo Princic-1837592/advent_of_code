@@ -8,7 +8,7 @@ fn parse(input: &str) -> Vec<usize> {
 }
 
 pub mod part1 {
-    use crate::day_01::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let mass = parse(input);
@@ -17,7 +17,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_01::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let mut fuel: Vec<_> = parse(input).into_iter().map(|m| m as isize).collect();

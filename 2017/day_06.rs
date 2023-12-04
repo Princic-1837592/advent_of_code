@@ -49,7 +49,7 @@ fn find_loop(memory: &mut Vec<usize>) -> (usize, usize) {
 }
 
 pub mod part1 {
-    use crate::day_06::{find_loop, parse};
+    use super::{find_loop, parse};
 
     pub fn solve(input: &str) -> usize {
         let mut memory = parse(input);
@@ -58,7 +58,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_06::{find_loop, parse};
+    use super::{find_loop, parse};
 
     pub fn solve(input: &str) -> usize {
         let mut memory = parse(input);

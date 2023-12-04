@@ -98,7 +98,7 @@ fn build_cave(depth: usize, target: (usize, usize), (i, j): (usize, usize)) -> V
 }
 
 pub mod part1 {
-    use crate::day_22::{build_cave, parse};
+    use super::{build_cave, parse};
 
     pub fn solve(input: &str) -> usize {
         let (depth, target) = parse(input);
@@ -114,7 +114,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_22::{build_cave, parse, Region, Tool};
+    use super::{build_cave, parse, Region, Tool};
 
     const ADJACENT: [(isize, isize); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 

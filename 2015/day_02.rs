@@ -29,7 +29,7 @@ pub mod part1 {
         2 * l * w + 2 * w * h + 2 * h * l + (l * w).min((w * h).min(h * l))
     }
 
-    pub fn solve(_input: &str, parsed: Parsed) -> usize {
+    pub fn solve(parsed: Parsed) -> usize {
         parsed.iter().map(find_wrapping).sum()
     }
 }
@@ -43,7 +43,7 @@ pub mod part2 {
         perimeter * 2 + l * w * h
     }
 
-    pub fn solve(_input: &str, parsed: Parsed) -> usize {
+    pub fn solve(parsed: Parsed) -> usize {
         parsed.iter().map(find_ribbon).sum()
     }
 }
@@ -65,14 +65,14 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

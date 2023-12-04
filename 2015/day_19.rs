@@ -34,9 +34,9 @@ pub mod part1 {
     use itertools::Itertools;
     use regex::Regex;
 
-    use crate::day_19::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, (replacements, molecule): Parsed) -> usize {
+    pub fn solve((replacements, molecule): Parsed) -> usize {
         let pattern = Regex::new(r"[A-Z][a-z]?").unwrap();
         let atoms: Vec<_> = pattern
             .find_iter(&molecule)
@@ -69,9 +69,9 @@ pub mod part2 {
 
     use rand::{prelude::SliceRandom, thread_rng};
 
-    use crate::day_19::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, (replacements, molecule): Parsed) -> usize {
+    pub fn solve((replacements, molecule): Parsed) -> usize {
         let mut reversed = HashMap::with_capacity(replacements.values().map(|v| v.len()).sum());
         for (k, v) in replacements.into_iter() {
             for v in v {
@@ -123,14 +123,14 @@ HOHOHO"
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

@@ -91,7 +91,7 @@ fn solve_with(instructions: &Vec<Instruction>, a: isize) -> bool {
 }
 
 pub mod part1 {
-    use crate::day_25::{parse, solve_with};
+    use super::{parse, solve_with};
 
     pub fn solve(input: &str) -> isize {
         let instructions = parse(input);

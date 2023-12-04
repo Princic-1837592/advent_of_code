@@ -11,7 +11,7 @@ fn parse(input: &str) -> Vec<char> {
 }
 
 pub mod part1 {
-    use crate::day_09::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let file = parse(input);
@@ -46,7 +46,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_09::parse;
+    use super::parse;
 
     fn decompress(file: &Vec<char>, start: usize, end: usize) -> usize {
         let mut decompressed_len = 0;

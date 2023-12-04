@@ -9,7 +9,7 @@ use std::{
 const MAX: usize = 1_000_000;
 
 pub mod part1 {
-    use crate::day_20::MAX;
+    use super::MAX;
 
     pub fn solve(input: &str) -> usize {
         let target = input.parse().unwrap();
@@ -32,7 +32,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_20::MAX;
+    use super::MAX;
 
     pub fn solve(input: &str) -> usize {
         let target = input.parse().unwrap();

@@ -122,7 +122,7 @@ fn parse(input: &str) -> (usize, Vec<Instruction>) {
 }
 
 pub mod part1 {
-    use crate::day_19::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let (ip, instructions) = parse(input);
@@ -137,7 +137,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_19::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let (ip, instructions) = parse(input);

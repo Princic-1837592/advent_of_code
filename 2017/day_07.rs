@@ -56,7 +56,7 @@ fn find_root<'a>(
 }
 
 pub mod part1 {
-    use crate::day_07::{find_root, parse};
+    use super::{find_root, parse};
 
     pub fn solve(input: &str) -> &str {
         let (graph, _, incoming) = parse(input);
@@ -67,7 +67,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{HashMap, HashSet};
 
-    use crate::day_07::{find_root, parse};
+    use super::{find_root, parse};
 
     enum Exploration {
         Result(isize),

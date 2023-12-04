@@ -53,7 +53,7 @@ fn parse(input: &str) -> Vec<Vec<Node>> {
 pub mod part1 {
     use std::cmp::Ordering;
 
-    use crate::day_22::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let nodes = parse(input);
@@ -88,7 +88,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{HashSet, VecDeque};
 
-    use crate::day_22::parse;
+    use super::parse;
 
     const NEIGHBOURS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 

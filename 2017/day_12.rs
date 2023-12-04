@@ -36,7 +36,7 @@ fn bfs(graph: &Graph, visited: &mut Vec<bool>) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_12::{bfs, parse};
+    use super::{bfs, parse};
 
     pub fn solve(input: &str) -> usize {
         let graph = parse(input);
@@ -46,7 +46,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_12::{bfs, parse};
+    use super::{bfs, parse};
 
     pub fn solve(input: &str) -> usize {
         let graph = parse(input);

@@ -23,9 +23,9 @@ fn parse(input: &str) -> Parsed {
 }
 
 pub mod part1 {
-    use crate::day_14::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, reindeer: Parsed) -> usize {
+    pub fn solve(reindeer: Parsed) -> usize {
         reindeer
             .iter()
             .map(|(speed, fly, rest)| {
@@ -38,9 +38,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_14::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, reindeer: Parsed) -> usize {
+    pub fn solve(reindeer: Parsed) -> usize {
         let mut states: Vec<_> = reindeer
             .iter()
             .map(|&(_, fly, rest)| (true, 0, 0, fly, rest))
@@ -97,14 +97,14 @@ Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds."
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

@@ -30,7 +30,7 @@ fn parse(input: &str) -> Vec<Nanobot> {
 }
 
 pub mod part1 {
-    use crate::day_23::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let nanobots = parse(input);
@@ -53,7 +53,7 @@ pub mod part1 {
 pub mod part2 {
     use std::{cmp::Ordering, collections::BinaryHeap};
 
-    use crate::day_23::{parse, Nanobot};
+    use super::{parse, Nanobot};
 
     #[derive(Clone, Debug)]
     struct Space {

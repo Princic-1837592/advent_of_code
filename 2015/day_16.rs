@@ -70,9 +70,9 @@ fn parse(input: &str) -> Parsed {
 }
 
 pub mod part1 {
-    use crate::day_16::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, aunts: Parsed) -> usize {
+    pub fn solve(aunts: Parsed) -> usize {
         aunts
             .iter()
             .filter(|aunt| {
@@ -94,9 +94,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_16::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, aunts: Parsed) -> usize {
+    pub fn solve(aunts: Parsed) -> usize {
         aunts
             .iter()
             .filter(|aunt| {
@@ -134,14 +134,14 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

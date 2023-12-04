@@ -145,7 +145,7 @@ fn parse(input: &str) -> (Vec<Sample>, Vec<Instruction>) {
 }
 
 pub mod part1 {
-    use crate::day_16::{parse, Sample, OPCODES};
+    use super::{parse, Sample, OPCODES};
 
     pub fn solve(input: &str) -> usize {
         let (samples, _) = parse(input);
@@ -179,7 +179,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashSet;
 
-    use crate::day_16::{parse, Behavior, Sample, OPCODES};
+    use super::{parse, Behavior, Sample, OPCODES};
 
     pub fn solve(input: &str) -> usize {
         let (samples, instructions) = parse(input);

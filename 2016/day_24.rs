@@ -108,7 +108,7 @@ fn solve_generic(input: &str, go_back: bool) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_24::solve_generic;
+    use super::solve_generic;
 
     pub fn solve(input: &str) -> usize {
         solve_generic(input, false)
@@ -116,7 +116,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_24::solve_generic;
+    use super::solve_generic;
 
     pub fn solve(input: &str) -> usize {
         solve_generic(input, true)

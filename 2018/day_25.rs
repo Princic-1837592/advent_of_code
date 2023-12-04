@@ -18,7 +18,7 @@ fn parse(input: &str) -> Vec<Point> {
 pub mod part1 {
     use std::collections::{HashMap, HashSet, VecDeque};
 
-    use crate::day_25::{parse, Point};
+    use super::{parse, Point};
 
     fn manhattan(p1: &Point, p2: &Point) -> isize {
         (p1.0 - p2.0).abs() + (p1.1 - p2.1).abs() + (p1.2 - p2.2).abs() + (p1.3 - p2.3).abs()

@@ -12,7 +12,7 @@ fn generic_solve(input: &str, first_input: i64) -> i64 {
 }
 
 pub mod part1 {
-    use crate::day_05::generic_solve;
+    use super::generic_solve;
 
     pub fn solve(input: &str) -> i64 {
         generic_solve(input, 1)
@@ -20,7 +20,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_05::generic_solve;
+    use super::generic_solve;
 
     pub fn solve(input: &str) -> i64 {
         generic_solve(input, 5)

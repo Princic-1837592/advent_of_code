@@ -63,7 +63,7 @@ fn minute(acres: &mut Acres, support: &mut Acres) {
 }
 
 pub mod part1 {
-    use crate::day_18::{minute, parse, Acre};
+    use super::{minute, parse, Acre};
 
     pub fn solve(input: &str) -> usize {
         let mut acres = parse(input);
@@ -86,7 +86,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{hash_map::Entry, HashMap};
 
-    use crate::day_18::{minute, parse, Acre};
+    use super::{minute, parse, Acre};
 
     pub fn solve(input: &str) -> usize {
         let mut acres = parse(input);

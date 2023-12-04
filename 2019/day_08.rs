@@ -33,7 +33,7 @@ fn make_layers(pixels: Vec<usize>, w: usize, h: usize) -> (Vec<Vec<Vec<usize>>>,
 }
 
 pub mod part1 {
-    use crate::day_08::{make_layers, parse};
+    use super::{make_layers, parse};
 
     pub fn solve(input: &str, w: usize, h: usize) -> usize {
         let pixels = parse(input);
@@ -54,7 +54,7 @@ pub mod part1 {
 pub mod part2 {
     use itertools::Itertools;
 
-    use crate::day_08::{make_layers, parse};
+    use super::{make_layers, parse};
 
     pub fn solve(input: &str, w: usize, h: usize) -> String {
         let pixels = parse(input);

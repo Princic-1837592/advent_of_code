@@ -77,7 +77,7 @@ fn parse(input: &str) -> Vec<Instruction> {
 pub mod part1 {
     use std::collections::HashMap;
 
-    use crate::day_08::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> isize {
         let instructions = parse(input);
@@ -94,7 +94,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashMap;
 
-    use crate::day_08::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> isize {
         let instructions = parse(input);

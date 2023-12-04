@@ -1,5 +1,4 @@
-use std::{collections::HashSet, time::Instant};
-use std::fs::read_to_string;
+use std::{collections::HashSet, fs::read_to_string, time::Instant};
 
 fn parse(input: &str) -> Vec<Vec<(i8, i8, i8)>> {
     input
@@ -42,7 +41,7 @@ fn get_black_tiles(tiles: Vec<Vec<(i8, i8, i8)>>) -> HashSet<(i8, i8, i8)> {
 }
 
 pub mod part1 {
-    use crate::day_24::{get_black_tiles, parse};
+    use super::{get_black_tiles, parse};
 
     pub fn solve(input: &str) -> usize {
         let tiles = parse(input);
@@ -54,7 +53,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{HashMap, HashSet};
 
-    use crate::day_24::{get_black_tiles, parse};
+    use super::{get_black_tiles, parse};
 
     fn day(black: HashSet<(i8, i8, i8)>) -> HashSet<(i8, i8, i8)> {
         let mut neighbors_count = HashMap::new();

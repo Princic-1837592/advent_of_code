@@ -16,7 +16,7 @@ fn generic_solve(triangles: Vec<Triangle>) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_03::{generic_solve, Triangle};
+    use super::{generic_solve, Triangle};
 
     fn parse(input: &str) -> Vec<Triangle> {
         input
@@ -38,7 +38,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_03::{generic_solve, Triangle};
+    use super::{generic_solve, Triangle};
 
     fn parse(input: &str) -> Vec<Triangle> {
         let numbers: Vec<Vec<usize>> = input

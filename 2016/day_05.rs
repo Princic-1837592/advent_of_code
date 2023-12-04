@@ -11,7 +11,7 @@ pub mod part1 {
     use md5::compute;
     use rayon::prelude::*;
 
-    use crate::day_05::CHARS;
+    use super::CHARS;
 
     pub fn solve(input: &str) -> String {
         let result: String = (0..20_000_000)
@@ -32,7 +32,7 @@ pub mod part2 {
     use md5::compute;
     use rayon::prelude::*;
 
-    use crate::day_05::CHARS;
+    use super::CHARS;
 
     pub fn solve(input: &str) -> String {
         let input = input.to_owned();

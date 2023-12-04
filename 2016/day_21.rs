@@ -46,7 +46,7 @@ fn parse(input: &str) -> Vec<Op> {
 pub mod part1 {
     use std::cmp::Ordering;
 
-    use crate::day_21::{parse, Op};
+    use super::{parse, Op};
 
     pub fn solve(input: &str, len: usize) -> String {
         let operations = parse(input);
@@ -137,7 +137,7 @@ pub mod part1 {
 pub mod part2 {
     use std::cmp::Ordering;
 
-    use crate::day_21::{parse, Op};
+    use super::{parse, Op};
 
     pub fn solve(input: &str, password: &str) -> String {
         let operations = parse(input);

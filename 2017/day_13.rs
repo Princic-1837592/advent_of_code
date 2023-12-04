@@ -32,7 +32,7 @@ fn parse(input: &str) -> (HashMap<usize, Scanner>, usize) {
 }
 
 pub mod part1 {
-    use crate::day_13::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let (scanners, max) = parse(input);
@@ -51,7 +51,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashMap;
 
-    use crate::day_13::{parse, Scanner};
+    use super::{parse, Scanner};
 
     fn caught(scanners: &HashMap<usize, Scanner>, max: usize, delay: usize) -> bool {
         for (layer, ps) in (delay..=delay + max).enumerate() {

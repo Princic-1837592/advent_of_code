@@ -29,7 +29,7 @@ fn parse(input: &str) -> Vec<Technique> {
 pub mod part1 {
     use std::collections::VecDeque;
 
-    use crate::day_22::{parse, Technique};
+    use super::{parse, Technique};
 
     pub fn solve(input: &str, cards: usize, card: usize) -> usize {
         let techniques = parse(input);
@@ -67,7 +67,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_22::{parse, Technique};
+    use super::{parse, Technique};
 
     fn modular_pow(mut base: i128, mut exp: i128, modulus: i128) -> i128 {
         if modulus == 1 {

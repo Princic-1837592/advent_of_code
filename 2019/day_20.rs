@@ -105,7 +105,7 @@ fn parse(input: &str) -> (Vec<Vec<bool>>, HashMap<Coord, (Coord, isize)>, Coord,
 pub mod part1 {
     use std::collections::VecDeque;
 
-    use crate::day_20::{parse, NEIGHBOURS};
+    use super::{parse, NEIGHBOURS};
 
     pub fn solve(input: &str) -> usize {
         let (open, portals, start, end) = parse(input);
@@ -138,7 +138,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{HashMap, VecDeque};
 
-    use crate::day_20::{parse, NEIGHBOURS};
+    use super::{parse, NEIGHBOURS};
 
     pub fn solve(input: &str) -> usize {
         let (open, portals, start, end) = parse(input);

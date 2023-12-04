@@ -236,7 +236,7 @@ fn solve_puzzle(tiles: &mut [Tile]) -> Vec<Vec<usize>> {
 }
 
 pub mod part1 {
-    use crate::day_20::{parse, solve_puzzle};
+    use super::{parse, solve_puzzle};
 
     pub fn solve(input: &str) -> usize {
         let mut tiles = parse(input);
@@ -249,7 +249,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_20::{parse, solve_puzzle, Tile, Transformation, MONSTER, TRANSFORMATIONS};
+    use super::{parse, solve_puzzle, Tile, Transformation, MONSTER, TRANSFORMATIONS};
 
     fn get_transformed_coord<T>(
         matrix: &[Vec<T>],

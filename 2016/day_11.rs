@@ -185,7 +185,7 @@ fn solve_generic(start: State, end: State) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_11::{parse, solve_generic};
+    use super::{parse, solve_generic};
 
     pub fn solve(input: &str) -> usize {
         let (start, end) = parse(input);
@@ -194,7 +194,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_11::{gm, parse, solve_generic, FIRST_FLOOR, LAST_FLOOR};
+    use super::{gm, parse, solve_generic, FIRST_FLOOR, LAST_FLOOR};
 
     pub fn solve(input: &str) -> usize {
         let (mut start, mut end) = parse(input);

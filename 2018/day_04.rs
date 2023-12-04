@@ -89,7 +89,7 @@ fn sum_records(records: Vec<Record>) -> Vec<[usize; 60]> {
 }
 
 pub mod part1 {
-    use crate::day_04::{parse, sum_records};
+    use super::{parse, sum_records};
 
     pub fn solve(input: &str) -> usize {
         let records = parse(input);
@@ -110,7 +110,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_04::{parse, sum_records};
+    use super::{parse, sum_records};
 
     pub fn solve(input: &str) -> usize {
         let records = parse(input);

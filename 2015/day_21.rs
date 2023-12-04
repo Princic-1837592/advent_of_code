@@ -51,7 +51,7 @@ fn parse(input: &str) -> (isize, isize, isize) {
 pub mod part1 {
     use itertools::Itertools;
 
-    use crate::day_21::{parse, ARMOR, RINGS, WEAPONS};
+    use super::{parse, ARMOR, RINGS, WEAPONS};
 
     pub fn solve(input: &str) -> usize {
         let boss = parse(input);
@@ -94,7 +94,7 @@ pub mod part1 {
 pub mod part2 {
     use itertools::Itertools;
 
-    use crate::day_21::{parse, ARMOR, RINGS, WEAPONS};
+    use super::{parse, ARMOR, RINGS, WEAPONS};
 
     pub fn solve(input: &str) -> usize {
         let boss = parse(input);

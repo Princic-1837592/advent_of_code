@@ -194,7 +194,7 @@ fn generic_solve(input: &str, iterations: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_21::generic_solve;
+    use super::generic_solve;
 
     pub fn solve(input: &str) -> usize {
         generic_solve(input, 5)
@@ -202,7 +202,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_21::generic_solve;
+    use super::generic_solve;
 
     pub fn solve(input: &str) -> usize {
         generic_solve(input, 18)

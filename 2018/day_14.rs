@@ -8,7 +8,7 @@ fn parse(input: &str) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_14::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> String {
         let target = parse(input) + 10;

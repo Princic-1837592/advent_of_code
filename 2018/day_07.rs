@@ -20,7 +20,7 @@ fn parse(input: &str) -> HashMap<usize, HashSet<usize>> {
 }
 
 pub mod part1 {
-    use crate::day_07::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> String {
         let mut graph = parse(input);
@@ -43,7 +43,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_07::parse;
+    use super::parse;
 
     pub fn solve(input: &str, workers: usize, seconds: usize) -> usize {
         let mut graph = parse(input);

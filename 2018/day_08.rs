@@ -11,7 +11,7 @@ fn parse(input: &str) -> Vec<usize> {
 }
 
 pub mod part1 {
-    use crate::day_08::parse;
+    use super::parse;
 
     fn count_metadata(numbers: &Vec<usize>, mut i: usize) -> (usize, usize) {
         if i >= numbers.len() {
@@ -42,7 +42,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_08::parse;
+    use super::parse;
 
     fn value_of(numbers: &Vec<usize>, mut i: usize) -> (usize, usize) {
         if i >= numbers.len() {

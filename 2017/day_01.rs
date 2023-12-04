@@ -21,7 +21,7 @@ fn sum(digits: &Vec<usize>, step: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_01::{parse, sum};
+    use super::{parse, sum};
 
     pub fn solve(input: &str) -> usize {
         let digits = parse(input);
@@ -30,7 +30,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_01::{parse, sum};
+    use super::{parse, sum};
 
     pub fn solve(input: &str) -> usize {
         let digits = parse(input);

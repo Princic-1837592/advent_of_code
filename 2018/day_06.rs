@@ -14,7 +14,7 @@ fn parse(input: &str) -> Vec<(usize, usize)> {
 }
 
 pub mod part1 {
-    use crate::day_06::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let points = parse(input);
@@ -84,7 +84,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_06::parse;
+    use super::parse;
 
     pub fn solve(input: &str, max_distance: usize) -> usize {
         let points = parse(input);

@@ -8,7 +8,7 @@ fn parse(input: &str) -> Vec<isize> {
 }
 
 pub mod part1 {
-    use crate::day_01::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> isize {
         parse(input).iter().sum()
@@ -18,7 +18,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashSet;
 
-    use crate::day_01::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> isize {
         let frequencies = parse(input);

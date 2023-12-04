@@ -11,7 +11,7 @@ fn parse(input: &str) -> Vec<isize> {
 }
 
 pub mod part1 {
-    use crate::day_16::parse;
+    use super::parse;
 
     const PATTERN: [isize; 4] = [0, 1, 0, -1];
 
@@ -74,7 +74,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_16::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> isize {
         let list = parse(input);

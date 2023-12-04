@@ -85,7 +85,7 @@ fn parse(input: &str) -> (Vec<Option<usize>>, Vec<Bot>, usize) {
 pub mod part1 {
     use std::collections::VecDeque;
 
-    use crate::day_10::{parse, Destination};
+    use super::{parse, Destination};
 
     pub fn solve(input: &str) -> usize {
         let (values, bots, _) = parse(input);
@@ -127,7 +127,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::VecDeque;
 
-    use crate::day_10::{parse, Destination};
+    use super::{parse, Destination};
 
     pub fn solve(input: &str) -> usize {
         let (values, bots, outputs) = parse(input);

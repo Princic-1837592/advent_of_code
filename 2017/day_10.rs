@@ -27,7 +27,7 @@ fn round(
 }
 
 pub mod part1 {
-    use crate::day_10::round;
+    use super::round;
 
     fn parse(input: &str) -> Vec<usize> {
         input.split(',').map(|n| n.parse().unwrap()).collect()
@@ -42,7 +42,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_10::round;
+    use super::round;
 
     fn parse(input: &str) -> Vec<usize> {
         input

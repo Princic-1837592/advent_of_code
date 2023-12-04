@@ -8,7 +8,7 @@ fn parse(input: &str) -> Vec<&str> {
 }
 
 pub mod part1 {
-    use crate::day_07::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let ips = parse(input);
@@ -45,7 +45,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashSet;
 
-    use crate::day_07::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let ips = parse(input);

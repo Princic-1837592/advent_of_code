@@ -149,7 +149,7 @@ fn tick(
 pub mod part1 {
     use std::collections::BinaryHeap;
 
-    use crate::day_13::{parse, tick};
+    use super::{parse, tick};
 
     pub fn solve(input: &str) -> String {
         let (map, mut carts) = parse(input);
@@ -165,7 +165,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::BinaryHeap;
 
-    use crate::day_13::{parse, tick};
+    use super::{parse, tick};
 
     pub fn solve(input: &str) -> String {
         let (map, mut carts) = parse(input);

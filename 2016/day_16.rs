@@ -21,7 +21,7 @@ fn find_checksum(mut disc: Vec<u8>, disc_length: usize) -> String {
 }
 
 pub mod part1 {
-    use crate::day_16::find_checksum;
+    use super::find_checksum;
 
     pub fn solve(input: &str, disc_length: usize) -> String {
         find_checksum(
@@ -35,7 +35,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_16::find_checksum;
+    use super::find_checksum;
 
     pub fn solve(input: &str) -> String {
         find_checksum(

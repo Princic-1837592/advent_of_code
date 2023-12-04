@@ -133,7 +133,7 @@ fn dfs(
 pub mod part1 {
     use std::collections::HashMap;
 
-    use crate::day_17::{dfs, parse, Direction};
+    use super::{dfs, parse, Direction};
 
     pub fn solve(input: &str) -> usize {
         let (clay, min_y, max_y) = parse(input);
@@ -146,7 +146,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashMap;
 
-    use crate::day_17::{dfs, parse, Direction, WaterState};
+    use super::{dfs, parse, Direction, WaterState};
 
     pub fn solve(input: &str) -> usize {
         let (clay, _, max_y) = parse(input);

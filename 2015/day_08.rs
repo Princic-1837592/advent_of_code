@@ -29,7 +29,7 @@ fn find_difference(string: &str) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_08::find_difference;
+    use super::find_difference;
 
     pub fn solve(input: &str) -> usize {
         input.lines().map(find_difference).sum()
@@ -37,7 +37,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_08::find_difference;
+    use super::find_difference;
 
     pub fn solve(input: &str) -> usize {
         input

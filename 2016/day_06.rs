@@ -28,7 +28,7 @@ fn find_message(messages: Vec<Vec<char>>, coefficient: isize) -> String {
 }
 
 pub mod part1 {
-    use crate::day_06::{find_message, parse};
+    use super::{find_message, parse};
 
     pub fn solve(input: &str) -> String {
         let messages = parse(input);
@@ -37,7 +37,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_06::{find_message, parse};
+    use super::{find_message, parse};
 
     pub fn solve(input: &str) -> String {
         let messages = parse(input);

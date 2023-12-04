@@ -37,7 +37,7 @@ fn parse(input: &str) -> Vec<Instruction> {
 }
 
 pub mod part1 {
-    use crate::day_01::{parse, Instruction, Rotation};
+    use super::{parse, Instruction, Rotation};
 
     pub fn solve(input: &str) -> usize {
         let instructions = parse(input);
@@ -58,7 +58,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashSet;
 
-    use crate::day_01::{parse, Instruction, Rotation};
+    use super::{parse, Instruction, Rotation};
 
     pub fn solve(input: &str) -> usize {
         let instructions = parse(input);

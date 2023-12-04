@@ -48,7 +48,7 @@ fn parse(input: &str) -> Parsed {
 pub mod part1 {
     use super::{Action, Parsed};
 
-    pub fn solve(_input: &str, parsed: Parsed) -> usize {
+    pub fn solve(parsed: Parsed) -> usize {
         let mut lights = vec![[false; 1000]; 1000];
         let mut lit = 0;
         for instr in parsed {
@@ -92,9 +92,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_06::{Action, Parsed};
+    use super::{Action, Parsed};
 
-    pub fn solve(_input: &str, parsed: Parsed) -> usize {
+    pub fn solve(parsed: Parsed) -> usize {
         let mut lights = vec![[0; 1000]; 1000];
         let mut lit = 0;
         for instr in parsed {
@@ -148,14 +148,14 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

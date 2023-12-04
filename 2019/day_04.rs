@@ -9,7 +9,7 @@ fn parse(input: &str) -> (usize, usize) {
 }
 
 pub mod part1 {
-    use crate::day_04::parse;
+    use super::parse;
 
     fn is_valid(password: usize) -> bool {
         let p: Vec<_> = password.to_string().chars().collect();
@@ -38,7 +38,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_04::parse;
+    use super::parse;
 
     fn is_valid(password: usize) -> bool {
         let p: Vec<_> = password.to_string().chars().collect();

@@ -20,9 +20,9 @@ fn parse(input: &str) -> Parsed {
 }
 
 pub mod part1 {
-    use crate::day_25::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, (row, col): Parsed) -> usize {
+    pub fn solve((row, col): Parsed) -> usize {
         let mut code = 20151125;
         let prev_diags = row + col - 2;
         let prev_codes = (prev_diags * (prev_diags + 1)) / 2 + col - 1;
@@ -50,7 +50,7 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed);
+    let result = part1::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);

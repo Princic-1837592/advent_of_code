@@ -70,7 +70,7 @@ fn move_lights(lights: &mut Vec<Light>) -> (usize, String) {
 }
 
 pub mod part1 {
-    use crate::day_10::{move_lights, parse};
+    use super::{move_lights, parse};
 
     pub fn solve(input: &str) -> String {
         let mut lights = parse(input);
@@ -79,7 +79,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_10::{move_lights, parse};
+    use super::{move_lights, parse};
 
     pub fn solve(input: &str) -> usize {
         let mut lights = parse(input);

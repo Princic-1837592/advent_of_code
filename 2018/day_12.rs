@@ -80,7 +80,7 @@ fn apply_generations(mut state: VecDeque<bool>, rules: [bool; 32], generations: 
 }
 
 pub mod part1 {
-    use crate::day_12::{apply_generations, parse};
+    use super::{apply_generations, parse};
 
     pub fn solve(input: &str) -> isize {
         let (initial_state, rules) = parse(input);
@@ -89,7 +89,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_12::{apply_generations, parse};
+    use super::{apply_generations, parse};
 
     pub fn solve(input: &str) -> isize {
         let (initial_state, rules) = parse(input);

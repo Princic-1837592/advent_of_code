@@ -92,7 +92,7 @@ fn parse(input: &str) -> (TM, u8, usize) {
 pub mod part1 {
     use std::collections::HashSet;
 
-    use crate::day_25::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let (tm, mut state, mut steps) = parse(input);

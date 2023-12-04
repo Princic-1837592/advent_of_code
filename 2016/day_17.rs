@@ -11,7 +11,7 @@ pub mod part1 {
 
     use md5::compute;
 
-    use crate::day_17::DIRECTIONS;
+    use super::DIRECTIONS;
 
     pub fn solve(input: &str) -> String {
         let mut queue = VecDeque::from([((0, 0), input.to_owned())]);
@@ -38,7 +38,7 @@ pub mod part2 {
 
     use md5::compute;
 
-    use crate::day_17::DIRECTIONS;
+    use super::DIRECTIONS;
 
     pub fn solve(input: &str) -> usize {
         let mut longest = 0;

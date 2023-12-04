@@ -83,7 +83,7 @@ fn compute(a: usize, instructions: Vec<Instruction>) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_23::{compute, parse};
+    use super::{compute, parse};
 
     pub fn solve(input: &str, a: usize) -> usize {
         let instructions = parse(input);
@@ -92,7 +92,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_23::{compute, parse};
+    use super::{compute, parse};
 
     pub fn solve(input: &str) -> usize {
         let instructions = parse(input);

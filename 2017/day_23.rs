@@ -46,7 +46,7 @@ fn parse(input: &str) -> Vec<Instruction> {
 }
 
 pub mod part1 {
-    use crate::day_23::{parse, Instruction, Operand};
+    use super::{parse, Instruction, Operand};
 
     pub fn solve(input: &str) -> usize {
         let instructions = parse(input);
@@ -95,7 +95,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_23::{parse, Instruction, Operand};
+    use super::{parse, Instruction, Operand};
 
     pub fn solve(input: &str) -> usize {
         fn sieve(primes: &mut Vec<isize>, factor: isize) {

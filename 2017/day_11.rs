@@ -44,7 +44,7 @@ fn parse(input: &str) -> Vec<Direction> {
 }
 
 pub mod part1 {
-    use crate::day_11::{parse, Direction};
+    use super::{parse, Direction};
 
     pub fn solve(input: &str) -> usize {
         let directions = parse(input);
@@ -59,7 +59,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_11::{parse, Direction};
+    use super::{parse, Direction};
 
     pub fn solve(input: &str) -> usize {
         let directions = parse(input);

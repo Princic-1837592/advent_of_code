@@ -21,7 +21,7 @@ fn solve_with_program(input: &str, program: &str) -> i64 {
 }
 
 pub mod part1 {
-    use crate::day_21::solve_with_program;
+    use super::solve_with_program;
 
     pub fn solve(input: &str) -> i64 {
         let program = r"OR C T
@@ -34,7 +34,7 @@ WALK";
 }
 
 pub mod part2 {
-    use crate::day_21::solve_with_program;
+    use super::solve_with_program;
 
     pub fn solve(input: &str) -> i64 {
         let program = r"NOT B J

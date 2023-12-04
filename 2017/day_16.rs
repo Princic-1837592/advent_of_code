@@ -69,7 +69,7 @@ fn dance(programs: &mut [usize], positions: &mut [usize], moves: &[Move]) {
 }
 
 pub mod part1 {
-    use crate::day_16::{dance, parse};
+    use super::{dance, parse};
 
     pub fn solve(input: &str, last_letter: char) -> String {
         let moves = parse(input);
@@ -90,7 +90,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{hash_map::Entry, HashMap};
 
-    use crate::day_16::{dance, parse};
+    use super::{dance, parse};
 
     pub fn solve(input: &str, last_letter: char) -> String {
         let moves = parse(input);

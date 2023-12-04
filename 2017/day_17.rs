@@ -8,7 +8,7 @@ fn parse(input: &str) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_17::parse;
+    use super::parse;
 
     #[derive(Copy, Clone, Debug, Default)]
     struct Node {
@@ -35,7 +35,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_17::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let step = parse(input);

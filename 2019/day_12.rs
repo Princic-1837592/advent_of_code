@@ -58,7 +58,7 @@ fn step(moons: &mut [Moon; 4]) {
 }
 
 pub mod part1 {
-    use crate::day_12::{parse, step};
+    use super::{parse, step};
 
     pub fn solve(input: &str, steps: usize) -> usize {
         let mut moons = parse(input);
@@ -76,7 +76,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_12::{parse, step};
+    use super::{parse, step};
 
     fn gcd(a: usize, b: usize) -> usize {
         if a == 0 {

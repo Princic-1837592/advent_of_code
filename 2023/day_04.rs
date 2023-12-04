@@ -56,7 +56,7 @@ fn parse(input: &str) -> Parsed {
 pub mod part1 {
     use super::{Card, Parsed};
 
-    pub fn solve(_input: &str, cards: Parsed) -> usize {
+    pub fn solve(cards: Parsed) -> usize {
         cards.iter().map(Card::eval).sum()
     }
 }
@@ -64,7 +64,7 @@ pub mod part1 {
 pub mod part2 {
     use super::Parsed;
 
-    pub fn solve(_input: &str, cards: Parsed) -> usize {
+    pub fn solve(cards: Parsed) -> usize {
         let mut cards: Vec<_> = cards.into_iter().map(|c| (1, c)).collect();
         for c in 0..cards.len() {
             let (n, card) = cards[c];
@@ -100,14 +100,14 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

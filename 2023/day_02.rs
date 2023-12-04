@@ -48,7 +48,7 @@ fn parse(input: &str) -> Parsed {
 pub mod part1 {
     use super::Parsed;
 
-    pub fn solve(_input: &str, games: Parsed) -> usize {
+    pub fn solve(games: Parsed) -> usize {
         games
             .iter()
             .enumerate()
@@ -64,7 +64,7 @@ pub mod part1 {
 pub mod part2 {
     use super::{Cubes, Parsed};
 
-    pub(crate) fn solve(_input: &str, games: Parsed) -> usize {
+    pub(crate) fn solve(games: Parsed) -> usize {
         games
             .iter()
             .map(|game| {
@@ -102,14 +102,14 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

@@ -81,7 +81,7 @@ fn do_moves(how_many: usize, cups: &mut [Node]) {
 }
 
 pub mod part1 {
-    use crate::day_23::{do_moves, parse, Node};
+    use super::{do_moves, parse, Node};
 
     fn to_string(cups: &Vec<Node>) -> String {
         let mut result = String::with_capacity(cups.len() - 2);
@@ -105,7 +105,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_23::{do_moves, parse};
+    use super::{do_moves, parse};
 
     pub fn solve(input: &str) -> usize {
         let numbers = "0"

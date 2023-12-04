@@ -52,7 +52,7 @@ fn parse(input: &str) -> Vec<Instruction> {
 }
 
 pub mod part1 {
-    use crate::day_18::{parse, Instruction, Operand};
+    use super::{parse, Instruction, Operand};
 
     pub fn solve(input: &str) -> isize {
         let instructions = parse(input);
@@ -116,7 +116,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::VecDeque;
 
-    use crate::day_18::{parse, Instruction, Operand};
+    use super::{parse, Instruction, Operand};
 
     pub fn solve(input: &str) -> usize {
         let instructions = parse(input);

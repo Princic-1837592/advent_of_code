@@ -194,7 +194,7 @@ fn solve_with_robots(
 }
 
 pub mod part1 {
-    use crate::day_18::{build_graph, parse, solve_with_robots};
+    use super::{build_graph, parse, solve_with_robots};
 
     pub fn solve(input: &str) -> usize {
         let (maze, entrance, total_keys) = parse(input);
@@ -204,7 +204,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_18::{build_graph, parse, solve_with_robots, State};
+    use super::{build_graph, parse, solve_with_robots, State};
 
     pub fn solve(input: &str) -> usize {
         let (mut maze, (ei, ej), total_keys) = parse(input);

@@ -73,7 +73,7 @@ fn find_best(asteroids: &HashSet<Coord>, h: isize, w: isize) -> (Coord, usize) {
 }
 
 pub mod part1 {
-    use crate::day_10::{find_best, parse};
+    use super::{find_best, parse};
 
     pub fn solve(input: &str) -> usize {
         let (asteroids, h, w) = parse(input);
@@ -82,7 +82,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_10::{find_best, parse};
+    use super::{find_best, parse};
 
     pub fn solve(input: &str) -> usize {
         let (mut asteroids, h, w) = parse(input);

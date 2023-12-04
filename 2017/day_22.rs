@@ -24,7 +24,7 @@ fn parse(input: &str) -> (HashSet<Coord>, Coord) {
 }
 
 pub mod part1 {
-    use crate::day_22::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let (mut infected, (mut vi, mut vj)) = parse(input);
@@ -48,7 +48,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{hash_map::Entry, HashMap};
 
-    use crate::day_22::parse;
+    use super::parse;
 
     #[derive(Copy, Clone, Debug)]
     enum State {

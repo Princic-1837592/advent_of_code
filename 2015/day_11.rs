@@ -75,18 +75,18 @@ fn to_string(password: &Password) -> String {
 }
 
 pub mod part1 {
-    use crate::day_11::{find_next_nth, to_string, Parsed};
+    use super::{find_next_nth, to_string, Parsed};
 
-    pub fn solve(_input: &str, mut password: Parsed) -> String {
+    pub fn solve(mut password: Parsed) -> String {
         find_next_nth(&mut password, 1);
         to_string(&password)
     }
 }
 
 pub mod part2 {
-    use crate::day_11::{find_next_nth, to_string, Parsed};
+    use super::{find_next_nth, to_string, Parsed};
 
-    pub fn solve(_input: &str, mut password: Parsed) -> String {
+    pub fn solve(mut password: Parsed) -> String {
         find_next_nth(&mut password, 2);
         to_string(&password)
     }
@@ -109,14 +109,14 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

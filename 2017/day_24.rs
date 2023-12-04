@@ -21,7 +21,7 @@ fn parse(input: &str) -> Vec<Port> {
 pub mod part1 {
     use std::collections::HashSet;
 
-    use crate::day_24::{parse, Port};
+    use super::{parse, Port};
 
     fn explore(ports: &[Port]) -> usize {
         fn internal(
@@ -64,7 +64,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashSet;
 
-    use crate::day_24::{parse, Port};
+    use super::{parse, Port};
 
     fn explore(ports: &[Port]) -> usize {
         fn internal(

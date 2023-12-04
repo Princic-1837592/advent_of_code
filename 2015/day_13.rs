@@ -56,17 +56,17 @@ fn find_shortest(graph: Vec<Vec<isize>>, init: isize, cmp: fn(&isize, &isize) ->
 }
 
 pub mod part1 {
-    use crate::day_13::find_shortest;
+    use super::find_shortest;
 
-    pub fn solve(_input: &str, graph: Vec<Vec<isize>>) -> isize {
+    pub fn solve(graph: Vec<Vec<isize>>) -> isize {
         find_shortest(graph, isize::MIN, <isize as PartialOrd>::gt)
     }
 }
 
 pub mod part2 {
-    use crate::day_13::{find_shortest, Parsed};
+    use super::{find_shortest, Parsed};
 
-    pub fn solve(_input: &str, mut graph: Parsed) -> isize {
+    pub fn solve(mut graph: Parsed) -> isize {
         graph.push(vec![0; graph.len()]);
         graph.iter_mut().for_each(|node| node.push(0));
         find_shortest(graph, isize::MIN, <isize as PartialOrd>::gt)
@@ -102,14 +102,14 @@ David would gain 41 happiness units by sitting next to Carol."
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

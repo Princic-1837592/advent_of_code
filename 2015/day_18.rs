@@ -26,7 +26,7 @@ pub fn iter_neighbors(
 }
 
 pub mod part1 {
-    use crate::day_18::{iter_neighbors, Parsed};
+    use super::{iter_neighbors, Parsed};
 
     fn step(lights: &mut Vec<Vec<bool>>, support: &mut [Vec<bool>]) {
         for i in 0..lights.len() {
@@ -45,7 +45,7 @@ pub mod part1 {
         lights.clone_from_slice(support);
     }
 
-    pub fn solve(_input: &str, mut lights: Parsed) -> usize {
+    pub fn solve(mut lights: Parsed) -> usize {
         let mut support = vec![vec![false; lights[0].len()]; lights.len()];
         for _ in 0..100 {
             step(&mut lights, &mut support);
@@ -59,7 +59,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_18::{iter_neighbors, Parsed};
+    use super::{iter_neighbors, Parsed};
 
     fn step(lights: &mut Vec<Vec<bool>>, support: &mut [Vec<bool>]) {
         for i in 0..lights.len() {
@@ -88,7 +88,7 @@ pub mod part2 {
         lights.clone_from_slice(support);
     }
 
-    pub fn solve(_input: &str, mut lights: Parsed) -> usize {
+    pub fn solve(mut lights: Parsed) -> usize {
         let mut support = vec![vec![false; lights[0].len()]; lights.len()];
         for (i, j) in [
             (0, 0),
@@ -133,14 +133,14 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

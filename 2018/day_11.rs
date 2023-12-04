@@ -55,7 +55,7 @@ fn find_max_rect(grid: &[[isize; 300]], size: usize) -> (usize, usize, isize) {
 }
 
 pub mod part1 {
-    use crate::day_11::{find_max_rect, make_grid, parse};
+    use super::{find_max_rect, make_grid, parse};
 
     pub fn solve(input: &str) -> String {
         let grid = make_grid(parse(input));
@@ -65,7 +65,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_11::{find_max_rect, make_grid, parse};
+    use super::{find_max_rect, make_grid, parse};
 
     pub fn solve(input: &str) -> String {
         let grid = make_grid(parse(input));

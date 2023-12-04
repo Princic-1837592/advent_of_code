@@ -30,7 +30,7 @@ fn solve_iter(input: &str, iterations: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_10::solve_iter;
+    use super::solve_iter;
 
     pub fn solve(input: &str) -> usize {
         solve_iter(input, 40)
@@ -38,7 +38,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_10::solve_iter;
+    use super::solve_iter;
 
     pub fn solve(input: &str) -> usize {
         solve_iter(input, 50)

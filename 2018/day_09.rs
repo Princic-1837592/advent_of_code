@@ -50,7 +50,7 @@ fn play(players: usize, marbles: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_09::{parse, play};
+    use super::{parse, play};
 
     pub fn solve(input: &str) -> usize {
         let (players, marbles) = parse(input);
@@ -59,7 +59,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_09::{parse, play};
+    use super::{parse, play};
 
     pub fn solve(input: &str) -> usize {
         let (players, marbles) = parse(input);

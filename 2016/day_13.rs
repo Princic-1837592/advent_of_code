@@ -56,7 +56,7 @@ fn is_open(x: usize, y: usize, number: usize) -> bool {
 }
 
 pub mod part1 {
-    use crate::day_13::{bfs, parse};
+    use super::{bfs, parse};
 
     pub fn solve(input: &str) -> usize {
         let number = parse(input);
@@ -65,7 +65,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_13::{bfs, parse};
+    use super::{bfs, parse};
 
     pub fn solve(input: &str) -> usize {
         let number = parse(input);

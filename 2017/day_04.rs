@@ -13,7 +13,7 @@ fn parse(input: &str) -> Vec<Vec<&str>> {
 pub mod part1 {
     use std::collections::HashSet;
 
-    use crate::day_04::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let passphrases = parse(input);
@@ -29,7 +29,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::HashSet;
 
-    use crate::day_04::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let passphrases = parse(input);

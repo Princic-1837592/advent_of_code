@@ -15,7 +15,7 @@ fn parse(input: &str) -> Vec<Vec<usize>> {
 }
 
 pub mod part1 {
-    use crate::day_02::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let matrix = parse(input);
@@ -29,7 +29,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_02::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let matrix = parse(input);

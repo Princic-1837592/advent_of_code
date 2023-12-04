@@ -1,8 +1,8 @@
 use std::{
     collections::{HashMap, HashSet},
+    fs::read_to_string,
     time::Instant,
 };
-use std::fs::read_to_string;
 
 fn parse(input: &str) -> Vec<(HashSet<&str>, Vec<&str>)> {
     input
@@ -69,7 +69,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_21::{get_possibilities, parse};
+    use super::{get_possibilities, parse};
 
     pub fn solve(input: &str) -> String {
         let recipes = parse(input);

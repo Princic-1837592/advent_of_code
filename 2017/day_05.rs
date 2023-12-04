@@ -8,7 +8,7 @@ fn parse(input: &str) -> Vec<isize> {
 }
 
 pub mod part1 {
-    use crate::day_05::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let mut jumps = parse(input);
@@ -24,7 +24,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_05::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let mut jumps = parse(input);

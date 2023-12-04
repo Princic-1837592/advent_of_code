@@ -103,7 +103,7 @@ fn solve_with(input: &str, a: isize) -> isize {
 }
 
 pub mod part1 {
-    use crate::day_23::solve_with;
+    use super::solve_with;
 
     pub fn solve(input: &str) -> isize {
         solve_with(input, 7)
@@ -111,7 +111,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_23::solve_with;
+    use super::solve_with;
 
     pub fn solve(input: &str) -> isize {
         solve_with(input, 12)

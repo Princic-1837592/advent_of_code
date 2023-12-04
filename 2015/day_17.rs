@@ -16,7 +16,7 @@ fn parse(input: &str) -> Parsed {
 }
 
 pub mod part1 {
-    use crate::day_17::parse;
+    use super::parse;
 
     fn explore(
         containers: &[usize],
@@ -58,7 +58,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_17::parse;
+    use super::parse;
 
     fn explore(
         containers: &[usize],

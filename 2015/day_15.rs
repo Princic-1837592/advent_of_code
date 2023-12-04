@@ -131,17 +131,17 @@ fn add_one(spoons: &mut [isize], total: &mut isize) -> bool {
 }
 
 pub mod part1 {
-    use crate::day_15::{solve_generic, Parsed};
+    use super::{solve_generic, Parsed};
 
-    pub fn solve(_input: &str, ingredients: Parsed) -> isize {
+    pub fn solve(ingredients: Parsed) -> isize {
         solve_generic(ingredients, false)
     }
 }
 
 pub mod part2 {
-    use crate::day_15::{solve_generic, Parsed};
+    use super::{solve_generic, Parsed};
 
-    pub fn solve(_input: &str, ingredients: Parsed) -> isize {
+    pub fn solve(ingredients: Parsed) -> isize {
         solve_generic(ingredients, true)
     }
 }
@@ -165,14 +165,14 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

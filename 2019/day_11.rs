@@ -40,7 +40,7 @@ fn paint(input: &str, painted: &mut HashSet<(i32, i32)>, white: &mut HashSet<(i3
 pub mod part1 {
     use std::collections::HashSet;
 
-    use crate::day_11::paint;
+    use super::paint;
 
     pub fn solve(input: &str) -> usize {
         let mut painted = HashSet::new();
@@ -55,7 +55,7 @@ pub mod part2 {
 
     use itertools::Itertools;
 
-    use crate::day_11::paint;
+    use super::paint;
 
     pub fn solve(input: &str) -> String {
         let mut painted = HashSet::new();

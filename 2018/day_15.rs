@@ -205,7 +205,7 @@ fn turn(
 pub mod part1 {
     use std::{cell::RefCell, rc::Rc};
 
-    use crate::day_15::{parse, turn, RoundResult, TurnResult, Unit};
+    use super::{parse, turn, RoundResult, TurnResult, Unit};
 
     fn round(
         walls: &mut [Vec<bool>],
@@ -248,7 +248,7 @@ pub mod part1 {
 pub mod part2 {
     use std::{cell::RefCell, rc::Rc};
 
-    use crate::day_15::{parse, turn, RoundResult, TurnResult, Unit};
+    use super::{parse, turn, RoundResult, TurnResult, Unit};
 
     fn round(
         walls: &mut [Vec<bool>],

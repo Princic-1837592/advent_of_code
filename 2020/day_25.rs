@@ -32,7 +32,7 @@ fn find_private(subject_number: usize, loop_size: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_25::{find_loop_size, find_private, parse};
+    use super::{find_loop_size, find_private, parse};
 
     pub fn solve(input: &str) -> usize {
         let (card, door) = parse(input);

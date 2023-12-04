@@ -193,7 +193,7 @@ fn fight(groups: &mut Groups) {
 }
 
 pub mod part1 {
-    use crate::day_24::{fight, parse};
+    use super::{fight, parse};
 
     pub fn solve(input: &str) -> isize {
         let mut groups = parse(input);
@@ -205,7 +205,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_24::{fight, parse};
+    use super::{fight, parse};
 
     pub fn solve(input: &str) -> isize {
         let mut groups = parse(input);

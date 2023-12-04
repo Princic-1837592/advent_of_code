@@ -64,7 +64,7 @@ fn parse(input: &str) -> Vec<Instruction> {
 }
 
 pub mod part1 {
-    use crate::day_08::{parse, Instruction, Operation};
+    use super::{parse, Instruction, Operation};
 
     pub fn solve(input: &str, width: usize, height: usize) -> usize {
         let instructions = parse(input);

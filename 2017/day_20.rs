@@ -52,7 +52,7 @@ fn parse(input: &str) -> Vec<Particle> {
 }
 
 pub mod part1 {
-    use crate::day_20::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         /*let mut particles = parse(input);
@@ -112,7 +112,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{HashMap, HashSet};
 
-    use crate::day_20::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let mut particles = parse(input);

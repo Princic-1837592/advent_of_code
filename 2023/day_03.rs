@@ -60,7 +60,7 @@ fn parse(input: &str) -> Parsed {
 pub mod part1 {
     use super::Parsed;
 
-    pub fn solve(_input: &str, (numbers, symbols): Parsed) -> usize {
+    pub fn solve((numbers, symbols): Parsed) -> usize {
         numbers
             .iter()
             .filter_map(|n| {
@@ -83,9 +83,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_03::Parsed;
+    use super::Parsed;
 
-    pub fn solve(_input: &str, (numbers, symbols): Parsed) -> usize {
+    pub fn solve((numbers, symbols): Parsed) -> usize {
         symbols
             .iter()
             .filter_map(|s| {
@@ -131,14 +131,14 @@ pub fn main(test: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

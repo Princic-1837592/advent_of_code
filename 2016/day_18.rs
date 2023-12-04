@@ -30,7 +30,7 @@ fn make_rows(mut row: Vec<bool>, rows: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_18::{make_rows, parse};
+    use super::{make_rows, parse};
 
     pub fn solve(input: &str, rows: usize) -> usize {
         make_rows(parse(input), rows)
@@ -38,7 +38,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_18::{make_rows, parse};
+    use super::{make_rows, parse};
 
     pub fn solve(input: &str) -> usize {
         make_rows(parse(input), 400_000)

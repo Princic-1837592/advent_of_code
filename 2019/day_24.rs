@@ -28,7 +28,7 @@ fn parse(input: &str) -> [[State; 5]; 5] {
 pub mod part1 {
     use std::{collections::HashSet, mem::swap};
 
-    use crate::day_24::{parse, State, NEIGHBORS};
+    use super::{parse, State, NEIGHBORS};
 
     fn biodiversity_rating(eris: &[[State; 5]; 5]) -> usize {
         let mut po2 = 1;
@@ -102,7 +102,7 @@ pub mod part1 {
 pub mod part2 {
     use std::{collections::HashSet, mem::swap};
 
-    use crate::day_24::{parse, State, NEIGHBORS};
+    use super::{parse, State, NEIGHBORS};
 
     type Coord = (isize, usize, usize);
 

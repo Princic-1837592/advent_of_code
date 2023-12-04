@@ -41,7 +41,7 @@ fn parse(input: &str) -> Group {
 }
 
 pub mod part1 {
-    use crate::day_09::{parse, Group};
+    use super::{parse, Group};
 
     fn score(group: &Group, partial: usize) -> usize {
         let mut total = partial;
@@ -58,7 +58,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_09::{parse, Group};
+    use super::{parse, Group};
 
     fn count_garbage(group: &Group) -> usize {
         group.garbage + group.internal.iter().map(count_garbage).sum::<usize>()

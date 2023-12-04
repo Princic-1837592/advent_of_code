@@ -74,7 +74,7 @@ fn run(instructions: Vec<Instruction>, registers: &mut [isize; 4]) {
 }
 
 pub mod part1 {
-    use crate::day_12::{parse, run};
+    use super::{parse, run};
 
     pub fn solve(input: &str) -> isize {
         let instructions = parse(input);
@@ -85,7 +85,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_12::{parse, run};
+    use super::{parse, run};
 
     pub fn solve(input: &str) -> isize {
         let instructions = parse(input);

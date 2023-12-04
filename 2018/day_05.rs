@@ -37,7 +37,7 @@ fn solve_ignoring(bytes: &Vec<i8>, ignore_upper: i8) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_05::{parse, solve_ignoring};
+    use super::{parse, solve_ignoring};
 
     pub fn solve(input: &str) -> usize {
         let bytes = parse(input);
@@ -46,7 +46,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_05::{parse, solve_ignoring};
+    use super::{parse, solve_ignoring};
 
     pub fn solve(input: &str) -> usize {
         let bytes = parse(input);

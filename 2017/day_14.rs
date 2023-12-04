@@ -3,7 +3,7 @@
 
 use std::{fs::read_to_string, time::Instant};
 
-use crate::day_10::part2::hash;
+use super::part2::hash;
 
 fn parse(input: &str) -> [[usize; 128]; 128] {
     let mut grid = [[0; 128]; 128];
@@ -19,7 +19,7 @@ fn parse(input: &str) -> [[usize; 128]; 128] {
 }
 
 pub mod part1 {
-    use crate::day_14::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let grid = parse(input);
@@ -30,7 +30,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::VecDeque;
 
-    use crate::day_14::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let grid = parse(input);

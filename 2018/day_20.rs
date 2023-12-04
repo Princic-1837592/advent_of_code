@@ -202,7 +202,7 @@ fn explore(regex: &Match, coord: Coord) -> HashMap<Coord, HashSet<Coord>> {
 pub mod part1 {
     use std::collections::{HashMap, HashSet, VecDeque};
 
-    use crate::day_20::{explore, parse, Coord};
+    use super::{explore, parse, Coord};
 
     fn bfs(graph: &HashMap<Coord, HashSet<Coord>>, start: Coord) -> usize {
         let mut queue = VecDeque::from([start]);
@@ -235,7 +235,7 @@ pub mod part1 {
 pub mod part2 {
     use std::collections::{HashMap, HashSet, VecDeque};
 
-    use crate::day_20::{explore, parse, Coord};
+    use super::{explore, parse, Coord};
 
     fn bfs(graph: &HashMap<Coord, HashSet<Coord>>, start: Coord) -> usize {
         let mut at_least_1000 = 0;

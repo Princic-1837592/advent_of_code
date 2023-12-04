@@ -63,7 +63,7 @@ fn find_64_keys(input: String, levels: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_14::find_64_keys;
+    use super::find_64_keys;
 
     pub fn solve(input: &str) -> usize {
         let input = input.to_owned();
@@ -72,7 +72,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_14::find_64_keys;
+    use super::find_64_keys;
 
     pub fn solve(input: &str) -> usize {
         let input = input.to_owned();

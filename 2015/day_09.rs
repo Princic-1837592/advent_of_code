@@ -51,17 +51,17 @@ fn find_shortest(graph: Vec<Vec<usize>>, init: usize, cmp: fn(&usize, &usize) ->
 }
 
 pub mod part1 {
-    use crate::day_09::{find_shortest, Parsed};
+    use super::{find_shortest, Parsed};
 
-    pub fn solve(_input: &str, graph: Parsed) -> usize {
+    pub fn solve(graph: Parsed) -> usize {
         find_shortest(graph, usize::MAX, <usize as PartialOrd>::lt)
     }
 }
 
 pub mod part2 {
-    use crate::day_09::{find_shortest, Parsed};
+    use super::{find_shortest, Parsed};
 
-    pub fn solve(_input: &str, graph: Parsed) -> usize {
+    pub fn solve(graph: Parsed) -> usize {
         find_shortest(graph, usize::MIN, <usize as PartialOrd>::gt)
     }
 }
@@ -86,14 +86,14 @@ Dublin to Belfast = 141"
     total += elapsed;
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);

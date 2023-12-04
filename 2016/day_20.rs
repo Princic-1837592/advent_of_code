@@ -26,7 +26,7 @@ fn parse(input: &str) -> Vec<Range> {
 }
 
 pub mod part1 {
-    use crate::day_20::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let ranges = parse(input);
@@ -48,7 +48,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_20::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let ranges = parse(input);

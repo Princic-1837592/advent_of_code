@@ -40,7 +40,7 @@ fn find_t(discs: Vec<Disc>) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_15::{find_t, parse};
+    use super::{find_t, parse};
 
     pub fn solve(input: &str) -> usize {
         let discs = parse(input);
@@ -49,7 +49,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_15::{find_t, parse, Disc};
+    use super::{find_t, parse, Disc};
 
     pub fn solve(input: &str) -> usize {
         let mut discs = parse(input);

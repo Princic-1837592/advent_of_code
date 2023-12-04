@@ -47,7 +47,7 @@ fn move_packet(map: HashMap<(isize, isize), char>) -> (String, usize) {
 }
 
 pub mod part1 {
-    use crate::day_19::{move_packet, parse};
+    use super::{move_packet, parse};
 
     pub fn solve(input: &str) -> String {
         let map = parse(input);
@@ -56,7 +56,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_19::{move_packet, parse};
+    use super::{move_packet, parse};
 
     pub fn solve(input: &str) -> usize {
         let map = parse(input);

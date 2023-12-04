@@ -46,7 +46,7 @@ fn is_valid(room: &Room) -> bool {
 }
 
 pub mod part1 {
-    use crate::day_04::{is_valid, parse};
+    use super::{is_valid, parse};
 
     pub fn solve(input: &str) -> usize {
         parse(input)
@@ -57,7 +57,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_04::{is_valid, parse};
+    use super::{is_valid, parse};
 
     pub fn solve(input: &str) -> usize {
         let rooms = parse(input);

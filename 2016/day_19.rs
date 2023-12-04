@@ -22,7 +22,7 @@ fn parse(input: &str) -> Vec<Elf> {
 }
 
 pub mod part1 {
-    use crate::day_19::parse;
+    use super::parse;
 
     pub fn solve(input: &str) -> usize {
         let mut elves = parse(input);

@@ -51,7 +51,7 @@ fn bfs(orbits: Orbits, from: &str, to: &str) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_06::{bfs, parse};
+    use super::{bfs, parse};
 
     pub fn solve(input: &str) -> usize {
         let orbits = parse(input);
@@ -60,7 +60,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_06::{bfs, parse, Orbits};
+    use super::{bfs, parse, Orbits};
 
     fn reverse(orbits: Orbits) -> Orbits {
         let mut reversed = orbits.clone();
