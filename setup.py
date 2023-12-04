@@ -111,22 +111,29 @@ pub fn main(test: bool) -> Duration {{
 }}
 """.lstrip()
 rust_main_content = """
-use std::{{env, time::Instant}};
+use std::{{env, time::Duration}};
 
-use advent_of_code_{year} as aoc;
+macro_rules! run_days {{
+    ($($day:ident),* $(,)*) => {{
+        let test = env::args().any(|arg| arg == "--test");
+        let mut total = Duration::default();
+
+        $(
+            println!("Running {{}}", stringify!($day));
+            total += advent_of_code_2023::$day::main(test);
+            println!();
+        )*
+
+        println!("Total: {{:?}}", total);
+    }};
+}}
 
 fn main() {{
-    let test = env::args().any(|arg| arg == "--test");
-    let start = Instant::now();
-{single_days}
-    println!("Total: {{:?}}", start.elapsed());
+    run_days!(
+        {single_days}
+    );
 }}
 """.lstrip()
-rust_single_day_content = """
-    println!("Running day {day}");
-    aoc::day_{day:0>2}::main(test);
-    println!();
-"""
 rust_lib_content = """
 {mods}
 #[cfg(windows)]
@@ -164,7 +171,7 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
                 main.write(
                     rust_main_content.format(
                         year=year,
-                        single_days="".join(rust_single_day_content.format(day=day) for day in range(1, 25 + 1))
+                        single_days="\n        ".join(f"day_{day:0>2}, /**/" for day in range(1, 25 + 1))
                     )
                 )
 
