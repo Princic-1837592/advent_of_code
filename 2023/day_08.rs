@@ -1,26 +1,26 @@
 //! https://adventofcode.com/2023/day/8
 //! https://adventofcode.com/2023/day/8/input
 
-#![allow(unused)]
-
 use std::{fs::read_to_string, time::Instant};
 
-fn parse(input: &str) -> usize {
+type Parsed = usize;
+
+fn parse(_input: &str) -> Parsed {
     0
 }
 
 pub mod part1 {
-    use crate::day_08::parse;
+    use super::Parsed;
 
-    pub fn solve(input: &str) -> usize {
+    pub fn solve(_input: &str, _parsed: Parsed) -> usize {
         0
     }
 }
 
 pub mod part2 {
-    use crate::day_08::parse;
+    use super::Parsed;
 
-    pub fn solve(input: &str) -> usize {
+    pub fn solve(_input: &str, _parsed: Parsed) -> usize {
         0
     }
 }
@@ -32,10 +32,11 @@ pub fn main(test: bool) {
     } else {
         read_to_string("inputs/day_08_input.txt").unwrap()
     };
+    let parsed = parse(&puzzle_input);
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
+    println!("{}", part1::solve(&puzzle_input, parsed));
     println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
+    println!("{}", part2::solve(&puzzle_input, parsed));
     println!("Run in {:?}", start.elapsed());
 }
