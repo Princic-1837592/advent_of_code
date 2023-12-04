@@ -54,20 +54,18 @@ rust_src_content = """
 //! https://adventofcode.com/{year}/day/{day}
 //! https://adventofcode.com/{year}/day/{day}/input
 
-#![allow(unused)]
-
 use std::{{fs::read_to_string, time::Instant}};
 
 type Parsed = usize;
 
-fn parse(input: &str) -> Parsed {{
+fn parse(_input: &str) -> Parsed {{
     0
 }}
 
 pub mod part1 {{
     use super::Parsed;
 
-    pub fn solve(input: &str, parsed: Parsed) -> usize {{
+    pub fn solve(_input: &str, _parsed: Parsed) -> usize {{
         0
     }}
 }}
@@ -75,7 +73,7 @@ pub mod part1 {{
 pub mod part2 {{
     use super::Parsed;
 
-    pub fn solve(input: &str, parsed: Parsed) -> usize {{
+    pub fn solve(_input: &str, _parsed: Parsed) -> usize {{
         0
     }}
 }}
