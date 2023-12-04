@@ -58,22 +58,24 @@ rust_src_content = """
 
 use std::{{fs::read_to_string, time::Instant}};
 
-fn parse(input: &str) -> usize {{
+type Parsed = usize;
+
+fn parse(input: &str) -> Parsed {{
     0
 }}
 
 pub mod part1 {{
-    use crate::day_{day:0>2}::parse;
+    use super::Parsed;
 
-    pub fn solve(input: &str) -> usize {{
+    pub fn solve(input: &str, parsed: Parsed) -> usize {{
         0
     }}
 }}
 
 pub mod part2 {{
-    use crate::day_{day:0>2}::parse;
+    use super::Parsed;
 
-    pub fn solve(input: &str) -> usize {{
+    pub fn solve(input: &str, parsed: Parsed) -> usize {{
         0
     }}
 }}
@@ -85,11 +87,12 @@ pub fn main(test: bool) {{
     }} else {{
         read_to_string("inputs/day_{day:0>2}_input.txt").unwrap()
     }};
+    let parsed = parse(&puzzle_input);
     let start = Instant::now();
-    println!("{{}}", part1::solve(&puzzle_input));
+    println!("{{}}", part1::solve(&puzzle_input, parsed));
     println!("Run in {{:?}}", start.elapsed());
     let start = Instant::now();
-    println!("{{}}", part2::solve(&puzzle_input));
+    println!("{{}}", part2::solve(&puzzle_input, parsed));
     println!("Run in {{:?}}", start.elapsed());
 }}
 """.lstrip()
@@ -208,4 +211,4 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
 
 
 if __name__ == "__main__":
-    setup_calendar("2019", "rust", True, True)
+    setup_calendar("2023", "rust", False, True)
