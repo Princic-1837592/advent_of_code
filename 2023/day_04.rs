@@ -91,21 +91,26 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
         read_to_string("inputs/day_04_input.txt").unwrap()
     };
 
-    let parsed = parse(&puzzle_input);
     let mut total = Duration::default();
+
+    let start = Instant::now();
+    let parsed = parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("Parsed in {:?}", elapsed);
+    total += elapsed;
 
     let start = Instant::now();
     let result = part1::solve(&puzzle_input, parsed.clone());
     let elapsed = start.elapsed();
     println!("{}", result);
-    println!("Run in {:?}", elapsed);
+    println!("First part in {:?}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
     let result = part2::solve(&puzzle_input, parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
-    println!("Run in {:?}", elapsed);
+    println!("Second part in {:?}", elapsed);
     total += elapsed;
 
     println!("Total {:?}", total);
