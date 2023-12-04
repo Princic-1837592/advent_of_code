@@ -1,7 +1,10 @@
 //! https://adventofcode.com/2015/day/7
 //! https://adventofcode.com/2015/day/7/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 fn letters_to_index(input: &str) -> usize {
     input
@@ -16,13 +19,13 @@ fn letters_to_index(input: &str) -> usize {
 }
 
 #[derive(Copy, Clone, Debug)]
-enum Operand {
+pub enum Operand {
     Const(u16),
     Wire(usize),
 }
 
 #[derive(Copy, Clone, Debug)]
-enum Wire {
+pub enum Wire {
     Const(Operand),
     And(Operand, Operand),
     Or(Operand, Operand),
@@ -64,7 +67,9 @@ impl From<&str> for Wire {
     }
 }
 
-fn parse(input: &str) -> [Option<Wire>; 676] {
+type Parsed = [Option<Wire>; 676];
+
+fn parse(input: &str) -> Parsed {
     let mut result = [None; 676];
     input.lines().for_each(|line| {
         let mut parts = line.split(" -> ");
@@ -129,10 +134,9 @@ fn resolve(wire: usize, wires: &mut [Option<Wire>; 676], values: &mut [Option<u1
 }
 
 pub mod part1 {
-    use crate::day_07::{parse, resolve};
+    use crate::day_07::{resolve, Parsed};
 
-    pub fn solve(input: &str) -> u16 {
-        let mut wires = parse(input);
+    pub fn solve(_input: &str, mut wires: Parsed) -> u16 {
         let mut values = [None; 676];
         resolve(1, &mut wires, &mut values);
         values[1].unwrap()
@@ -140,10 +144,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_07::{parse, resolve, Operand, Wire};
+    use crate::day_07::{resolve, Operand, Parsed, Wire};
 
-    pub fn solve(input: &str) -> u16 {
-        let mut wires = parse(input);
+    pub fn solve(_input: &str, mut wires: Parsed) -> u16 {
         let mut values = [None; 676];
         resolve(1, &mut wires, &mut values);
         wires[2] = Some(Wire::Const(Operand::Const(values[1].unwrap())));
@@ -153,17 +156,36 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "".to_owned();
     let puzzle_input = if test {
         test_input
     } else {
         read_to_string("inputs/day_07_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let parsed = parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("Parsed in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, parsed.clone());
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
+    let start = Instant::now();
+    let result = part2::solve(&puzzle_input, parsed);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

@@ -3,9 +3,14 @@
 //! https://adventofcode.com/2015/day/25
 //! https://adventofcode.com/2015/day/25/input/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
-fn parse(input: &str) -> (usize, usize) {
+type Parsed = (usize, usize);
+
+fn parse(input: &str) -> Parsed {
     let parts: Vec<_> = input.split(' ').collect();
     let (row, col) = (parts[parts.len() - 3], parts[parts.len() - 1]);
     (
@@ -15,10 +20,9 @@ fn parse(input: &str) -> (usize, usize) {
 }
 
 pub mod part1 {
-    use crate::day_25::parse;
+    use crate::day_25::Parsed;
 
-    pub fn solve(input: &str) -> usize {
-        let (row, col) = parse(input);
+    pub fn solve(_input: &str, (row, col): Parsed) -> usize {
         let mut code = 20151125;
         let prev_diags = row + col - 2;
         let prev_codes = (prev_diags * (prev_diags + 1)) / 2 + col - 1;
@@ -29,14 +33,28 @@ pub mod part1 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "To continue, please consult the code grid in the manual.  Enter the code at row 5, column 3.".to_owned();
     let puzzle_input = if test {
         test_input
     } else {
         read_to_string("inputs/day_25_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let parsed = parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("Parsed in {:?}", elapsed);
+    total += elapsed;
+
+    let start = Instant::now();
+    let result = part1::solve(&puzzle_input, parsed);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
+    total
 }

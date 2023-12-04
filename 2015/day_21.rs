@@ -1,7 +1,10 @@
 //! https://adventofcode.com/2015/day/21
 //! https://adventofcode.com/2015/day/21/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 const WEAPONS: [(usize, isize, isize); 5] =
     [(8, 4, 0), (10, 5, 0), (25, 6, 0), (40, 7, 0), (74, 8, 0)];
@@ -131,17 +134,30 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "".to_owned();
     let puzzle_input = if test {
         test_input
     } else {
         read_to_string("inputs/day_21_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part2::solve(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

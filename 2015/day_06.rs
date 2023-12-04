@@ -1,11 +1,15 @@
 //! https://adventofcode.com/2015/day/6
 //! https://adventofcode.com/2015/day/6/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 use regex::Regex;
 
-enum Action {
+#[derive(Copy, Clone, Debug)]
+pub enum Action {
     On,
     Off,
     Toggle,
@@ -13,7 +17,9 @@ enum Action {
 
 type Instruction = (Action, (usize, usize), (usize, usize));
 
-fn parse(input: &str) -> Vec<Instruction> {
+type Parsed = Vec<Instruction>;
+
+fn parse(input: &str) -> Parsed {
     let pattern = Regex::new(r"(\d+),(\d+) through (\d+),(\d+)").unwrap();
     input
         .lines()
@@ -40,12 +46,12 @@ fn parse(input: &str) -> Vec<Instruction> {
 }
 
 pub mod part1 {
-    use crate::day_06::{parse, Action};
+    use super::{Action, Parsed};
 
-    pub fn solve(input: &str) -> usize {
+    pub fn solve(_input: &str, parsed: Parsed) -> usize {
         let mut lights = vec![[false; 1000]; 1000];
         let mut lit = 0;
-        for instr in parse(input) {
+        for instr in parsed {
             match instr {
                 (Action::On, (left, top), (right, bottom)) => {
                     for row in &mut lights[left..=right] {
@@ -86,12 +92,12 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_06::{parse, Action};
+    use crate::day_06::{Action, Parsed};
 
-    pub fn solve(input: &str) -> usize {
+    pub fn solve(_input: &str, parsed: Parsed) -> usize {
         let mut lights = vec![[0; 1000]; 1000];
         let mut lit = 0;
-        for instr in parse(input) {
+        for instr in parsed {
             match instr {
                 (Action::On, (left, top), (right, bottom)) => {
                     for row in &mut lights[left..=right] {
@@ -125,17 +131,36 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "".to_owned();
     let puzzle_input = if test {
         test_input
     } else {
         read_to_string("inputs/day_06_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let parsed = parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("Parsed in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, parsed.clone());
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
+    let start = Instant::now();
+    let result = part2::solve(&puzzle_input, parsed);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

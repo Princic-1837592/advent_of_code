@@ -1,12 +1,17 @@
 //! https://adventofcode.com/2015/day/13
 //! https://adventofcode.com/2015/day/13/input
 
-use std::{collections::HashMap, time::Instant};
-use std::fs::read_to_string;
+use std::{
+    collections::HashMap,
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 use itertools::Itertools;
 
-fn parse(input: &str) -> Vec<Vec<isize>> {
+type Parsed = Vec<Vec<isize>>;
+
+fn parse(input: &str) -> Parsed {
     let edges: Vec<_> = input
         .lines()
         .map(|line| {
@@ -51,26 +56,24 @@ fn find_shortest(graph: Vec<Vec<isize>>, init: isize, cmp: fn(&isize, &isize) ->
 }
 
 pub mod part1 {
-    use crate::day_13::{find_shortest, parse};
+    use crate::day_13::find_shortest;
 
-    pub fn solve(input: &str) -> isize {
-        let graph = parse(input);
+    pub fn solve(_input: &str, graph: Vec<Vec<isize>>) -> isize {
         find_shortest(graph, isize::MIN, <isize as PartialOrd>::gt)
     }
 }
 
 pub mod part2 {
-    use crate::day_13::{find_shortest, parse};
+    use crate::day_13::{find_shortest, Parsed};
 
-    pub fn solve(input: &str) -> isize {
-        let mut graph = parse(input);
+    pub fn solve(_input: &str, mut graph: Parsed) -> isize {
         graph.push(vec![0; graph.len()]);
         graph.iter_mut().for_each(|node| node.push(0));
         find_shortest(graph, isize::MIN, <isize as PartialOrd>::gt)
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "Alice would gain 54 happiness units by sitting next to Bob.
 Alice would lose 79 happiness units by sitting next to Carol.
 Alice would lose 2 happiness units by sitting next to David.
@@ -89,10 +92,29 @@ David would gain 41 happiness units by sitting next to Carol."
     } else {
         read_to_string("inputs/day_13_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let parsed = parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("Parsed in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, parsed.clone());
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
+    let start = Instant::now();
+    let result = part2::solve(&puzzle_input, parsed);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

@@ -1,7 +1,10 @@
 //! https://adventofcode.com/2015/day/22
 //! https://adventofcode.com/2015/day/22/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 #[derive(Copy, Clone, Debug)]
 struct Spell {
@@ -68,7 +71,9 @@ const SPELLS: [Spell; 5] = [
     },
 ];
 
-fn parse(input: &str) -> (isize, usize) {
+type Parsed = (isize, usize);
+
+fn parse(input: &str) -> Parsed {
     let mut lines = input.lines();
     let boss_hp = lines
         .next()
@@ -209,7 +214,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "Hit Points: 14
 Damage: 8"
         .to_owned();
@@ -218,10 +223,23 @@ Damage: 8"
     } else {
         (read_to_string("inputs/day_22_input.txt").unwrap(), 50, 500)
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input, hp, mana));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, hp, mana);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input, hp, mana));
-    println!("Run in {:?}", start.elapsed());
+    let result = part2::solve(&puzzle_input, hp, mana);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

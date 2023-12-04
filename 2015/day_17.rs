@@ -1,9 +1,14 @@
 //! https://adventofcode.com/2015/day/17
 //! https://adventofcode.com/2015/day/17/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
-fn parse(input: &str) -> Vec<usize> {
+type Parsed = Vec<usize>;
+
+fn parse(input: &str) -> Parsed {
     let mut result: Vec<_> = input.lines().map(|line| line.parse().unwrap()).collect();
     result.sort();
     result.reverse();
@@ -109,7 +114,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "20
 15
 10
@@ -121,10 +126,23 @@ pub fn main(test: bool) {
     } else {
         (read_to_string("inputs/day_17_input.txt").unwrap(), 150)
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input, target));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, target);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input, target));
-    println!("Run in {:?}", start.elapsed());
+    let result = part2::solve(&puzzle_input, target);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

@@ -1,11 +1,16 @@
 //! https://adventofcode.com/2015/day/24
 //! https://adventofcode.com/2015/day/24/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 use itertools::Itertools;
 
-fn parse(input: &str) -> Vec<usize> {
+type Parsed = Vec<usize>;
+
+fn parse(input: &str) -> Parsed {
     input
         .lines()
         .rev()
@@ -29,8 +34,7 @@ fn solve_locking_k(packages: &[usize], target: usize, min_len: usize, k: usize) 
     results.into_iter().min()
 }
 
-fn solve_greedy(input: &str, groups: usize) -> usize {
-    let mut packages = parse(input);
+fn solve_greedy(mut packages: Parsed, groups: usize) -> usize {
     packages.sort();
     packages.reverse();
     let target = packages.iter().sum::<usize>() / groups;
@@ -49,22 +53,22 @@ fn solve_greedy(input: &str, groups: usize) -> usize {
 }
 
 pub mod part1 {
-    use crate::day_24::solve_greedy;
+    use crate::day_24::{solve_greedy, Parsed};
 
-    pub fn solve(input: &str) -> usize {
-        solve_greedy(input, 3)
+    pub fn solve(_input: &str, packages: Parsed) -> usize {
+        solve_greedy(packages, 3)
     }
 }
 
 pub mod part2 {
-    use crate::day_24::solve_greedy;
+    use crate::day_24::{solve_greedy, Parsed};
 
-    pub fn solve(input: &str) -> usize {
-        solve_greedy(input, 4)
+    pub fn solve(_input: &str, packages: Parsed) -> usize {
+        solve_greedy(packages, 4)
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "1
 2
 3
@@ -81,10 +85,29 @@ pub fn main(test: bool) {
     } else {
         read_to_string("inputs/day_24_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let parsed = parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("Parsed in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, parsed.clone());
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
+    let start = Instant::now();
+    let result = part2::solve(&puzzle_input, parsed);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

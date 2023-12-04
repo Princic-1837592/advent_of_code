@@ -1,7 +1,10 @@
 //! https://adventofcode.com/2015/day/23
 //! https://adventofcode.com/2015/day/23/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 enum Instruction {
     Hlf(usize),
@@ -97,7 +100,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "inc a
 jio a, +2
 tpl a
@@ -108,10 +111,23 @@ inc a"
     } else {
         read_to_string("inputs/day_23_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input, 0));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, 0);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part2::solve(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

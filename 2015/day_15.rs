@@ -5,11 +5,11 @@ use std::{
     fs::read_to_string,
     iter::Sum,
     ops::{AddAssign, Mul},
-    time::Instant,
+    time::{Duration, Instant},
 };
 
 #[derive(Copy, Clone, Debug, Default)]
-struct Ingredient {
+pub struct Ingredient {
     capacity: isize,
     durability: isize,
     flavor: isize,
@@ -63,7 +63,9 @@ impl Sum for Ingredient {
     }
 }
 
-fn parse(input: &str) -> Vec<Ingredient> {
+type Parsed = Vec<Ingredient>;
+
+fn parse(input: &str) -> Parsed {
     input
         .lines()
         .map(|line| {
@@ -129,24 +131,22 @@ fn add_one(spoons: &mut [isize], total: &mut isize) -> bool {
 }
 
 pub mod part1 {
-    use crate::day_15::{parse, solve_generic};
+    use crate::day_15::{solve_generic, Parsed};
 
-    pub fn solve(input: &str) -> isize {
-        let ingredients = parse(input);
+    pub fn solve(_input: &str, ingredients: Parsed) -> isize {
         solve_generic(ingredients, false)
     }
 }
 
 pub mod part2 {
-    use crate::day_15::{parse, solve_generic};
+    use crate::day_15::{solve_generic, Parsed};
 
-    pub fn solve(input: &str) -> isize {
-        let ingredients = parse(input);
+    pub fn solve(_input: &str, ingredients: Parsed) -> isize {
         solve_generic(ingredients, true)
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
         .to_owned();
@@ -155,10 +155,29 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
     } else {
         read_to_string("inputs/day_15_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let parsed = parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("Parsed in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input, parsed.clone());
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
+    let start = Instant::now();
+    let result = part2::solve(&puzzle_input, parsed);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }

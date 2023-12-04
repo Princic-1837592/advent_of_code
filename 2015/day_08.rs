@@ -1,7 +1,10 @@
 //! https://adventofcode.com/2015/day/8
 //! https://adventofcode.com/2015/day/8/input
 
-use std::{fs::read_to_string, time::Instant};
+use std::{
+    fs::read_to_string,
+    time::{Duration, Instant},
+};
 
 fn find_difference(string: &str) -> usize {
     let (memory, _, _) = string[1..string.len() - 1].chars().fold(
@@ -55,7 +58,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) {
+pub fn main(test: bool) -> Duration {
     let test_input = r#"""
 "abc"
 "aaa\"aaa"
@@ -66,10 +69,23 @@ pub fn main(test: bool) {
     } else {
         read_to_string("inputs/day_08_input.txt").unwrap()
     };
+
+    let mut total = Duration::default();
+
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part1::solve(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("First part in {:?}", elapsed);
+    total += elapsed;
+
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
-    println!("Run in {:?}", start.elapsed());
+    let result = part2::solve(&puzzle_input);
+    let elapsed = start.elapsed();
+    println!("{}", result);
+    println!("Second part in {:?}", elapsed);
+    total += elapsed;
+
+    println!("Total {:?}", total);
+    total
 }
