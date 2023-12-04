@@ -3,7 +3,7 @@
 
 use std::{fs::read_to_string, time::Instant};
 
-use super::part2::hash;
+use crate::day_10::part2::hash;
 
 fn parse(input: &str) -> [[usize; 128]; 128] {
     let mut grid = [[0; 128]; 128];
