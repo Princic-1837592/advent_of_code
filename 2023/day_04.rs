@@ -28,16 +28,19 @@ impl From<&str> for Card {
 
 impl Card {
     fn eval(&self) -> usize {
-        let count = self
-            .right
-            .iter()
-            .filter(|&&n| n > 0 && self.left.binary_search(&n).is_ok())
-            .count();
-        if count > 0 {
-            2_usize.pow(count as u32 - 1)
+        let matches = self.matches();
+        if matches > 0 {
+            2_usize.pow(matches as u32 - 1)
         } else {
             0
         }
+    }
+
+    fn matches(&self) -> usize {
+        self.right
+            .iter()
+            .filter(|&&n| n > 0 && self.left.binary_search(&n).is_ok())
+            .count()
     }
 }
 
@@ -61,12 +64,7 @@ pub mod part2 {
         let mut cards: Vec<_> = parse(input).into_iter().map(|c| (1, c)).collect();
         for c in 0..cards.len() {
             let (n, card) = cards[c];
-            let points = card.eval();
-            let matches = if points == 0 {
-                0
-            } else {
-                points.ilog2() as usize + 1
-            };
+            let matches = card.matches();
             for next in &mut cards[c + 1..c + 1 + matches] {
                 next.0 += n
             }
