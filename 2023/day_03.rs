@@ -8,14 +8,14 @@ use regex::Regex;
 type Coord = (usize, usize);
 
 #[derive(Clone, Debug)]
-struct Number {
+pub struct Number {
     value: usize,
     top_left: Coord,
     bottom_right: Coord,
 }
 
 #[derive(Copy, Clone, Debug)]
-struct Symbol {
+pub struct Symbol {
     char: char,
     coord: Coord,
 }
@@ -27,7 +27,9 @@ impl Number {
     }
 }
 
-fn parse(input: &str) -> (Vec<Number>, Vec<Symbol>) {
+type Parsed = (Vec<Number>, Vec<Symbol>);
+
+fn parse(input: &str) -> Parsed {
     let mut numbers = Vec::new();
     let mut symbols = Vec::new();
     let number = Regex::new(r"\d+|[^.\d]").unwrap();
@@ -53,10 +55,9 @@ fn parse(input: &str) -> (Vec<Number>, Vec<Symbol>) {
 }
 
 pub mod part1 {
-    use crate::day_03::parse;
+    use super::Parsed;
 
-    pub fn solve(input: &str) -> usize {
-        let (numbers, symbols) = parse(input);
+    pub fn solve(_input: &str, (numbers, symbols): Parsed) -> usize {
         numbers
             .iter()
             .filter_map(|n| {
@@ -79,10 +80,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_03::parse;
+    use crate::day_03::Parsed;
 
-    pub fn solve(input: &str) -> usize {
-        let (numbers, symbols) = parse(input);
+    pub fn solve(_input: &str, (numbers, symbols): Parsed) -> usize {
         symbols
             .iter()
             .filter_map(|s| {
@@ -118,10 +118,11 @@ pub fn main(test: bool) {
     } else {
         read_to_string("inputs/day_03_input.txt").unwrap()
     };
+    let parsed = parse(&puzzle_input);
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
+    println!("{}", part1::solve(&puzzle_input, parsed.clone()));
     println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
+    println!("{}", part2::solve(&puzzle_input, parsed));
     println!("Run in {:?}", start.elapsed());
 }

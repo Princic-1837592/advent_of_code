@@ -4,7 +4,7 @@
 use std::{fs::read_to_string, time::Instant};
 
 #[derive(Copy, Clone, Debug, Default)]
-struct Card {
+pub struct Card {
     left: [usize; 10],
     right: [usize; 25],
 }
@@ -44,24 +44,25 @@ impl Card {
     }
 }
 
-fn parse(input: &str) -> Vec<Card> {
+type Parsed = Vec<Card>;
+
+fn parse(input: &str) -> Parsed {
     input.lines().map(Card::from).collect()
 }
 
 pub mod part1 {
-    use crate::day_04::{parse, Card};
+    use super::{Card, Parsed};
 
-    pub fn solve(input: &str) -> usize {
-        let cards = parse(input);
+    pub fn solve(_input: &str, cards: Parsed) -> usize {
         cards.iter().map(Card::eval).sum()
     }
 }
 
 pub mod part2 {
-    use crate::day_04::parse;
+    use super::Parsed;
 
-    pub fn solve(input: &str) -> usize {
-        let mut cards: Vec<_> = parse(input).into_iter().map(|c| (1, c)).collect();
+    pub fn solve(_input: &str, cards: Parsed) -> usize {
+        let mut cards: Vec<_> = cards.into_iter().map(|c| (1, c)).collect();
         for c in 0..cards.len() {
             let (n, card) = cards[c];
             let matches = card.matches();
@@ -86,10 +87,11 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
     } else {
         read_to_string("inputs/day_04_input.txt").unwrap()
     };
+    let parsed = parse(&puzzle_input);
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
+    println!("{}", part1::solve(&puzzle_input, parsed.clone()));
     println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
+    println!("{}", part2::solve(&puzzle_input, parsed));
     println!("Run in {:?}", start.elapsed());
 }

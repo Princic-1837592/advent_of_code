@@ -3,7 +3,9 @@
 
 use std::{fs::read_to_string, time::Instant};
 
-fn parse(input: &str) -> Vec<&str> {
+type Parsed<'a> = Vec<&'a str>;
+
+fn parse(input: &str) -> Parsed {
     input.lines().collect()
 }
 
@@ -25,10 +27,9 @@ fn find_both(line: &str, values: Vec<&str>) -> (usize, usize) {
 }
 
 pub mod part1 {
-    use crate::day_01::{find_both, parse};
+    use super::{find_both, Parsed};
 
-    pub fn solve(input: &str) -> usize {
-        let lines = parse(input);
+    pub fn solve(_input: &str, lines: Parsed) -> usize {
         lines
             .iter()
             .map(|l| {
@@ -41,10 +42,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_01::{find_both, parse};
+    use super::{find_both, Parsed};
 
-    pub fn solve(input: &str) -> usize {
-        let lines = parse(input);
+    pub fn solve(_input: &str, lines: Parsed) -> usize {
         lines
             .iter()
             .map(|l| {
@@ -72,10 +72,11 @@ treb7uchet"
     } else {
         read_to_string("inputs/day_01_input.txt").unwrap()
     };
+    let parsed = parse(&puzzle_input);
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
+    println!("{}", part1::solve(&puzzle_input, parsed.clone()));
     println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
+    println!("{}", part2::solve(&puzzle_input, parsed));
     println!("Run in {:?}", start.elapsed());
 }

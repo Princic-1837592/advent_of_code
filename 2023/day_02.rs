@@ -6,7 +6,7 @@ use std::{fs::read_to_string, time::Instant};
 use regex::Regex;
 
 #[derive(Copy, Clone, Default, Debug)]
-struct Cubes {
+pub struct Cubes {
     red: usize,
     green: usize,
     blue: usize,
@@ -14,7 +14,9 @@ struct Cubes {
 
 type Game = Vec<Cubes>;
 
-fn parse(input: &str) -> Vec<Game> {
+type Parsed = Vec<Game>;
+
+fn parse(input: &str) -> Parsed {
     let red = Regex::new(r"(\d+) red").unwrap();
     let green = Regex::new(r"(\d+) green").unwrap();
     let blue = Regex::new(r"(\d+) blue").unwrap();
@@ -41,10 +43,9 @@ fn parse(input: &str) -> Vec<Game> {
 }
 
 pub mod part1 {
-    use crate::day_02::parse;
+    use super::Parsed;
 
-    pub fn solve(input: &str) -> usize {
-        let games = parse(input);
+    pub fn solve(_input: &str, games: Parsed) -> usize {
         games
             .iter()
             .enumerate()
@@ -58,10 +59,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use crate::day_02::{parse, Cubes};
+    use super::{Cubes, Parsed};
 
-    pub fn solve(input: &str) -> usize {
-        let games = parse(input);
+    pub(crate) fn solve(_input: &str, games: Parsed) -> usize {
         games
             .iter()
             .map(|game| {
@@ -89,10 +89,11 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
     } else {
         read_to_string("inputs/day_02_input.txt").unwrap()
     };
+    let parsed = parse(&puzzle_input);
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input));
+    println!("{}", part1::solve(&puzzle_input, parsed.clone()));
     println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input));
+    println!("{}", part2::solve(&puzzle_input, parsed.clone()));
     println!("Run in {:?}", start.elapsed());
 }
