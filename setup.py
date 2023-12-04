@@ -125,7 +125,7 @@ macro_rules! run_days {{
 
         $(
             println!("Running {{}}", stringify!($day));
-            total += advent_of_code_2023::$day::main(test);
+            total += advent_of_code_{year}::$day::main(test);
             println!();
         )*
 
