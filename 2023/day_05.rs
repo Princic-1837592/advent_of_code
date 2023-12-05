@@ -94,6 +94,8 @@ pub mod part1 {
 pub mod part2 {
     use std::cmp::Ordering;
 
+    use rayon::prelude::{IntoParallelIterator, ParallelIterator};
+
     use super::{Map, Parsed, Range};
 
     fn unmap(dst: usize, map: &Map) -> usize {
@@ -121,16 +123,21 @@ pub mod part2 {
         for s in (0..seed_ranges.len()).step_by(2) {
             seeds.push(Range::new(usize::MAX, seed_ranges[s], seed_ranges[s + 1]));
         }
-        for location in 0.. {
-            let seed = maps.iter().rfold(location, unmap);
-            if seeds
-                .iter()
-                .any(|r| r.source <= seed && seed <= r.source_end)
+        let length = 1_000_000;
+        for start in 0.. {
+            if let Some(location) = (start * length..(start + 1) * length)
+                .into_par_iter()
+                .find_first(|&location| {
+                    let seed = maps.iter().rfold(location, unmap);
+                    seeds
+                        .iter()
+                        .any(|r| r.source <= seed && seed <= r.source_end)
+                })
             {
                 return location;
             }
         }
-        unreachable!()
+        unreachable!();
     }
 }
 
