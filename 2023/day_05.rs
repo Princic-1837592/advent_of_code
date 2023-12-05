@@ -2,9 +2,12 @@
 //! https://adventofcode.com/2023/day/5/input
 
 use std::{
+    cmp::Ordering,
     fs::read_to_string,
     time::{Duration, Instant},
 };
+
+use crate::LINE_ENDING;
 
 #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Range {
@@ -16,7 +19,7 @@ pub struct Range {
 }
 
 impl Range {
-    fn new(source: usize, destination: usize, length: usize) -> Self {
+    fn new(destination: usize, source: usize, length: usize) -> Self {
         Range {
             source,
             source_end: source + length - 1,
@@ -38,14 +41,16 @@ impl From<&str> for Range {
     }
 }
 
-type Parsed = (Vec<usize>, Vec<Vec<Range>>);
+type Map = Vec<Range>;
+
+type Parsed = (Vec<usize>, Vec<Map>);
 
 fn parse(input: &str) -> Parsed {
-    let separator = "\n".repeat(2);
+    let separator = LINE_ENDING.repeat(2);
     let mut parts = input.split(&separator);
     let seeds = parts.next().unwrap()[6..]
         .split_whitespace()
-        .map(|s| s.parse().expect(&format!("{}", s)))
+        .map(|s| s.parse().unwrap())
         .collect();
     let maps = parts
         .map(|p| {
@@ -57,21 +62,47 @@ fn parse(input: &str) -> Parsed {
     (seeds, maps)
 }
 
+fn map(src: usize, map: &Map) -> usize {
+    let target = map.binary_search_by(|r| {
+        if src < r.source {
+            Ordering::Greater
+        } else if src > r.source_end {
+            Ordering::Less
+        } else {
+            Ordering::Equal
+        }
+    });
+    target
+        .map(|r| {
+            let range = map[r];
+            range.destination + src - range.source
+        })
+        .unwrap_or(src)
+}
+
 pub mod part1 {
-    use super::Parsed;
+    use super::{map, Parsed};
 
     pub fn solve((seeds, maps): Parsed) -> usize {
-        println!("{:?}", seeds);
-        println!("{:#?}", maps);
-        0
+        seeds
+            .into_iter()
+            .map(|s| maps.iter().fold(s, map))
+            .min()
+            .unwrap()
     }
 }
 
 pub mod part2 {
-    use super::Parsed;
+    use super::{map, Parsed};
 
-    pub fn solve(_parsed: Parsed) -> usize {
-        0
+    pub fn solve((seeds, maps): Parsed) -> usize {
+        let mut min = usize::MAX;
+        for s in (0..seeds.len()).step_by(2) {
+            for seed in seeds[s]..seeds[s] + seeds[s + 1] {
+                min = min.min(maps.iter().fold(seed, map))
+            }
+        }
+        min
     }
 }
 
