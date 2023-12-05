@@ -2,7 +2,6 @@
 //! https://adventofcode.com/2023/day/5/input
 
 use std::{
-    cmp::Ordering,
     fs::read_to_string,
     time::{Duration, Instant},
 };
@@ -24,7 +23,7 @@ impl Range {
             source,
             source_end: source + length - 1,
             destination,
-            destination_end: destination + length - 1,
+            destination_end: destination.saturating_add(length - 1),
             length,
         }
     }
@@ -62,26 +61,28 @@ fn parse(input: &str) -> Parsed {
     (seeds, maps)
 }
 
-fn map(src: usize, map: &Map) -> usize {
-    let target = map.binary_search_by(|r| {
-        if src < r.source {
-            Ordering::Greater
-        } else if src > r.source_end {
-            Ordering::Less
-        } else {
-            Ordering::Equal
-        }
-    });
-    target
-        .map(|r| {
-            let range = map[r];
-            range.destination + src - range.source
-        })
-        .unwrap_or(src)
-}
-
 pub mod part1 {
-    use super::{map, Parsed};
+    use std::cmp::Ordering;
+
+    use super::{Map, Parsed};
+
+    pub fn map(src: usize, map: &Map) -> usize {
+        let target = map.binary_search_by(|r| {
+            if src < r.source {
+                Ordering::Greater
+            } else if src > r.source_end {
+                Ordering::Less
+            } else {
+                Ordering::Equal
+            }
+        });
+        target
+            .map(|r| {
+                let range = map[r];
+                range.destination + src - range.source
+            })
+            .unwrap_or(src)
+    }
 
     pub fn solve((seeds, maps): Parsed) -> usize {
         seeds
@@ -93,16 +94,45 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use super::{map, Parsed};
+    use std::cmp::Ordering;
 
-    pub fn solve((seeds, maps): Parsed) -> usize {
-        let mut min = usize::MAX;
-        for s in (0..seeds.len()).step_by(2) {
-            for seed in seeds[s]..seeds[s] + seeds[s + 1] {
-                min = min.min(maps.iter().fold(seed, map))
+    use super::{Map, Parsed, Range};
+
+    fn unmap(dst: usize, map: &Map) -> usize {
+        let target = map.binary_search_by(|r| {
+            if dst < r.destination {
+                Ordering::Greater
+            } else if dst > r.destination_end {
+                Ordering::Less
+            } else {
+                Ordering::Equal
+            }
+        });
+        target
+            .map(|r| {
+                let range = map[r];
+                range.source + dst - range.destination
+            })
+            .unwrap_or(dst)
+    }
+
+    pub fn solve((seed_ranges, mut maps): Parsed) -> usize {
+        maps.iter_mut()
+            .for_each(|m| m.sort_by_key(|r| r.destination));
+        let mut seeds = Vec::with_capacity(seed_ranges.len() / 2);
+        for s in (0..seed_ranges.len()).step_by(2) {
+            seeds.push(Range::new(usize::MAX, seed_ranges[s], seed_ranges[s + 1]));
+        }
+        for location in 0.. {
+            let seed = maps.iter().rfold(location, unmap);
+            if seeds
+                .iter()
+                .any(|r| r.source <= seed && seed <= r.source_end)
+            {
+                return location;
             }
         }
-        min
+        unreachable!()
     }
 }
 
