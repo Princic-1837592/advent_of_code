@@ -14,7 +14,6 @@ pub struct Range {
     source_end: usize,
     destination: usize,
     destination_end: usize,
-    length: usize,
 }
 
 impl Range {
@@ -24,7 +23,6 @@ impl Range {
             source_end: source + length - 1,
             destination,
             destination_end: destination.saturating_add(length - 1),
-            length,
         }
     }
 }
