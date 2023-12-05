@@ -1,0 +1,9 @@
+.idea
+input.txt
+output.txt
+test.*
+2022/day_10_generator_test.py
+*_input.txt
+Cargo.lock
+local_config.ini
+tests
