@@ -95,7 +95,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) -> Duration {
+pub fn main(test: bool, verbose: bool) -> Duration {
     let test_input = "Time:      7  15   30
 Distance:  9  40  200"
         .to_owned();
@@ -110,8 +110,10 @@ Distance:  9  40  200"
     let start = Instant::now();
     let parsed = part1::parse(&puzzle_input);
     let elapsed = start.elapsed();
-    println!("Parsed in {:?}", elapsed);
-    total += elapsed;
+    if verbose {
+        println!("Parsed in {:?}", elapsed);
+        total += elapsed;
+    }
 
     let start = Instant::now();
     let result = part1::solve(parsed.clone());
@@ -123,8 +125,10 @@ Distance:  9  40  200"
     let start = Instant::now();
     let parsed = part2::parse(&puzzle_input);
     let elapsed = start.elapsed();
-    println!("Parsed in {:?}", elapsed);
-    total += elapsed;
+    if verbose {
+        println!("Parsed in {:?}", elapsed);
+        total += elapsed;
+    }
 
     let start = Instant::now();
     let result = part2::solve(parsed);

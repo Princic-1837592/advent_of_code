@@ -68,7 +68,7 @@ fn parse(_input: &str) -> Parsed {{
 pub mod part1 {{
     use super::Parsed;
 
-    pub fn solve(_input: &str, _parsed: Parsed) -> usize {{
+    pub fn solve(_parsed: Parsed) -> usize {{
         unimplemented!()
     }}
 }}
@@ -76,12 +76,12 @@ pub mod part1 {{
 pub mod part2 {{
     use super::Parsed;
 
-    pub fn solve(_input: &str, _parsed: Parsed) -> usize {{
+    pub fn solve(_parsed: Parsed) -> usize {{
         unimplemented!()
     }}
 }}
 
-pub fn main(test: bool) -> Duration {{
+pub fn main(test: bool, verbose: bool) -> Duration {{
     let test_input = "".to_owned();
     let puzzle_input = if test {{
         test_input
@@ -94,18 +94,20 @@ pub fn main(test: bool) -> Duration {{
     let start = Instant::now();
     let parsed = parse(&puzzle_input);
     let elapsed = start.elapsed();
-    println!("Parsed in {{:?}}", elapsed);
-    total += elapsed;
+    if verbose {{
+        println!("Parsed in {{:?}}", elapsed);
+        total += elapsed;
+    }}
 
     let start = Instant::now();
-    let result = part1::solve(&puzzle_input, parsed.clone());
+    let result = part1::solve(parsed.clone());
     let elapsed = start.elapsed();
     println!("{{}}", result);
     println!("First part in {{:?}}", elapsed);
     total += elapsed;
 
     let start = Instant::now();
-    let result = part2::solve(&puzzle_input, parsed);
+    let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{{}}", result);
     println!("Second part in {{:?}}", elapsed);
@@ -120,12 +122,14 @@ use std::{{env, time::Duration}};
 
 macro_rules! run_days {{
     ($($day:ident),* $(,)*) => {{
-        let test = env::args().any(|arg| arg == "--test");
+        let args: Vec<_> = env::args().collect();
+        let test = args.iter().any(|arg| arg == "--test");
+        let verbose = args.iter().any(|arg| arg == "--verbose");
         let mut total = Duration::default();
 
         $(
             println!("Running {{}}", stringify!($day));
-            total += advent_of_code_{year}::$day::main(test);
+            total += advent_of_code_{year}::$day::main(test, verbose);
             println!();
         )*
 

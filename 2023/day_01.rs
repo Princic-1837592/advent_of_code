@@ -76,7 +76,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) -> Duration {
+pub fn main(test: bool, verbose: bool) -> Duration {
     let test_input = "1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
@@ -93,8 +93,10 @@ treb7uchet"
     let start = Instant::now();
     let parsed = parse(&puzzle_input);
     let elapsed = start.elapsed();
-    println!("Parsed in {:?}", elapsed);
-    total += elapsed;
+    if verbose {
+        println!("Parsed in {:?}", elapsed);
+        total += elapsed;
+    }
 
     let start = Instant::now();
     let result = part1::solve(parsed.clone());

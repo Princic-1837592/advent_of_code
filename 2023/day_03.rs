@@ -104,7 +104,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) -> Duration {
+pub fn main(test: bool, verbose: bool) -> Duration {
     let test_input = "467..114..
 ...*......
 ..35..633.
@@ -127,8 +127,10 @@ pub fn main(test: bool) -> Duration {
     let start = Instant::now();
     let parsed = parse(&puzzle_input);
     let elapsed = start.elapsed();
-    println!("Parsed in {:?}", elapsed);
-    total += elapsed;
+    if verbose {
+        println!("Parsed in {:?}", elapsed);
+        total += elapsed;
+    }
 
     let start = Instant::now();
     let result = part1::solve(parsed.clone());

@@ -80,7 +80,7 @@ pub mod part2 {
     }
 }
 
-pub fn main(test: bool) -> Duration {
+pub fn main(test: bool, verbose: bool) -> Duration {
     let test_input = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
 Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
@@ -98,8 +98,10 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
     let start = Instant::now();
     let parsed = parse(&puzzle_input);
     let elapsed = start.elapsed();
-    println!("Parsed in {:?}", elapsed);
-    total += elapsed;
+    if verbose {
+        println!("Parsed in {:?}", elapsed);
+        total += elapsed;
+    }
 
     let start = Instant::now();
     let result = part1::solve(parsed.clone());

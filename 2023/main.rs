@@ -2,12 +2,14 @@ use std::{env, time::Duration};
 
 macro_rules! run_days {
     ($($day:ident),* $(,)*) => {
-        let test = env::args().any(|arg| arg == "--test");
+        let args: Vec<_> = env::args().collect();
+        let test = args.iter().any(|arg| arg == "--test");
+        let verbose = args.iter().any(|arg| arg == "--verbose");
         let mut total = Duration::default();
 
         $(
             println!("Running {}", stringify!($day));
-            total += advent_of_code_2023::$day::main(test);
+            total += advent_of_code_2023::$day::main(test, verbose);
             println!();
         )*
 
