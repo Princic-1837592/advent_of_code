@@ -42,8 +42,7 @@ type Map = Vec<Range>;
 
 type Parsed = (Vec<usize>, Vec<Map>);
 
-fn parse(input: &str) -> Parsed {
-    let separator = LINE_ENDING.repeat(2);
+fn parse(input: &str, separator: String) -> Parsed {
     let mut parts = input.split(&separator);
     let seeds = parts.next().unwrap()[6..]
         .split_whitespace()
@@ -94,50 +93,52 @@ pub mod part1 {
 pub mod part2 {
     use std::cmp::Ordering;
 
-    use rayon::prelude::{IntoParallelIterator, ParallelIterator};
+    use super::{Map, Parsed};
 
-    use super::{Map, Parsed, Range};
+    #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+    struct SeedRange {
+        start: usize,
+        end: usize,
+    }
 
-    fn unmap(dst: usize, map: &Map) -> usize {
-        let target = map.binary_search_by(|r| {
-            if dst < r.destination {
-                Ordering::Greater
-            } else if dst > r.destination_end {
-                Ordering::Less
-            } else {
-                Ordering::Equal
+    fn map(src: usize, map: &Map) -> Result<usize, usize> {
+        if src < map[0].source {
+            Err(0)
+        } else if map[map.len() - 1].source_end < src {
+            Err(map.len())
+        } else {
+            for (i, range) in map.iter().enumerate() {
+                if src <= range.source_end {
+                    return Ok(i);
+                } else if src < range.source {
+                    return Err(i);
+                }
             }
-        });
-        target
-            .map(|r| {
-                let range = map[r];
-                range.source + dst - range.destination
-            })
-            .unwrap_or(dst)
+            unreachable!("This should be Err({})", map.len());
+        }
+    }
+
+    fn map_ranges(ranges: Vec<SeedRange>, map: &Map) -> Vec<SeedRange> {
+        let mut result = Vec::with_capacity(ranges.len());
+        for src in ranges {}
+        result
     }
 
     pub fn solve((seed_ranges, mut maps): Parsed) -> usize {
-        maps.iter_mut()
-            .for_each(|m| m.sort_by_key(|r| r.destination));
         let seeds: Vec<_> = (0..seed_ranges.len())
             .step_by(2)
-            .map(|s| Range::new(usize::MAX, seed_ranges[s], seed_ranges[s + 1]))
+            .map(|s| SeedRange {
+                start: seed_ranges[s],
+                end: seed_ranges[s] + seed_ranges[s + 1] - 1,
+            })
             .collect();
-        let length = 1_000_000;
-        for start in 0.. {
-            if let Some(location) = (start * length..(start + 1) * length)
-                .into_par_iter()
-                .find_first(|&location| {
-                    let seed = maps.iter().rfold(location, unmap);
-                    seeds
-                        .iter()
-                        .any(|r| r.source <= seed && seed <= r.source_end)
-                })
-            {
-                return location;
-            }
-        }
-        unreachable!();
+        return 0;
+        seeds
+            .into_iter()
+            .flat_map(|s| maps.iter().fold(vec![s], map_ranges))
+            .map(|sr| sr.start)
+            .min()
+            .unwrap()
     }
 }
 
@@ -176,16 +177,19 @@ humidity-to-location map:
 60 56 37
 56 93 4"
         .to_owned();
-    let puzzle_input = if test {
-        test_input
+    let (puzzle_input, separator) = if test {
+        (test_input, "\n".repeat(2))
     } else {
-        read_to_string("inputs/day_05_input.txt").unwrap()
+        (
+            read_to_string("inputs/day_05_input.txt").unwrap(),
+            LINE_ENDING.repeat(2),
+        )
     };
 
     let mut total = Duration::default();
 
     let start = Instant::now();
-    let parsed = parse(&puzzle_input);
+    let parsed = parse(&puzzle_input, separator);
     let elapsed = start.elapsed();
     if verbose {
         println!("Parsed in {:?}", elapsed);
