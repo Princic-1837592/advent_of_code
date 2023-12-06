@@ -91,8 +91,6 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use std::cmp::Ordering;
-
     use super::{Map, Parsed};
 
     #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
@@ -101,38 +99,57 @@ pub mod part2 {
         end: usize,
     }
 
-    fn map(src: usize, map: &Map) -> Result<usize, usize> {
-        if src < map[0].source {
-            Err(0)
-        } else if map[map.len() - 1].source_end < src {
-            Err(map.len())
-        } else {
-            for (i, range) in map.iter().enumerate() {
-                if src <= range.source_end {
-                    return Ok(i);
-                } else if src < range.source {
-                    return Err(i);
-                }
-            }
-            unreachable!("This should be Err({})", map.len());
+    impl SeedRange {
+        fn new(start: usize, end: usize) -> Self {
+            Self { start, end }
         }
     }
 
-    fn map_ranges(ranges: Vec<SeedRange>, map: &Map) -> Vec<SeedRange> {
-        let mut result = Vec::with_capacity(ranges.len());
-        for src in ranges {}
+    fn map_one(src: usize, map: &Map) -> usize {
+        for (i, range) in map.iter().enumerate() {
+            if src <= range.source_end {
+                return i;
+            }
+        }
+        map.len()
+    }
+
+    fn map_ranges(seed_ranges: Vec<SeedRange>, map: &Map) -> Vec<SeedRange> {
+        let mut result = Vec::with_capacity(seed_ranges.len());
+        'seeds: for mut seed_range in seed_ranges {
+            let mut r = map_one(seed_range.start, map);
+            while r < map.len() {
+                let range = map[r];
+                if seed_range.end < range.source {
+                    break;
+                }
+                if seed_range.start < range.source {
+                    result.push(SeedRange::new(seed_range.start, range.source - 1));
+                    seed_range.start = range.source;
+                }
+                if seed_range.start <= seed_range.end {
+                    result.push(SeedRange::new(
+                        range.destination + seed_range.start - range.source,
+                        range.destination + seed_range.end.min(range.source_end) - range.source,
+                    ));
+                    seed_range.start = range.source_end + 1;
+                    r += 1;
+                } else {
+                    continue 'seeds;
+                }
+            }
+            if seed_range.start <= seed_range.end {
+                result.push(seed_range);
+            }
+        }
         result
     }
 
-    pub fn solve((seed_ranges, mut maps): Parsed) -> usize {
+    pub fn solve((seed_ranges, maps): Parsed) -> usize {
         let seeds: Vec<_> = (0..seed_ranges.len())
             .step_by(2)
-            .map(|s| SeedRange {
-                start: seed_ranges[s],
-                end: seed_ranges[s] + seed_ranges[s + 1] - 1,
-            })
+            .map(|s| SeedRange::new(seed_ranges[s], seed_ranges[s] + seed_ranges[s + 1] - 1))
             .collect();
-        return 0;
         seeds
             .into_iter()
             .flat_map(|s| maps.iter().fold(vec![s], map_ranges))
