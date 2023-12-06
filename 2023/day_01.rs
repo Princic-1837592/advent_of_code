@@ -112,6 +112,8 @@ treb7uchet"
     println!("Second part in {:?}", elapsed);
     total += elapsed;
 
-    println!("Total {:?}", total);
+    if verbose {
+        println!("Total {:?}", total);
+    }
     total
 }

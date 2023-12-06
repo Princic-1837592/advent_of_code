@@ -206,6 +206,8 @@ humidity-to-location map:
     println!("Second part in {:?}", elapsed);
     total += elapsed;
 
-    println!("Total {:?}", total);
+    if verbose {
+        println!("Total {:?}", total);
+    }
     total
 }

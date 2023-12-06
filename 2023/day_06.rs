@@ -137,6 +137,8 @@ Distance:  9  40  200"
     println!("Second part in {:?}", elapsed);
     total += elapsed;
 
-    println!("Total {:?}", total);
+    if verbose {
+        println!("Total {:?}", total);
+    }
     total
 }

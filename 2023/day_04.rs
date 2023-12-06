@@ -115,6 +115,8 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
     println!("Second part in {:?}", elapsed);
     total += elapsed;
 
-    println!("Total {:?}", total);
+    if verbose {
+        println!("Total {:?}", total);
+    }
     total
 }

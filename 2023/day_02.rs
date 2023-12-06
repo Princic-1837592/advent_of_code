@@ -117,6 +117,8 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
     println!("Second part in {:?}", elapsed);
     total += elapsed;
 
-    println!("Total {:?}", total);
+    if verbose {
+        println!("Total {:?}", total);
+    }
     total
 }
