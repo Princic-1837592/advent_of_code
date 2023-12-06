@@ -62,14 +62,14 @@ use std::{{
 type Parsed = Vec<usize>;
 
 fn parse(_input: &str) -> Parsed {{
-    unimplemented!()
+    vec![]
 }}
 
 pub mod part1 {{
     use super::Parsed;
 
     pub fn solve(_parsed: Parsed) -> usize {{
-        unimplemented!()
+        0
     }}
 }}
 
@@ -77,7 +77,7 @@ pub mod part2 {{
     use super::Parsed;
 
     pub fn solve(_parsed: Parsed) -> usize {{
-        unimplemented!()
+        0
     }}
 }}
 
