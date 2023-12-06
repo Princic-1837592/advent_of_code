@@ -119,10 +119,10 @@ pub mod part2 {
     pub fn solve((seed_ranges, mut maps): Parsed) -> usize {
         maps.iter_mut()
             .for_each(|m| m.sort_by_key(|r| r.destination));
-        let mut seeds = Vec::with_capacity(seed_ranges.len() / 2);
-        for s in (0..seed_ranges.len()).step_by(2) {
-            seeds.push(Range::new(usize::MAX, seed_ranges[s], seed_ranges[s + 1]));
-        }
+        let seeds: Vec<_> = (0..seed_ranges.len())
+            .step_by(2)
+            .map(|s| Range::new(usize::MAX, seed_ranges[s], seed_ranges[s + 1]))
+            .collect();
         let length = 1_000_000;
         for start in 0.. {
             if let Some(location) = (start * length..(start + 1) * length)
