@@ -42,21 +42,30 @@ pub mod part1 {
 pub mod part2 {
     use super::Parsed;
 
+    fn find_one(line: &str, values: &[&str]) -> usize {
+        for i in 0..line.len() {
+            for (v, value) in values.iter().enumerate() {
+                if line[i..].starts_with(value) {
+                    return v;
+                }
+            }
+        }
+        unreachable!()
+    }
+
+    fn find_one_reversed(line: &str, values: &[&str]) -> usize {
+        for i in (0..=line.len()).rev() {
+            for (v, value) in values.iter().enumerate() {
+                if line[..i].ends_with(value) {
+                    return v;
+                }
+            }
+        }
+        unreachable!()
+    }
+
     fn find_both(line: &str, values: Vec<&str>) -> (usize, usize) {
-        (
-            values
-                .iter()
-                .enumerate()
-                .min_by_key(|&(_, v)| line.find(v).unwrap_or(usize::MAX))
-                .unwrap()
-                .0,
-            values
-                .iter()
-                .enumerate()
-                .max_by_key(|&(_, v)| line.rfind(v).map(|u| u as isize).unwrap_or(isize::MIN))
-                .unwrap()
-                .0,
-        )
+        (find_one(line, &values), find_one_reversed(line, &values))
     }
 
     pub fn solve(lines: Parsed) -> usize {
