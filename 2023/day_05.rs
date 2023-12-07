@@ -117,9 +117,8 @@ pub mod part2 {
     fn map_ranges(seed_ranges: Vec<SeedRange>, map: &Map) -> Vec<SeedRange> {
         let mut result = Vec::with_capacity(seed_ranges.len());
         'seeds: for mut seed_range in seed_ranges {
-            let mut r = map_one(seed_range.start, map);
-            while r < map.len() {
-                let range = map[r];
+            let r = map_one(seed_range.start, map);
+            for range in &map[r..] {
                 if seed_range.end < range.source {
                     break;
                 }
@@ -133,7 +132,6 @@ pub mod part2 {
                         range.destination + seed_range.end.min(range.source_end) - range.source,
                     ));
                     seed_range.start = range.source_end + 1;
-                    r += 1;
                 } else {
                     continue 'seeds;
                 }
