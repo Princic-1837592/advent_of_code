@@ -30,77 +30,57 @@ impl Number {
     }
 }
 
-type Parsed = (Vec<Number>, Vec<Symbol>);
+type Parsed = Vec<Vec<char>>;
 
 fn parse(input: &str) -> Parsed {
-    let mut numbers = Vec::new();
-    let mut symbols = Vec::new();
-    let number = Regex::new(r"\d+|[^.\d]").unwrap();
-    for (i, line) in input.lines().enumerate() {
-        for capture in number.find_iter(line) {
-            match capture.as_str().chars().next().unwrap() {
-                '0'..='9' => {
-                    let j = capture.start();
-                    numbers.push(Number {
-                        value: capture.as_str().parse().unwrap(),
-                        top_left: (i.saturating_sub(1), j.saturating_sub(1)),
-                        bottom_right: (i + 1, j + capture.len()),
-                    })
-                }
-                symbol => symbols.push(Symbol {
-                    char: symbol,
-                    coord: (i, capture.start()),
-                }),
-            }
-        }
-    }
-    (numbers, symbols)
+    input.lines().map(|line| line.chars().collect()).collect()
+}
+
+fn find_numbers_near(lines: [Option<&Vec<char>>; 3], i: usize, j: usize) -> Vec<usize> {
+    let mut used = [[false; 3]; 3];
+    unimplemented!()
+}
+
+fn expand_number(line: &Vec<char>, j: usize) -> (usize, usize, usize) {
+    let mut result = line[j].to_digit(10).unwrap();
 }
 
 pub mod part1 {
-    use super::Parsed;
+    use super::{find_numbers_near, Parsed};
 
-    pub fn solve((numbers, symbols): Parsed) -> usize {
-        numbers
-            .iter()
-            .filter_map(|n| {
-                let first = symbols.binary_search_by_key(&n.top_left, |s| s.coord);
-                match first {
-                    Ok(_) => Some(n.value),
-                    Err(mut s) => {
-                        while s < symbols.len() && symbols[s].coord <= n.bottom_right {
-                            if n.contains(&symbols[s]) {
-                                return Some(n.value);
-                            }
-                            s += 1;
-                        }
-                        None
-                    }
+    pub fn solve(chars: Parsed) -> usize {
+        let mut result = 0;
+        for (i, line) in chars.iter().enumerate() {
+            for (j, &char) in line.iter().enumerate() {
+                if char != '.' && !char.is_ascii_digit() {
+                    result +=
+                        find_numbers_near([chars.get(i - 1), chars.get(i), chars.get(i + 1)], i, j)
+                            .into_iter()
+                            .sum::<usize>();
                 }
-            })
-            .sum()
+            }
+        }
+        result
     }
 }
 
 pub mod part2 {
-    use super::Parsed;
+    use super::{find_numbers_near, Parsed};
 
-    pub fn solve((numbers, symbols): Parsed) -> usize {
-        symbols
-            .iter()
-            .filter_map(|s| {
-                if s.char == '*' {
-                    let ns: Vec<_> = numbers.iter().filter(|n| n.contains(s)).collect();
-                    if ns.len() == 2 {
-                        Some(ns.iter().map(|n| n.value).product::<usize>())
-                    } else {
-                        None
+    pub fn solve(chars: Parsed) -> usize {
+        let mut result = 0;
+        for (i, line) in chars.iter().enumerate() {
+            for (j, &char) in line.iter().enumerate() {
+                if char != '.' && !char.is_ascii_digit() {
+                    let near =
+                        find_numbers_near([chars.get(i - 1), chars.get(i), chars.get(i + 1)], i, j);
+                    if near.len() == 2 {
+                        result += near.into_iter().sum::<usize>();
                     }
-                } else {
-                    None
                 }
-            })
-            .sum()
+            }
+        }
+        result
     }
 }
 
