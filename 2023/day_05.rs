@@ -91,7 +91,7 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use super::{Map, Parsed};
+    use super::{Map, Parsed, Range};
 
     #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
     struct SeedRange {
@@ -119,13 +119,6 @@ pub mod part2 {
         'seeds: for mut seed_range in seed_ranges {
             let r = map_one(seed_range.start, map);
             for range in &map[r..] {
-                if seed_range.end < range.source {
-                    break;
-                }
-                if seed_range.start < range.source {
-                    result.push(SeedRange::new(seed_range.start, range.source - 1));
-                    seed_range.start = range.source;
-                }
                 if seed_range.start <= seed_range.end {
                     result.push(SeedRange::new(
                         range.destination + seed_range.start - range.source,
@@ -143,11 +136,29 @@ pub mod part2 {
         result
     }
 
-    pub fn solve((seed_ranges, maps): Parsed) -> usize {
+    fn fill_gaps(map: &mut Map) {
+        let mut last_end = usize::MAX;
+        let mut i = 0;
+        while i < map.len() {
+            let gap = map[i].source.wrapping_sub(last_end);
+            if gap > 1 {
+                map.insert(
+                    i,
+                    Range::new(last_end.wrapping_add(1), last_end.wrapping_add(1), gap - 1),
+                );
+                i += 1;
+            }
+            last_end = map[i].source_end;
+            i += 1;
+        }
+    }
+
+    pub fn solve((seed_ranges, mut maps): Parsed) -> usize {
         let seeds: Vec<_> = (0..seed_ranges.len())
             .step_by(2)
             .map(|s| SeedRange::new(seed_ranges[s], seed_ranges[s] + seed_ranges[s + 1] - 1))
             .collect();
+        maps.iter_mut().for_each(fill_gaps);
         seeds
             .into_iter()
             .flat_map(|s| maps.iter().fold(vec![s], map_ranges))
