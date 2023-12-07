@@ -67,7 +67,7 @@ pub mod part1 {
         let target = map.binary_search_by(|r| {
             if src < r.source {
                 Ordering::Greater
-            } else if src > r.source_end {
+            } else if r.source_end < src {
                 Ordering::Less
             } else {
                 Ordering::Equal
