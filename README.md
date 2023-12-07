@@ -2,6 +2,13 @@
 
 My solutions to the [Advent of Code](https://adventofcode.com/) puzzles.
 
+## [2023](2023) (Rust)
+
+My favourite days:
+
+- [5](2023/day_05.rs)
+- [7](2023/day_07.rs)
+
 ## [2022](2022) (Python)
 
 My first "live" AoC. ~~I skipped day 19 because I am too lazy to solve yet another backtracking problem~~.\
