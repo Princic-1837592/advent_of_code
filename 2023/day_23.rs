@@ -59,7 +59,7 @@ pub fn main(test: bool, verbose: bool) -> Duration {
     println!("{}", result);
     println!("Second part in {:?}", elapsed);
     total += elapsed;
-    
+
     if verbose {
         println!("Total {:?}", total);
     }
