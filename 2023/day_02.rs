@@ -6,8 +6,6 @@ use std::{
     time::{Duration, Instant},
 };
 
-use regex::Regex;
-
 #[derive(Copy, Clone, Default, Debug)]
 pub struct Cubes {
     red: usize,
@@ -20,23 +18,22 @@ type Game = Vec<Cubes>;
 type Parsed = Vec<Game>;
 
 fn parse(input: &str) -> Parsed {
-    let red = Regex::new(r"(\d+) red").unwrap();
-    let green = Regex::new(r"(\d+) green").unwrap();
-    let blue = Regex::new(r"(\d+) blue").unwrap();
     input
         .lines()
         .map(|line| {
             line.split(';')
                 .map(|s| {
                     let mut cubes = Cubes::default();
-                    if let Some(red) = red.captures(s) {
-                        cubes.red = red[1].parse().unwrap();
-                    }
-                    if let Some(green) = green.captures(s) {
-                        cubes.green = green[1].parse().unwrap();
-                    }
-                    if let Some(blue) = blue.captures(s) {
-                        cubes.blue = blue[1].parse().unwrap();
+                    for cube in s.split(',') {
+                        let mut parts = cube.split_whitespace().rev();
+                        let color = parts.next().unwrap().chars().last().unwrap();
+                        let n = parts.next().unwrap().parse().unwrap();
+                        match color {
+                            'd' => cubes.red = n,
+                            'n' => cubes.green = n,
+                            'e' => cubes.blue = n,
+                            _ => unreachable!(),
+                        }
                     }
                     cubes
                 })
