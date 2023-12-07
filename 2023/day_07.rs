@@ -6,30 +6,283 @@ use std::{
     time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
-
-fn parse(_input: &str) -> Parsed {
-    vec![]
-}
-
 pub mod part1 {
-    use super::Parsed;
+    #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+    enum Card {
+        Two,
+        Three,
+        Four,
+        Five,
+        Six,
+        Seven,
+        Eight,
+        Nine,
+        Ten,
+        Jack,
+        Queen,
+        King,
+        Ace,
+    }
 
-    pub fn solve(_parsed: Parsed) -> usize {
-        0
+    impl From<char> for Card {
+        fn from(value: char) -> Self {
+            match value {
+                '2' => Self::Two,
+                '3' => Self::Three,
+                '4' => Self::Four,
+                '5' => Self::Five,
+                '6' => Self::Six,
+                '7' => Self::Seven,
+                '8' => Self::Eight,
+                '9' => Self::Nine,
+                'T' => Self::Ten,
+                'J' => Self::Jack,
+                'Q' => Self::Queen,
+                'K' => Self::King,
+                'A' => Self::Ace,
+                _ => unreachable!(),
+            }
+        }
+    }
+
+    #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+    enum Type {
+        HighCard,
+        OnePair,
+        TwoPairs,
+        ThreeOfAKind,
+        FullHouse,
+        FourOfAKind,
+        FiveOfAKind,
+    }
+
+    type Cards = [Card; 5];
+
+    #[derive(Copy, Clone, Debug)]
+    struct Hand {
+        cards: Cards,
+        strength: Type,
+    }
+
+    impl Hand {
+        fn new(cards: Cards) -> Self {
+            Self {
+                cards,
+                strength: Self::compute_score(cards),
+            }
+        }
+
+        fn compute_score(cards: Cards) -> Type {
+            let mut occurrencies = [0; 13];
+            for card in cards {
+                occurrencies[card as usize] += 1;
+            }
+            occurrencies.sort();
+            occurrencies.reverse();
+            match occurrencies {
+                [5, ..] => Type::FiveOfAKind,
+                [4, ..] => Type::FourOfAKind,
+                [3, 2, ..] => Type::FullHouse,
+                [3, 1, ..] => Type::ThreeOfAKind,
+                [2, 2, ..] => Type::TwoPairs,
+                [2, 1, ..] => Type::OnePair,
+                [1, ..] => Type::HighCard,
+                _ => {
+                    unreachable!()
+                }
+            }
+        }
+    }
+
+    impl From<&str> for Hand {
+        fn from(value: &str) -> Self {
+            let mut cards = [Card::Two; 5];
+            for (i, c) in value.chars().enumerate() {
+                cards[i] = Card::from(c);
+            }
+            Self::new(cards)
+        }
+    }
+
+    #[derive(Copy, Clone, Debug)]
+    pub struct Play {
+        hand: Hand,
+        bid: usize,
+    }
+
+    impl From<&str> for Play {
+        fn from(value: &str) -> Self {
+            let mut parts = value.split_whitespace();
+            Self {
+                hand: parts.next().unwrap().into(),
+                bid: parts.next().unwrap().parse().unwrap(),
+            }
+        }
+    }
+
+    type Parsed = Vec<Play>;
+
+    pub fn parse(input: &str) -> Parsed {
+        input.lines().map(Play::from).collect()
+    }
+
+    pub fn solve(mut plays: Parsed) -> usize {
+        plays.sort_by_key(|play| (play.hand.strength, play.hand.cards));
+        plays
+            .iter()
+            .enumerate()
+            .map(|(i, play)| (i + 1) * play.bid)
+            .sum()
     }
 }
 
 pub mod part2 {
-    use super::Parsed;
+    #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+    enum Card {
+        Joker,
+        Two,
+        Three,
+        Four,
+        Five,
+        Six,
+        Seven,
+        Eight,
+        Nine,
+        Ten,
+        Queen,
+        King,
+        Ace,
+    }
 
-    pub fn solve(_parsed: Parsed) -> usize {
-        0
+    impl From<char> for Card {
+        fn from(value: char) -> Self {
+            match value {
+                'J' => Self::Joker,
+                '2' => Self::Two,
+                '3' => Self::Three,
+                '4' => Self::Four,
+                '5' => Self::Five,
+                '6' => Self::Six,
+                '7' => Self::Seven,
+                '8' => Self::Eight,
+                '9' => Self::Nine,
+                'T' => Self::Ten,
+                'Q' => Self::Queen,
+                'K' => Self::King,
+                'A' => Self::Ace,
+                _ => unreachable!(),
+            }
+        }
+    }
+
+    #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+    enum Type {
+        HighCard,
+        OnePair,
+        TwoPairs,
+        ThreeOfAKind,
+        FullHouse,
+        FourOfAKind,
+        FiveOfAKind,
+    }
+
+    type Cards = [Card; 5];
+
+    #[derive(Copy, Clone, Debug)]
+    struct Hand {
+        cards: Cards,
+        strength: Type,
+    }
+
+    impl Hand {
+        fn new(cards: Cards) -> Self {
+            Self {
+                cards,
+                strength: Self::compute_score(cards),
+            }
+        }
+
+        fn compute_score(cards: Cards) -> Type {
+            let mut occurrencies = [0; 13];
+            let mut jokers = 0;
+            for card in cards {
+                if let Card::Joker = card {
+                    jokers += 1;
+                } else {
+                    occurrencies[card as usize] += 1;
+                }
+            }
+            occurrencies.sort();
+            occurrencies.reverse();
+            match (jokers, occurrencies) {
+                (0, [5, ..])
+                | (1, [4, ..])
+                | (2, [3, ..])
+                | (3, [2, ..])
+                | (4, [1, ..])
+                | (5, [0, ..]) => Type::FiveOfAKind,
+                (0, [4, ..]) | (1, [3, ..]) | (2, [2, ..]) | (3, [1, ..]) => Type::FourOfAKind,
+                (0, [3, 2, ..]) | (1, [2, 2, ..]) => Type::FullHouse,
+                (0, [3, 1, ..]) | (1, [2, 1, ..]) | (2, [1, ..]) => Type::ThreeOfAKind,
+                (0, [2, 2, ..]) => Type::TwoPairs,
+                (0, [2, 1, ..]) | (1, [1, ..]) => Type::OnePair,
+                (0, [1, ..]) => Type::HighCard,
+                _ => {
+                    unreachable!()
+                }
+            }
+        }
+    }
+
+    impl From<&str> for Hand {
+        fn from(value: &str) -> Self {
+            let mut cards = [Card::Two; 5];
+            for (i, c) in value.chars().enumerate() {
+                cards[i] = Card::from(c);
+            }
+            Self::new(cards)
+        }
+    }
+
+    #[derive(Copy, Clone, Debug)]
+    pub struct Play {
+        hand: Hand,
+        bid: usize,
+    }
+
+    impl From<&str> for Play {
+        fn from(value: &str) -> Self {
+            let mut parts = value.split_whitespace();
+            Self {
+                hand: parts.next().unwrap().into(),
+                bid: parts.next().unwrap().parse().unwrap(),
+            }
+        }
+    }
+
+    type Parsed = Vec<Play>;
+
+    pub fn parse(input: &str) -> Parsed {
+        input.lines().map(Play::from).collect()
+    }
+
+    pub fn solve(mut plays: Parsed) -> usize {
+        plays.sort_by_key(|play| (play.hand.strength, play.hand.cards));
+        plays
+            .iter()
+            .enumerate()
+            .map(|(i, play)| (i + 1) * play.bid)
+            .sum()
     }
 }
 
 pub fn main(test: bool, verbose: bool) -> Duration {
-    let test_input = "".to_owned();
+    let test_input = "32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483"
+        .to_owned();
     let puzzle_input = if test {
         test_input
     } else {
@@ -39,7 +292,7 @@ pub fn main(test: bool, verbose: bool) -> Duration {
     let mut total = Duration::default();
 
     let start = Instant::now();
-    let parsed = parse(&puzzle_input);
+    let parsed = part1::parse(&puzzle_input);
     let elapsed = start.elapsed();
     if verbose {
         println!("Parsed in {:?}", elapsed);
@@ -54,12 +307,20 @@ pub fn main(test: bool, verbose: bool) -> Duration {
     total += elapsed;
 
     let start = Instant::now();
+    let parsed = part2::parse(&puzzle_input);
+    let elapsed = start.elapsed();
+    if verbose {
+        println!("Parsed in {:?}", elapsed);
+        total += elapsed;
+    }
+
+    let start = Instant::now();
     let result = part2::solve(parsed);
     let elapsed = start.elapsed();
     println!("{}", result);
     println!("Second part in {:?}", elapsed);
     total += elapsed;
-    
+
     if verbose {
         println!("Total {:?}", total);
     }
