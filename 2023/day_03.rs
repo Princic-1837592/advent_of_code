@@ -6,43 +6,68 @@ use std::{
     time::{Duration, Instant},
 };
 
-use regex::Regex;
-
-type Coord = (usize, usize);
-
-#[derive(Clone, Debug)]
-pub struct Number {
-    value: usize,
-    top_left: Coord,
-    bottom_right: Coord,
-}
-
-#[derive(Copy, Clone, Debug)]
-pub struct Symbol {
-    char: char,
-    coord: Coord,
-}
-
-impl Number {
-    fn contains(&self, symbol: &Symbol) -> bool {
-        (self.top_left.0..=self.bottom_right.0).contains(&symbol.coord.0)
-            && (self.top_left.1..=self.bottom_right.1).contains(&symbol.coord.1)
-    }
-}
-
 type Parsed = Vec<Vec<char>>;
 
 fn parse(input: &str) -> Parsed {
     input.lines().map(|line| line.chars().collect()).collect()
 }
 
-fn find_numbers_near(lines: [Option<&Vec<char>>; 3], i: usize, j: usize) -> Vec<usize> {
-    let mut used = [[false; 3]; 3];
-    unimplemented!()
+fn find_numbers_near(lines: [Option<&Vec<char>>; 3], j: usize) -> Vec<usize> {
+    let mut result = vec![];
+    for (l, line) in lines.iter().enumerate() {
+        if l % 2 == 0 {
+            if let Some(line) = line {
+                if j > 0 && line[j - 1].is_ascii_digit() {
+                    let parsed = expand_number(line, j - 1);
+                    result.push(parsed);
+                    if !line[j].is_ascii_digit()
+                        && j + 1 < line.len()
+                        && line[j + 1].is_ascii_digit()
+                    {
+                        result.push(expand_number(line, j + 1));
+                    }
+                } else if line[j].is_ascii_digit() {
+                    result.push(expand_number(line, j));
+                } else if j + 1 < line.len() && line[j + 1].is_ascii_digit() {
+                    result.push(expand_number(line, j + 1));
+                }
+            }
+        } else {
+            let line = line.unwrap();
+            if j > 0 && line[j - 1].is_ascii_digit() {
+                result.push(expand_number(line, j - 1));
+            }
+            if j + 1 < line.len() && line[j + 1].is_ascii_digit() {
+                result.push(expand_number(line, j + 1));
+            }
+        }
+    }
+    result
 }
 
-fn expand_number(line: &Vec<char>, j: usize) -> (usize, usize, usize) {
+fn expand_number(line: &[char], j: usize) -> usize {
     let mut result = line[j].to_digit(10).unwrap();
+    let mut left_exponent = 10;
+    let mut left = j;
+    while let Some(left_j) = left.checked_sub(1) {
+        if line[left_j].is_ascii_digit() {
+            result += line[left_j].to_digit(10).unwrap() * left_exponent;
+            left_exponent *= 10;
+            left = left_j;
+        } else {
+            break;
+        }
+    }
+    let mut right = j + 1;
+    while right < line.len() {
+        if line[right].is_ascii_digit() {
+            result = result * 10 + line[right].to_digit(10).unwrap();
+            right += 1;
+        } else {
+            break;
+        }
+    }
+    result as usize
 }
 
 pub mod part1 {
@@ -54,7 +79,7 @@ pub mod part1 {
             for (j, &char) in line.iter().enumerate() {
                 if char != '.' && !char.is_ascii_digit() {
                     result +=
-                        find_numbers_near([chars.get(i - 1), chars.get(i), chars.get(i + 1)], i, j)
+                        find_numbers_near([chars.get(i - 1), Some(&chars[i]), chars.get(i + 1)], j)
                             .into_iter()
                             .sum::<usize>();
                 }
@@ -71,11 +96,11 @@ pub mod part2 {
         let mut result = 0;
         for (i, line) in chars.iter().enumerate() {
             for (j, &char) in line.iter().enumerate() {
-                if char != '.' && !char.is_ascii_digit() {
+                if char == '*' {
                     let near =
-                        find_numbers_near([chars.get(i - 1), chars.get(i), chars.get(i + 1)], i, j);
+                        find_numbers_near([chars.get(i - 1), Some(&chars[i]), chars.get(i + 1)], j);
                     if near.len() == 2 {
-                        result += near.into_iter().sum::<usize>();
+                        result += near.into_iter().product::<usize>();
                     }
                 }
             }
