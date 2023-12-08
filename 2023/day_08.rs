@@ -6,6 +6,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::parsing::parse_alpha;
+
 type Node = [usize; 2];
 
 type Parsed = (Vec<usize>, Vec<Node>);
@@ -20,24 +22,12 @@ fn parse(input: &str) -> Parsed {
         .collect();
     let mut nodes = vec![[usize::MAX, usize::MAX]];
     for line in lines.skip(1) {
-        let mut numbers = [0; 3];
-        let mut i = 0;
-        let mut chars = line.chars().peekable();
-        while chars.peek().is_some() {
-            let next = chars.next().unwrap();
-            if next.is_ascii_alphabetic() {
-                numbers[i] = (next as usize - 'A' as usize) * 26 * 26
-                    + (chars.next().unwrap() as usize - 'A' as usize) * 26
-                    + (chars.next().unwrap() as usize - 'A' as usize);
-                i += 1;
-            }
-        }
-        let [node, left, right] = numbers;
+        let node = parse_alpha::<'A'>(&line[0..3]);
         if nodes.len() <= node {
             nodes.extend(vec![[usize::MAX, usize::MAX]; node - nodes.len() + 1]);
         }
-        nodes[node][0] = left;
-        nodes[node][1] = right;
+        nodes[node][0] = parse_alpha::<'A'>(&line[7..7 + 3]);
+        nodes[node][1] = parse_alpha::<'A'>(&line[12..12 + 3]);
     }
     (instructions, nodes)
 }
@@ -58,23 +48,9 @@ pub mod part1 {
 }
 
 pub mod part2 {
+    use utils::math::lcm;
+
     use super::Parsed;
-
-    fn gcd(a: usize, b: usize) -> usize {
-        if b == 0 {
-            a
-        } else {
-            gcd(b, a % b)
-        }
-    }
-
-    fn lcm(a: usize, b: usize) -> usize {
-        if a > b {
-            (a / gcd(a, b)) * b
-        } else {
-            (b / gcd(a, b)) * a
-        }
-    }
 
     pub fn solve((instructions, graph): Parsed) -> usize {
         let nodes: Vec<_> = graph

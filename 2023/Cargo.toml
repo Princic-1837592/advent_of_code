@@ -13,3 +13,4 @@ name = "main"
 path = "main.rs"
 
 [dependencies]
+utils = { path = "../utils" }
