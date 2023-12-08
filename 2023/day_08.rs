@@ -20,18 +20,19 @@ fn parse(input: &str) -> Parsed {
         .collect();
     let mut nodes = vec![[usize::MAX, usize::MAX]];
     for line in lines.skip(1) {
-        let mut chars = line.chars();
-        let node = (chars.next().unwrap() as usize - 'A' as usize) * 26 * 26
-            + (chars.next().unwrap() as usize - 'A' as usize) * 26
-            + (chars.next().unwrap() as usize - 'A' as usize);
-        let mut chars = chars.skip(4);
-        let left = (chars.next().unwrap() as usize - 'A' as usize) * 26 * 26
-            + (chars.next().unwrap() as usize - 'A' as usize) * 26
-            + (chars.next().unwrap() as usize - 'A' as usize);
-        let mut chars = chars.skip(2);
-        let right = (chars.next().unwrap() as usize - 'A' as usize) * 26 * 26
-            + (chars.next().unwrap() as usize - 'A' as usize) * 26
-            + (chars.next().unwrap() as usize - 'A' as usize);
+        let mut numbers = [0; 3];
+        let mut i = 0;
+        let mut chars = line.chars().peekable();
+        while chars.peek().is_some() {
+            let next = chars.next().unwrap();
+            if next.is_ascii_alphabetic() {
+                numbers[i] = (next as usize - 'A' as usize) * 26 * 26
+                    + (chars.next().unwrap() as usize - 'A' as usize) * 26
+                    + (chars.next().unwrap() as usize - 'A' as usize);
+                i += 1;
+            }
+        }
+        let [node, left, right] = numbers;
         if nodes.len() <= node {
             nodes.extend(vec![[usize::MAX, usize::MAX]; node - nodes.len() + 1]);
         }
