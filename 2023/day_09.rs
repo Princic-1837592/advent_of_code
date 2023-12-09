@@ -52,11 +52,11 @@ pub mod part2 {
     fn reduce(mut history: History) -> isize {
         let mut result = 0;
         let mut all_zero = false;
-        let mut sum = true;
+        let mut coefficient = 1;
         while !all_zero {
             all_zero = true;
-            result += if sum { history[0] } else { -history[0] };
-            sum = !sum;
+            result += history[0] * coefficient;
+            coefficient *= -1;
             for i in 0..history.len() - 1 {
                 let diff = history[i + 1] - history[i];
                 if diff != 0 {
