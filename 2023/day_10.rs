@@ -6,16 +6,16 @@ use std::{
     time::{Duration, Instant},
 };
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Pipe {
-    NS,    // |
-    EW,    // -
-    NE,    // L
-    NW,    // J
-    SW,    // 7
-    SE,    // F
-    Empty, // .
-    Start, // S
+    NS,
+    EW,
+    NE,
+    NW,
+    SW,
+    SE,
+    Empty,
+    Start,
 }
 
 impl Pipe {
@@ -93,7 +93,7 @@ impl From<char> for Pipe {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 enum Direction {
     N,
     E,
@@ -106,7 +106,7 @@ impl Direction {
         match self {
             Direction::N => i.checked_sub(1).map(|i| (i, j)),
             Direction::E => (j + 1 < w).then_some((i, j + 1)),
-            Direction::S => (i + 1 < w).then_some((i + 1, j)),
+            Direction::S => (i + 1 < h).then_some((i + 1, j)),
             Direction::W => j.checked_sub(1).map(|j| (i, j)),
         }
     }
@@ -117,6 +117,24 @@ impl Direction {
             Direction::E => Direction::W,
             Direction::S => Direction::N,
             Direction::W => Direction::E,
+        }
+    }
+
+    fn swap_nw(&self) -> Direction {
+        match self {
+            Direction::N => Direction::W,
+            Direction::E => Direction::S,
+            Direction::S => Direction::E,
+            Direction::W => Direction::N,
+        }
+    }
+
+    fn swap_ne(&self) -> Direction {
+        match self {
+            Direction::N => Direction::E,
+            Direction::E => Direction::N,
+            Direction::S => Direction::W,
+            Direction::W => Direction::S,
         }
     }
 }
@@ -178,15 +196,138 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    use super::Parsed;
+    use std::collections::{HashSet, VecDeque};
 
-    pub fn solve(_parsed: Parsed) -> usize {
-        0
+    use super::{Coord, Direction, Parsed, Pipe, Pipes, DIRECTIONS};
+
+    type Path = Vec<Coord>;
+
+    fn explore(pipes: &Pipes, oi: usize, oj: usize, mut direction: Direction) -> Option<Path> {
+        let (mut i, mut j) = (oi, oj);
+        let mut visited = Vec::new();
+        let (h, w) = (pipes.len(), pipes[0].len());
+        while (i, j) != (oi, oj) || visited.is_empty() {
+            let (ni, nj) = match direction.transform(i, j, h, w) {
+                None => return None,
+                Some(n) => n,
+            };
+            let nd = direction.reverse();
+            if !pipes[ni][nj].open(nd) {
+                return None;
+            }
+            (i, j) = (ni, nj);
+            direction = pipes[i][j].other(nd);
+            visited.push((i, j));
+        }
+        Some(visited)
+    }
+
+    fn find_path(pipes: &Pipes, (i, j): Coord) -> Path {
+        for direction in DIRECTIONS {
+            if let Some(borders) = explore(pipes, i, j, direction) {
+                return borders;
+            }
+        }
+        unreachable!()
+    }
+
+    fn find_inside(pipes: &Pipes, path: &Path, borders: &HashSet<Coord>) -> (usize, Direction) {
+        let (h, w) = (pipes.len(), pipes[0].len());
+        for (index, (mut i, mut j)) in path
+            .iter()
+            .enumerate()
+            .filter(|(_, (i, j))| pipes[*i][*j] == Pipe::NS)
+        {
+            'direction: for d in [Direction::E, Direction::W] {
+                while let Some(next @ (ni, nj)) = d.transform(i, j, h, w) {
+                    if borders.contains(&next) {
+                        continue 'direction;
+                    }
+                    (i, j) = (ni, nj);
+                }
+                return (index, d.reverse());
+            }
+        }
+        unreachable!()
+    }
+
+    fn bfs(start: Coord, visited: &mut HashSet<Coord>, h: usize, w: usize) -> usize {
+        let mut queue = VecDeque::from([start]);
+        let mut enclosed = 0;
+        while let Some(coord @ (i, j)) = queue.pop_front() {
+            if visited.contains(&coord) {
+                continue;
+            }
+            visited.insert(coord);
+            enclosed += 1;
+            for next in DIRECTIONS.iter().flat_map(|d| d.transform(i, j, h, w)) {
+                queue.push_back(next);
+            }
+        }
+        enclosed
+    }
+
+    pub fn solve((mut pipes, start): Parsed) -> usize {
+        let path = find_path(&pipes, start);
+        pipes[path[path.len() - 1].0][path[path.len() - 1].1] = match (
+            (
+                path[0].0 as isize - path[path.len() - 1].0 as isize,
+                path[0].1 as isize - path[path.len() - 1].1 as isize,
+            ),
+            (
+                path[path.len() - 2].0 as isize - path[path.len() - 1].0 as isize,
+                path[path.len() - 2].1 as isize - path[path.len() - 1].1 as isize,
+            ),
+        ) {
+            ((0, _), (0, _)) => Pipe::EW,
+            ((_, 0), (_, 0)) => Pipe::NS,
+            ((0, 1), (1, 0)) | ((1, 0), (0, 1)) => Pipe::SE,
+            ((0, 1), (-1, 0)) | ((-1, 0), (0, 1)) => Pipe::NE,
+            ((0, -1), (1, 0)) | ((1, 0), (0, -1)) => Pipe::SW,
+            ((0, -1), (-1, 0)) | ((-1, 0), (0, -1)) => Pipe::NW,
+            _ => {
+                unimplemented!()
+            }
+        };
+        let borders = path.iter().copied().collect();
+        let (index, mut inside) = find_inside(&pipes, &path, &borders);
+        let mut visited = borders.clone();
+        let (h, w) = (pipes.len(), pipes[0].len());
+        let mut enclosed = 0;
+        for ((i, j), pipe) in (index..path.len()).chain(0..index).map(|i| {
+            let (pi, pj) = path[i];
+            (path[i], pipes[pi][pj])
+        }) {
+            enclosed += bfs(inside.transform(i, j, h, w).unwrap(), &mut visited, h, w);
+            match pipe {
+                Pipe::NS | Pipe::EW => {}
+                Pipe::NE | Pipe::SW => {
+                    inside = inside.swap_ne();
+                    enclosed += bfs(inside.transform(i, j, h, w).unwrap(), &mut visited, h, w);
+                }
+                Pipe::NW | Pipe::SE => {
+                    inside = inside.swap_nw();
+                    enclosed += bfs(inside.transform(i, j, h, w).unwrap(), &mut visited, h, w);
+                }
+                Pipe::Empty | Pipe::Start => unreachable!(),
+            }
+        }
+        enclosed
     }
 }
 
 pub fn main(test: bool, verbose: bool) -> Duration {
-    let test_input = "".to_owned();
+    let test_input = "FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L"
+        .to_owned();
     let puzzle_input = if test {
         test_input
     } else {
