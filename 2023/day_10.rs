@@ -102,11 +102,11 @@ enum Direction {
 }
 
 impl Direction {
-    fn transform(&self, i: usize, j: usize) -> Option<Coord> {
+    fn transform(&self, i: usize, j: usize, h: usize, w: usize) -> Option<Coord> {
         match self {
             Direction::N => i.checked_sub(1).map(|i| (i, j)),
-            Direction::E => Some((i, j + 1)),
-            Direction::S => Some((i + 1, j)),
+            Direction::E => (j + 1 < w).then_some((i, j + 1)),
+            Direction::S => (i + 1 < w).then_some((i + 1, j)),
             Direction::W => j.checked_sub(1).map(|j| (i, j)),
         }
     }
@@ -150,8 +150,9 @@ pub mod part1 {
     fn explore(pipes: &Pipes, oi: usize, oj: usize, mut direction: Direction) -> Option<usize> {
         let (mut i, mut j) = (oi, oj);
         let mut length = 0;
+        let (h, w) = (pipes.len(), pipes[0].len());
         while (i, j) != (oi, oj) || length == 0 {
-            let (ni, nj) = match direction.transform(i, j) {
+            let (ni, nj) = match direction.transform(i, j, h, w) {
                 None => return None,
                 Some(n) => n,
             };
