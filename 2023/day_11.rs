@@ -2,14 +2,13 @@
 //! https://adventofcode.com/2023/day/11/input
 
 use std::{
-    collections::HashSet,
     fs::read_to_string,
     time::{Duration, Instant},
 };
 
 type Coord = (usize, usize);
 
-type Parsed = (HashSet<Coord>, usize, usize);
+type Parsed = (Vec<Coord>, usize, usize);
 
 fn parse(input: &str) -> Parsed {
     let (h, w) = (
@@ -31,10 +30,10 @@ fn parse(input: &str) -> Parsed {
     )
 }
 
-fn expand(stars: HashSet<Coord>, h: usize, w: usize, add: usize) -> HashSet<Coord> {
+fn expand(stars: &mut [Coord], h: usize, w: usize, factor: usize) {
     let mut rows = vec![false; h];
     let mut columns = vec![false; w];
-    for &(i, j) in &stars {
+    for &(i, j) in stars.iter() {
         rows[i] = true;
         columns[j] = true;
     }
@@ -42,7 +41,7 @@ fn expand(stars: HashSet<Coord>, h: usize, w: usize, add: usize) -> HashSet<Coor
     let mut c = 0;
     for (i, found) in rows.into_iter().enumerate() {
         if !found {
-            c += add;
+            c += factor - 1;
         }
         rows_shift[i] = c;
     }
@@ -50,34 +49,35 @@ fn expand(stars: HashSet<Coord>, h: usize, w: usize, add: usize) -> HashSet<Coor
     let mut c = 0;
     for (j, found) in columns.into_iter().enumerate() {
         if !found {
-            c += add;
+            c += factor - 1;
         }
         columns_shift[j] = c;
     }
-    stars
-        .into_iter()
-        .map(|(i, j)| (i + rows_shift[i], j + columns_shift[j]))
-        .collect()
+    stars.iter_mut().for_each(|(i, j)| {
+        *i += rows_shift[*i];
+        *j += columns_shift[*j]
+    })
 }
 
-fn solve(stars: HashSet<Coord>, h: usize, w: usize, add: usize) -> usize {
-    let stars = expand(stars, h, w, add);
+fn solve(mut stars: Vec<Coord>, h: usize, w: usize, factor: usize) -> usize {
+    expand(&mut stars, h, w, factor);
     stars
         .iter()
-        .flat_map(|s1 @ &(i1, j1)| {
-            stars.iter().flat_map(move |s2 @ &(i2, j2)| {
-                (s1 != s2).then_some(i1.abs_diff(i2) + j1.abs_diff(j2))
-            })
+        .enumerate()
+        .flat_map(|(s1, &(i1, j1))| {
+            stars
+                .iter()
+                .skip(s1 + 1)
+                .map(move |&(i2, j2)| i1.abs_diff(i2) + j1.abs_diff(j2))
         })
         .sum::<usize>()
-        / 2
 }
 
 pub mod part1 {
     use super::Parsed;
 
     pub fn solve((stars, h, w): Parsed) -> usize {
-        super::solve(stars, h, w, 1)
+        super::solve(stars, h, w, 2)
     }
 }
 
@@ -85,7 +85,7 @@ pub mod part2 {
     use super::Parsed;
 
     pub fn solve((stars, h, w): Parsed) -> usize {
-        super::solve(stars, h, w, 999_999)
+        super::solve(stars, h, w, 1_000_000)
     }
 }
 
