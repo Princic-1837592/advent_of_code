@@ -14,3 +14,4 @@ path = "main.rs"
 
 [dependencies]
 utils = { path = "../utils" }
+rayon = "1.8.0"
