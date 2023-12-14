@@ -21,3 +21,14 @@ pub fn transpose<T: Clone>(matrix: &Vec<Vec<T>>) -> Vec<Vec<T>> {
 pub fn mirror_in_place<T>(matrix: &mut [Vec<T>]) {
     matrix.iter_mut().for_each(|row| row.reverse());
 }
+
+pub fn rotate_left<T: Clone>(matrix: &Vec<Vec<T>>) -> Vec<Vec<T>> {
+    let w = matrix[0].len();
+    let mut result = vec![vec![matrix[0][0].clone(); matrix.len()]; w];
+    for (i, row) in matrix.iter().enumerate() {
+        for (j, element) in row.iter().enumerate() {
+            result[w - j - 1][i] = element.clone();
+        }
+    }
+    result
+}
