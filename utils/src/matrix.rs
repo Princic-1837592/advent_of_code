@@ -17,3 +17,7 @@ pub fn transpose<T: Clone>(matrix: &mut Vec<Vec<T>>) -> Vec<Vec<T>> {
     }
     result
 }
+
+pub fn mirror_in_place<T>(matrix: &mut [Vec<T>]) {
+    matrix.iter_mut().for_each(|row| row.reverse());
+}
