@@ -65,10 +65,14 @@ pub mod part2 {
     fn find_verticals(pattern: &Pattern) -> HashSet<usize> {
         let mut result = HashSet::new();
         'column: for c in 1..pattern[0].len() {
+            let mut diff = false;
             for row in pattern {
                 for dj in 0..c.min(pattern[0].len() - c) {
                     if row[c - dj - 1] != row[c + dj] {
-                        continue 'column;
+                        if diff {
+                            continue 'column;
+                        }
+                        diff = true;
                     }
                 }
             }
@@ -86,16 +90,10 @@ pub mod part2 {
 
     fn find_reflection(pattern: Pattern) -> usize {
         let original = super::find_reflection(&pattern);
-        for (i, row) in pattern.iter().enumerate() {
-            for (j, rock) in row.iter().enumerate() {
-                let mut pattern = pattern.clone();
-                pattern[i][j] = !rock;
-                let mut new = find_reflections(&pattern);
-                new.remove(&original);
-                if let Some(&result) = new.iter().next() {
-                    return result;
-                }
-            }
+        let mut new = find_reflections(&pattern);
+        new.remove(&original);
+        if let Some(&result) = new.iter().next() {
+            return result;
         }
         original
     }
