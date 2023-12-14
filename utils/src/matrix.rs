@@ -8,7 +8,7 @@ pub fn transpose_square<T: Clone>(matrix: &mut Vec<Vec<T>>) {
     }
 }
 
-pub fn transpose<T: Clone>(matrix: &mut Vec<Vec<T>>) -> Vec<Vec<T>> {
+pub fn transpose<T: Clone>(matrix: &Vec<Vec<T>>) -> Vec<Vec<T>> {
     let mut result = vec![vec![matrix[0][0].clone(); matrix.len()]; matrix[0].len()];
     for (i, row) in matrix.iter().enumerate() {
         for (j, element) in row.iter().enumerate() {
