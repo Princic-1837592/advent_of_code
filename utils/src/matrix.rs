@@ -32,3 +32,14 @@ pub fn rotate_left<T: Clone>(matrix: &Vec<Vec<T>>) -> Vec<Vec<T>> {
     }
     result
 }
+
+pub fn rotate_right<T: Clone>(matrix: &Vec<Vec<T>>) -> Vec<Vec<T>> {
+    let h = matrix.len();
+    let mut result = vec![vec![matrix[0][0].clone(); h]; matrix[0].len()];
+    for (i, row) in matrix.iter().enumerate() {
+        for (j, element) in row.iter().enumerate() {
+            result[j][h - i - 1] = element.clone();
+        }
+    }
+    result
+}
