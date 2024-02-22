@@ -66,10 +66,10 @@ pub mod part1 {
         let mut min = usize::MAX;
         let mut visited = vec![vec![[usize::MAX; 2]; w]; h];
         while let Some(State {
-                           position: position @ (i, j),
-                           heat_loss,
-                           horizontal,
-                       }) = queue.pop()
+            position: position @ (i, j),
+            heat_loss,
+            horizontal,
+        }) = queue.pop()
         {
             if heat_loss >= min {
                 continue;
@@ -136,10 +136,10 @@ pub mod part2 {
         let mut min = usize::MAX;
         let mut visited = vec![vec![[usize::MAX; 2]; w]; h];
         while let Some(State {
-                           position: position @ (i, j),
-                           heat_loss,
-                           horizontal,
-                       }) = queue.pop()
+            position: position @ (i, j),
+            heat_loss,
+            horizontal,
+        }) = queue.pop()
         {
             if heat_loss >= min {
                 continue;
