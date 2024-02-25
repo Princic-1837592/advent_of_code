@@ -128,12 +128,7 @@ pub mod part2 {
             .collect();
         m.iter()
             .take(4)
-            .map(|r| {
-                r.iter()
-                    .zip(&m[m.len() - 1])
-                    .map(|(a, b)| a - b)
-                    .collect()
-            })
+            .map(|r| r.iter().zip(&m[m.len() - 1]).map(|(a, b)| a - b).collect())
             .collect()
     }
 
