@@ -131,7 +131,7 @@ pub mod part2 {
             .map(|r| {
                 r.iter()
                     .zip(&m[m.len() - 1])
-                    .map(|(a, b)| (a - b))
+                    .map(|(a, b)| a - b)
                     .collect()
             })
             .collect()
