@@ -11,11 +11,11 @@ pub fn from_char(_attr: TokenStream, item: TokenStream) -> TokenStream {
         attrs,
         visibility,
         ident,
-        fields,
+        variants,
         ..
     } = syn::parse_macro_input!(item as Enum);
-    let chars: Vec<_> = fields.variants.iter().map(|v| v.char.clone()).collect();
-    let idents: Vec<_> = fields.variants.iter().map(|v| v.ident.clone()).collect();
+    let chars: Vec<_> = variants.iter().map(|v| v.char.clone()).collect();
+    let idents: Vec<_> = variants.iter().map(|v| v.ident.clone()).collect();
 
     quote!(
         #(#attrs)*
