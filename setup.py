@@ -1,5 +1,6 @@
 import os
 from configparser import ConfigParser
+from time import sleep
 
 from requests import get
 
@@ -212,6 +213,7 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
                                 f"Failed to download day {day} with error code "
                                 f"{response.status_code} and response: {response.text}. Quitting"
                             )
+            sleep(0.2)
 
     if not os.path.exists(year):
         if verbose:
