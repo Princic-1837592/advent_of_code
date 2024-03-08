@@ -88,7 +88,7 @@ pub fn main(test: bool) {
     let (puzzle_input, (w, h)) = if test {
         (test_input, (2, 2))
     } else {
-        (read_to_string("inputs/day_08_input.txt").unwrap(), (25, 6))
+        (read_to_string("../inputs/2019/day_08_input.txt").unwrap(), (25, 6))
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input, w, h));

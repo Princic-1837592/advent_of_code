@@ -90,7 +90,7 @@ David would gain 41 happiness units by sitting next to Carol."
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_13_input.txt").unwrap()
+        read_to_string("../inputs/2015/day_13_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

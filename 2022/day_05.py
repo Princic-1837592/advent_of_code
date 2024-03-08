@@ -51,7 +51,7 @@ move 1 from 1 to 2"""
     if test:
         puzzle_input = test_input
     else:
-        with open("inputs/day_05_input.txt", "r") as input_file:
+        with open("../inputs/2022/day_05_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

@@ -111,7 +111,7 @@ pub fn main(test: bool) {
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_25_input.txt").unwrap()
+        read_to_string("../inputs/2019/day_25_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

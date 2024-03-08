@@ -331,7 +331,7 @@ L7JLJL-JLJLJL--JLJ.L"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_10_input.txt").unwrap()
+        read_to_string("../inputs/2023/day_10_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

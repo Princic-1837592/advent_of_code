@@ -53,7 +53,7 @@ pub fn main(test: bool) {
     let (puzzle_input, disc_length) = if test {
         (test_input, 20)
     } else {
-        (read_to_string("inputs/day_16_input.txt").unwrap(), 272)
+        (read_to_string("../inputs/2016/day_16_input.txt").unwrap(), 272)
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input, disc_length));

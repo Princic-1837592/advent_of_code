@@ -88,7 +88,7 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_04_input.txt").unwrap()
+        read_to_string("../inputs/2023/day_04_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

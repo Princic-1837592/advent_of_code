@@ -153,7 +153,7 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_15_input.txt").unwrap()
+        read_to_string("../inputs/2015/day_15_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

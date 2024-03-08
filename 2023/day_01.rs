@@ -94,7 +94,7 @@ treb7uchet"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_01_input.txt").unwrap()
+        read_to_string("../inputs/2023/day_01_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

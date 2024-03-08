@@ -109,7 +109,7 @@ inc a"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_23_input.txt").unwrap()
+        read_to_string("../inputs/2015/day_23_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

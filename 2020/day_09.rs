@@ -102,7 +102,7 @@ pub fn main(test: bool) {
         (test_input, 5)
     } else {
         (
-            read_to_string("inputs/day_09_input.txt").unwrap(),
+            read_to_string("../inputs/2020/day_09_input.txt").unwrap(),
             25,
         )
     };

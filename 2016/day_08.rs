@@ -111,7 +111,7 @@ rotate column x=1 by 1"
     let (puzzle_input, w, h) = if test {
         (test_input, 7, 3)
     } else {
-        (read_to_string("inputs/day_08_input.txt").unwrap(), 50, 6)
+        (read_to_string("../inputs/2016/day_08_input.txt").unwrap(), 50, 6)
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input, w, h));

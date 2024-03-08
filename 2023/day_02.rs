@@ -87,7 +87,7 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_02_input.txt").unwrap()
+        read_to_string("../inputs/2023/day_02_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

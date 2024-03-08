@@ -97,7 +97,7 @@ pub fn main(test: bool) -> Duration {
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_11_input.txt").unwrap()
+        read_to_string("../inputs/2015/day_11_input.txt").unwrap()
     };
 
     let mut total = Duration::default();

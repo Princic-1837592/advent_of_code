@@ -207,7 +207,7 @@ humidity-to-location map:
         (test_input, "\n".repeat(2))
     } else {
         (
-            read_to_string("inputs/day_05_input.txt").unwrap(),
+            read_to_string("../inputs/2023/day_05_input.txt").unwrap(),
             LINE_ENDING.repeat(2),
         )
     };

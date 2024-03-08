@@ -131,7 +131,7 @@ Player 2:
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_22_input.txt").unwrap()
+        read_to_string("../inputs/2020/day_22_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

@@ -221,7 +221,7 @@ Damage: 8"
     let (puzzle_input, hp, mana) = if test {
         (test_input, 10, 250)
     } else {
-        (read_to_string("inputs/day_22_input.txt").unwrap(), 50, 500)
+        (read_to_string("../inputs/2015/day_22_input.txt").unwrap(), 50, 500)
     };
 
     let mut total = Duration::default();

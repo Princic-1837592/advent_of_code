@@ -119,7 +119,7 @@ c inc -20 if c == 10"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_08_input.txt").unwrap()
+        read_to_string("../inputs/2017/day_08_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

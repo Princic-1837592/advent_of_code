@@ -134,7 +134,7 @@ U62,R66,U55,R34,D71,R55,D58,R83"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_03_input.txt").unwrap()
+        read_to_string("../inputs/2019/day_03_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

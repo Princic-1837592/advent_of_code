@@ -131,7 +131,7 @@ pub fn main(test: bool) {
     let (puzzle_input, last_letter) = if test {
         (test_input, 'e')
     } else {
-        (read_to_string("inputs/day_16_input.txt").unwrap(), 'p')
+        (read_to_string("../inputs/2017/day_16_input.txt").unwrap(), 'p')
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input, last_letter));

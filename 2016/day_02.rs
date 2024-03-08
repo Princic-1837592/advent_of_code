@@ -122,7 +122,7 @@ UUUUD"
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_02_input.txt").unwrap()
+        read_to_string("../inputs/2016/day_02_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

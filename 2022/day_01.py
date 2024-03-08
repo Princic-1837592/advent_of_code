@@ -30,7 +30,7 @@ if __name__ == "__main__":
     if test:
         puzzle_input = test_input
     else:
-        with open("inputs/day_01_input.txt", "r") as input_file:
+        with open("../inputs/2022/day_01_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

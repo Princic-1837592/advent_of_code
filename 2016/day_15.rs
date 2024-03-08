@@ -68,7 +68,7 @@ Disc #2 has 2 positions; at time=0, it is at position 1."
     let puzzle_input = if test {
         test_input
     } else {
-        read_to_string("inputs/day_15_input.txt").unwrap()
+        read_to_string("../inputs/2016/day_15_input.txt").unwrap()
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

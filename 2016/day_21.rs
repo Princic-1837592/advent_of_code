@@ -252,7 +252,7 @@ rotate based on position of letter d"
         (test_input, "abcde", "decab")
     } else {
         (
-            read_to_string("inputs/day_21_input.txt").unwrap(),
+            read_to_string("../inputs/2016/day_21_input.txt").unwrap(),
             "abcdefgh",
             "fbgdceah",
         )

@@ -201,7 +201,7 @@ Each geode robot costs 3 ore and 12 obsidian."""
     if test:
         puzzle_input = test_input
     else:
-        with open("inputs/day_19_input.txt", "r") as input_file:
+        with open("../inputs/2022/day_19_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))

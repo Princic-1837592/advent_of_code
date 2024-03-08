@@ -127,7 +127,7 @@ pub fn main(test: bool) {
     let (puzzle_input, steps) = if test {
         (test_input, 100)
     } else {
-        (read_to_string("inputs/day_12_input.txt").unwrap(), 1000)
+        (read_to_string("../inputs/2019/day_12_input.txt").unwrap(), 1000)
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input, steps));

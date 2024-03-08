@@ -121,7 +121,7 @@ pub fn main(test: bool) {
     let (puzzle_input, max_distance) = if test {
         (test_input, 32)
     } else {
-        (read_to_string("inputs/day_06_input.txt").unwrap(), 10000)
+        (read_to_string("../inputs/2018/day_06_input.txt").unwrap(), 10000)
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

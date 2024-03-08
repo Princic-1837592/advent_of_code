@@ -87,7 +87,7 @@ Step F must be finished before step E can begin."
     let (puzzle_input, workers, seconds) = if test {
         (test_input, 2, 0)
     } else {
-        (read_to_string("inputs/day_07_input.txt").unwrap(), 5, 60)
+        (read_to_string("../inputs/2018/day_07_input.txt").unwrap(), 5, 60)
     };
     let start = Instant::now();
     println!("{}", part1::solve(&puzzle_input));

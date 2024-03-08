@@ -140,7 +140,7 @@ cut -1"
         (test_input, 10, 3)
     } else {
         (
-            read_to_string("inputs/day_22_input.txt").unwrap(),
+            read_to_string("../inputs/2019/day_22_input.txt").unwrap(),
             10007,
             2019,
         )
