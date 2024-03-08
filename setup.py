@@ -27,7 +27,7 @@ if __name__ == "__main__":
     if test:
         puzzle_input = test_input
     else:
-        with open("inputs/day_{day:0>2}_input.txt", "r") as input_file:
+        with open("../inputs/{year}/day_{day:0>2}_input.txt", "r") as input_file:
             puzzle_input = input_file.read().strip()
     print(part1(puzzle_input))
     print(part2(puzzle_input))
@@ -86,7 +86,7 @@ pub fn main(test: bool, verbose: bool) -> Duration {{
     let puzzle_input = if test {{
         test_input
     }} else {{
-        read_to_string("inputs/day_{day:0>2}_input.txt").unwrap()
+        read_to_string("../inputs/{year}/day_{day:0>2}_input.txt").unwrap()
     }};
 
     let mut total = Duration::default();
@@ -122,25 +122,11 @@ pub fn main(test: bool, verbose: bool) -> Duration {{
 rust_main_content = """
 use std::{{env, time::Duration}};
 
-macro_rules! run_days {{
-    ($($day:ident),* $(,)*) => {{
-        let args: Vec<_> = env::args().collect();
-        let test = args.iter().any(|arg| arg == "--test");
-        let verbose = args.iter().any(|arg| arg == "--verbose");
-        let mut total = Duration::default();
-
-        $(
-            println!("Running {{}}", stringify!($day));
-            total += advent_of_code_{year}::$day::main(test, verbose);
-            println!();
-        )*
-
-        println!("Total: {{:?}}", total);
-    }};
-}}
+use utils::run_days;
 
 fn main() {{
     run_days!(
+        advent_of_code_{year},
         {single_days}
     );
 }}
@@ -194,7 +180,7 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
                     src.write(python_src_content.format(year=year, day=day))
 
     def inputs():
-        directory = os.path.join(year, "inputs")
+        directory = os.path.join("inputs", year)
         if not os.path.exists(directory):
             os.mkdir(directory)
         session = "None"
@@ -204,7 +190,7 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
             session = config["auto_download"]["session"]
         keep_downloading = True
         for day in range(1, 25 + 1):
-            path = os.path.join(year, "inputs", f"day_{day:0>2}_input.txt")
+            path = os.path.join(directory, f"day_{day:0>2}_input.txt")
             if not os.path.exists(path):
                 with open(path, "w") as day_input:
                     if auto_download and keep_downloading:
