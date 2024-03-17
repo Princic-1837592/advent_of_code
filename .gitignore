@@ -22,4 +22,4 @@ test.*
 *_input.txt
 Cargo.lock
 local_config.ini
-tests
+./tests

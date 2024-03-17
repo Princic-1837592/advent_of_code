@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 num = "0.4.1"
-enum_parser = { path = "enum_parser" }
+proc_macros = { path = "proc_macros" }

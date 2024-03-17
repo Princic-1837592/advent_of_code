@@ -1,12 +1,10 @@
-mod parser;
-
+use parser::Enum;
 use proc_macro::TokenStream;
 use quote::quote;
 
-use crate::parser::Enum;
+mod parser;
 
-#[proc_macro_attribute]
-pub fn from_char(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub(crate) fn from_char_internal(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let Enum {
         attrs,
         visibility,
