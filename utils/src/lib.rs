@@ -1,9 +1,10 @@
+pub use proc_macros::{from_char, FromStr};
+
 pub mod coords;
 pub mod math;
 pub mod matrix;
 #[macro_use]
 pub mod parsing;
-pub use enum_parser::from_char;
 
 #[macro_export]
 macro_rules! run_days {
