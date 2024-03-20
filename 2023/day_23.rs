@@ -132,29 +132,33 @@ pub mod part2 {
         distances
     }
 
-    pub fn solve(map: Parsed) -> usize {
-        let graph = compress_graph(map);
-        let mut stack = Vec::from([(false, 0, 0), (true, 0, 1)]);
-        let mut seen = vec![false; graph.len()];
+    fn explore(
+        graph: &Vec<Vec<Edge>>,
+        seen: &mut Vec<bool>,
+        target: usize,
+        node: usize,
+        steps: usize,
+    ) -> usize {
+        seen[node] = true;
+        if node == target {
+            seen[node] = false;
+            return steps;
+        }
         let mut result = 0;
-        let target = graph.len() - 1;
-        while let Some((enter, node, steps)) = stack.pop() {
-            if enter {
-                seen[node] = true;
-                if node == target {
-                    result = result.max(steps);
-                }
-                for edge in &graph[node] {
-                    if !seen[edge.dst] {
-                        stack.push((false, edge.dst, 0));
-                        stack.push((true, edge.dst, steps + edge.steps));
-                    }
-                }
-            } else {
-                seen[node] = false;
+        for edge in &graph[node] {
+            if !seen[edge.dst] {
+                result = result.max(explore(graph, seen, target, edge.dst, steps + edge.steps));
             }
         }
-        result - 1
+        seen[node] = false;
+        result
+    }
+
+    pub fn solve(map: Parsed) -> usize {
+        let graph = compress_graph(map);
+        let mut seen = vec![false; graph.len()];
+        let target = graph.len() - 1;
+        explore(&graph, &mut seen, target, 0, 0)
     }
 }
 
