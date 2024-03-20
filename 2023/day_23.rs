@@ -6,28 +6,17 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::from_char;
+
+#[from_char]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Cell {
-    Path,
-    Forest,
-    Up,
-    Right,
-    Down,
-    Left,
-}
-
-impl From<char> for Cell {
-    fn from(value: char) -> Self {
-        match value {
-            '#' => Self::Forest,
-            '.' => Self::Path,
-            '^' => Self::Up,
-            '>' => Self::Right,
-            'v' => Self::Down,
-            '<' => Self::Left,
-            _ => unreachable!(),
-        }
-    }
+    Path = '.',
+    Forest = '#',
+    Up = '^',
+    Right = '>',
+    Down = 'v',
+    Left = '<',
 }
 
 type Parsed = Vec<Vec<Cell>>;
@@ -88,23 +77,44 @@ pub mod part1 {
 }
 
 pub mod part2 {
+    use std::collections::VecDeque;
+
     use utils::coords::iter_cross_near;
 
     use super::{Cell, Parsed};
 
-    pub fn solve(map: Parsed) -> usize {
-        let (h, w) = (map.len(), map[0].len());
-        let mut stack = Vec::from([(false, (0, 1), 0), (true, (0, 1), 1)]);
-        let mut seen = vec![vec![false; w]; h];
-        let mut result = 0;
-        while let Some((enter, coord @ (i, j), steps)) = stack.pop() {
-            if enter {
-                if seen[i][j] {
-                    continue;
+    #[derive(Copy, Clone, Debug)]
+    struct Edge {
+        dst: usize,
+        steps: usize,
+    }
+
+    fn compress_graph(map: Parsed) -> Vec<Vec<Edge>> {
+        let mut crossings = vec![(0, 1)];
+        for (i, row) in map.iter().enumerate().skip(1).take(map.len() - 2) {
+            for j in (1..row.len() - 1).filter(|&j| row[j] != Cell::Forest) {
+                if [map[i - 1][j], map[i][j + 1], map[i + 1][j], map[i][j - 1]]
+                    .iter()
+                    .filter(|&&cell| cell != Cell::Forest)
+                    .count()
+                    >= 3
+                {
+                    crossings.push((i, j));
                 }
-                seen[i][j] = true;
-                if coord == (h - 1, w - 2) {
-                    result = result.max(steps);
+            }
+        }
+        crossings.push((map.len() - 1, map[0].len() - 2));
+        let mut distances = vec![vec![]; crossings.len()];
+        for (c, &crossing) in crossings.iter().enumerate() {
+            let mut queue = VecDeque::from([(crossing, 0)]);
+            let mut visited = vec![vec![false; map[0].len()]; map.len()];
+            while let Some((crossing @ (i, j), steps)) = queue.pop_front() {
+                visited[i][j] = true;
+                if let Some(p) = crossings.iter().position(|&c| c == crossing) {
+                    if steps > 0 {
+                        distances[c].push(Edge { dst: p, steps });
+                        continue;
+                    }
                 }
                 for to @ (ni, nj) in iter_cross_near(i as isize, j as isize)
                     .map(|(ni, nj)| (ni as usize, nj as usize))
@@ -112,14 +122,36 @@ pub mod part2 {
                     if ni < map.len()
                         && nj < map[0].len()
                         && map[ni][nj] != Cell::Forest
-                        && !seen[ni][nj]
+                        && !visited[ni][nj]
                     {
-                        stack.push((false, to, 0));
-                        stack.push((true, to, steps + 1));
+                        queue.push_back((to, steps + 1));
+                    }
+                }
+            }
+        }
+        distances
+    }
+
+    pub fn solve(map: Parsed) -> usize {
+        let graph = compress_graph(map);
+        let mut stack = Vec::from([(false, 0, 0), (true, 0, 1)]);
+        let mut seen = vec![false; graph.len()];
+        let mut result = 0;
+        let target = graph.len() - 1;
+        while let Some((enter, node, steps)) = stack.pop() {
+            if enter {
+                seen[node] = true;
+                if node == target {
+                    result = result.max(steps);
+                }
+                for edge in &graph[node] {
+                    if !seen[edge.dst] {
+                        stack.push((false, edge.dst, 0));
+                        stack.push((true, edge.dst, steps + edge.steps));
                     }
                 }
             } else {
-                seen[i][j] = false;
+                seen[node] = false;
             }
         }
         result - 1
