@@ -62,16 +62,13 @@ fn solve_generic<const MIN: usize, const MAX: usize>(map: Parsed) -> usize {
         horizontal,
     }) = queue.pop()
     {
-        if heat_loss >= min {
-            continue;
-        }
-        if position == target {
-            min = heat_loss;
-        }
-        if heat_loss > visited[i][j][horizontal as usize] {
+        if heat_loss >= min || heat_loss >= visited[i][j][horizontal as usize] {
             continue;
         }
         visited[i][j][horizontal as usize] = heat_loss;
+        if position == target {
+            min = heat_loss;
+        }
         if horizontal {
             let (mut heat_loss_up, mut heat_loss_down) = (heat_loss, heat_loss);
             for di in 1..MIN {
