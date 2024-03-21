@@ -1,4 +1,7 @@
+pub use derive_new::new;
 pub use proc_macros::{from_char, FromStr};
+pub use strum::IntoEnumIterator;
+pub use strum_macros::EnumIter;
 
 pub mod coords;
 pub mod math;

@@ -8,3 +8,6 @@ edition = "2021"
 [dependencies]
 num = "0.4.1"
 proc_macros = { path = "proc_macros" }
+derive-new = "0.6.0"
+strum = "0.26.2"
+strum_macros = "0.26.2"
