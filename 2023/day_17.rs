@@ -53,11 +53,11 @@ fn solve_generic<const MIN: usize, const MAX: usize>(map: Parsed) -> usize {
     let mut history = vec![
         vec![
             vec![
-                Visited {
+                [Visited {
                     visited: false,
                     heat_loss: usize::MAX
-                };
-                4 * MAX + 1
+                }; 4];
+                MAX + 1
             ];
             cols
         ];
@@ -82,7 +82,7 @@ fn solve_generic<const MIN: usize, const MAX: usize>(map: Parsed) -> usize {
         heat_loss,
     }) = queue.pop()
     {
-        history[i][j][direction as usize * MAX + steps].visited = true;
+        history[i][j][steps][direction as usize].visited = true;
         for d in Direction::iter() {
             let (same_dir, opp_dir) = (direction == d, direction.opposite() == d);
             if (steps < MIN && !same_dir)
@@ -104,21 +104,21 @@ fn solve_generic<const MIN: usize, const MAX: usize>(map: Parsed) -> usize {
                 Direction::W => (i, j - 1),
             };
             let next_steps = if same_dir { steps + 1 } else { 1 };
-            let index = d as usize * MAX + next_steps;
             let next_heat_loss = heat_loss + map[ni][nj];
             let Visited {
                 visited,
                 heat_loss: prev_heat_loss,
-            } = history[ni][nj][index];
+            } = history[ni][nj][next_steps][d as usize];
             if visited || next_heat_loss >= prev_heat_loss {
                 continue;
             }
-            history[ni][nj][index].heat_loss = next_heat_loss;
+            history[ni][nj][next_steps][d as usize].heat_loss = next_heat_loss;
             queue.push(State::new(next_pos, d, next_steps, next_heat_loss))
         }
     }
     history[rows - 1][cols - 1]
         .iter()
+        .flatten()
         .map(|visited| visited.heat_loss)
         .min()
         .unwrap()
