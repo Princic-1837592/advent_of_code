@@ -2,11 +2,12 @@
 //! https://adventofcode.com/2023/day/17/input
 
 use std::{
-    cmp::Ordering,
     collections::BinaryHeap,
     fs::read_to_string,
     time::{Duration, Instant},
 };
+
+use utils::{coords::Direction, new, IntoEnumIterator};
 
 type Parsed = Vec<Vec<usize>>;
 
@@ -19,111 +20,108 @@ fn parse(input: &str) -> Parsed {
 
 type Coord = (usize, usize);
 
-#[derive(Clone, Eq, PartialEq, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, new)]
 struct State {
     position: Coord,
+    direction: Direction,
+    steps: usize,
     heat_loss: usize,
-    horizontal: bool,
 }
 
-impl State {
-    fn new(position: Coord, heat_loss: usize, direction: bool) -> Self {
-        Self {
-            position,
-            heat_loss,
-            horizontal: direction,
-        }
+impl Ord for State {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        other.heat_loss.cmp(&self.heat_loss)
     }
 }
 
 impl PartialOrd for State {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(std::cmp::Ord::cmp(self, other))
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
-impl Ord for State {
-    fn cmp(&self, other: &Self) -> Ordering {
-        (self.position.0 + self.position.1)
-            .cmp(&(other.position.0 + other.position.1))
-            .then(self.heat_loss.cmp(&other.heat_loss).reverse())
-    }
+#[derive(Copy, Clone)]
+struct Visited {
+    visited: bool,
+    heat_loss: usize,
 }
 
+// https://github.com/ranjeethmahankali/adventofcode/blob/b2cac5e9ca03d2ef6d18a5b81eecfb3c9e0f5b32/2023/src/day_17.rs#L125
 fn solve_generic<const MIN: usize, const MAX: usize>(map: Parsed) -> usize {
-    let (h, w) = (map.len(), map[0].len());
-    let target = (h - 1, w - 1);
-    let mut queue = BinaryHeap::from([State::new((0, 0), 0, false), State::new((0, 0), 0, true)]);
-    let mut min = usize::MAX;
-    let mut visited = vec![vec![[usize::MAX; 2]; w]; h];
+    let (rows, cols) = (map.len(), map[0].len());
+    let mut queue = BinaryHeap::<State>::new();
+    let mut history = vec![
+        vec![
+            vec![
+                Visited {
+                    visited: false,
+                    heat_loss: usize::MAX
+                };
+                4 * MAX + 1
+            ];
+            cols
+        ];
+        rows
+    ];
+    queue.push(State {
+        position: (0, 0),
+        direction: Direction::S,
+        steps: 0,
+        heat_loss: 0,
+    });
+    queue.push(State {
+        position: (0, 0),
+        direction: Direction::E,
+        steps: 0,
+        heat_loss: 0,
+    });
     while let Some(State {
-        position: position @ (i, j),
+        position: (i, j),
+        direction,
+        steps,
         heat_loss,
-        horizontal,
     }) = queue.pop()
     {
-        if heat_loss >= min || heat_loss >= visited[i][j][horizontal as usize] {
-            continue;
-        }
-        visited[i][j][horizontal as usize] = heat_loss;
-        if position == target {
-            min = heat_loss;
-        }
-        if horizontal {
-            let (mut heat_loss_up, mut heat_loss_down) = (heat_loss, heat_loss);
-            for di in 1..MIN {
-                if i >= di {
-                    heat_loss_up += map[i - di][j];
+        history[i][j][direction as usize * MAX + steps].visited = true;
+        for d in Direction::iter() {
+            let (same_dir, opp_dir) = (direction == d, direction.opposite() == d);
+            if (steps < MIN && !same_dir)
+                || (steps >= MAX && same_dir)
+                || opp_dir
+                || match d {
+                    Direction::N => i == 0,
+                    Direction::E => j == cols - 1,
+                    Direction::S => i == rows - 1,
+                    Direction::W => j == 0,
                 }
-                if h - i > di {
-                    heat_loss_down += map[i + di][j];
-                }
+            {
+                continue;
             }
-            for di in MIN..=MAX {
-                if i >= di {
-                    let ni = i - di;
-                    heat_loss_up += map[ni][j];
-                    if heat_loss_up < visited[ni][j][false as usize] && heat_loss_up < min {
-                        queue.push(State::new((ni, j), heat_loss_up, false));
-                    }
-                }
-                if h - i > di {
-                    let ni = i + di;
-                    heat_loss_down += map[ni][j];
-                    if heat_loss_down < visited[ni][j][false as usize] && heat_loss_down < min {
-                        queue.push(State::new((ni, j), heat_loss_down, false));
-                    }
-                }
+            let next_pos @ (ni, nj) = match d {
+                Direction::N => (i - 1, j),
+                Direction::E => (i, j + 1),
+                Direction::S => (i + 1, j),
+                Direction::W => (i, j - 1),
+            };
+            let next_steps = if same_dir { steps + 1 } else { 1 };
+            let index = d as usize * MAX + next_steps;
+            let next_heat_loss = heat_loss + map[ni][nj];
+            let Visited {
+                visited,
+                heat_loss: prev_heat_loss,
+            } = history[ni][nj][index];
+            if visited || next_heat_loss >= prev_heat_loss {
+                continue;
             }
-        } else {
-            let (mut heat_loss_left, mut heat_loss_right) = (heat_loss, heat_loss);
-            for dj in 1..MIN {
-                if j >= dj {
-                    heat_loss_left += map[i][j - dj];
-                }
-                if w - j > dj {
-                    heat_loss_right += map[i][j + dj];
-                }
-            }
-            for dj in MIN..=MAX {
-                if j >= dj {
-                    let nj = j - dj;
-                    heat_loss_left += map[i][nj];
-                    if heat_loss_left < visited[i][nj][true as usize] && heat_loss_left < min {
-                        queue.push(State::new((i, nj), heat_loss_left, true));
-                    }
-                }
-                if w - j > dj {
-                    let nj = j + dj;
-                    heat_loss_right += map[i][nj];
-                    if heat_loss_right < visited[i][nj][true as usize] && heat_loss_right < min {
-                        queue.push(State::new((i, nj), heat_loss_right, true));
-                    }
-                }
-            }
+            history[ni][nj][index].heat_loss = next_heat_loss;
+            queue.push(State::new(next_pos, d, next_steps, next_heat_loss))
         }
     }
-    min
+    history[rows - 1][cols - 1]
+        .iter()
+        .map(|visited| visited.heat_loss)
+        .min()
+        .unwrap()
 }
 
 pub mod part1 {
