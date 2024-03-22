@@ -1,5 +1,4 @@
-use std::cmp::Ordering;
-use std::{fs::read_to_string, time::Instant};
+use std::{cmp::Ordering, fs::read_to_string, time::Instant};
 
 fn parse(input: &str) -> Vec<usize> {
     input.lines().map(|n| n.parse().unwrap()).collect()
@@ -107,10 +106,9 @@ pub fn main(test: bool) {
         )
     };
     let start = Instant::now();
-    println!("{}", part1::solve(&puzzle_input,size));
+    println!("{}", part1::solve(&puzzle_input, size));
     println!("Run in {:?}", start.elapsed());
     let start = Instant::now();
-    println!("{}", part2::solve(&puzzle_input,size));
+    println!("{}", part2::solve(&puzzle_input, size));
     println!("Run in {:?}", start.elapsed());
 }
-
