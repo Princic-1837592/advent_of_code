@@ -4,7 +4,6 @@
 use std::{
     fmt::Debug,
     fs::read_to_string,
-    str::FromStr,
     time::{Duration, Instant},
 };
 
@@ -12,11 +11,7 @@ use utils::{parsing::parse_lines, FromStr};
 
 #[derive(Copy, Clone, Debug, FromStr)]
 #[separator(',')]
-struct Triple<T>
-where
-    T: Copy + FromStr,
-    <T as FromStr>::Err: Debug,
-{
+struct Triple<T> {
     x: T,
     y: T,
     z: T,
