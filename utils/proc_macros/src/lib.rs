@@ -1,10 +1,11 @@
 use proc_macro::TokenStream;
 
 use crate::enums::from_char_internal;
+
 mod enums;
 mod structs;
 
-#[proc_macro_derive(FromStr, attributes(separator))]
+#[proc_macro_derive(FromStr, attributes(separator, into))]
 pub fn from_line_derive_macro(item: TokenStream) -> TokenStream {
     structs::from_line_derive_internal(item.into())
         .unwrap()

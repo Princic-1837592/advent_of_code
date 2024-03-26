@@ -29,7 +29,7 @@ pub fn parse_matrix<T: From<char>>(input: &str) -> Vec<Vec<T>> {
     parse_matrix!(input, T)
 }
 
-pub fn parse_line<T>(input: &str) -> Vec<T>
+pub fn parse_lines<T>(input: &str) -> Vec<T>
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,

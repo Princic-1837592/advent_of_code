@@ -1,7 +1,7 @@
 use deluxe::{extract_attributes, ExtractAttributes};
 use proc_macro2::TokenStream;
 use quote::quote;
-use syn::{Data::Struct, DeriveInput, Expr, Fields::Named, FieldsNamed};
+use syn::{Data::Struct, DeriveInput, Expr, Fields::Named, FieldsNamed, Meta};
 
 #[derive(ExtractAttributes)]
 #[deluxe(attributes(separator))]
@@ -23,12 +23,24 @@ pub(crate) fn from_line_derive_internal(item: TokenStream) -> deluxe::Result<Tok
                 .iter()
                 .map(|f| {
                     let ident = &f.ident;
-                    quote!(
-                        let #ident = if let Some(part) = parts.next() {
+                    let parse = if f.attrs.iter().any(|a| match &a.meta {
+                        Meta::Path(path) if path.get_ident().is_some() => {
+                            path.get_ident().unwrap() == "into"
+                        }
+                        _ => false,
+                    }) {
+                        quote!(part.into())
+                    } else {
+                        quote!(
                             match part.trim().parse() {
                                 Ok(parsed) => parsed,
                                 Err(error) => return Err(format!("Error while parsing `{}`: {}", stringify!(#ident), error)),
                             }
+                        )
+                    };
+                    quote!(
+                        let #ident = if let Some(part) = parts.next() {
+                            #parse
                         } else {
                             return Err(format!("Unexpected end of input while parsing {}", stringify!(#ident)));
                         };
