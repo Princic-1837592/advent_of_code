@@ -6,6 +6,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::{parsing::parse_lines, FromStr};
+
 #[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
 enum Card {
     Joker,
@@ -115,26 +117,17 @@ impl From<&str> for Hand {
     }
 }
 
-#[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq, FromStr)]
 pub struct Play {
+    #[into]
     hand: Hand,
     bid: usize,
-}
-
-impl From<&str> for Play {
-    fn from(value: &str) -> Self {
-        let mut parts = value.split_whitespace();
-        Self {
-            hand: parts.next().unwrap().into(),
-            bid: parts.next().unwrap().parse().unwrap(),
-        }
-    }
 }
 
 type Parsed = Vec<Play>;
 
 pub fn parse(input: &str) -> Parsed {
-    input.lines().map(Play::from).collect()
+    parse_lines(input)
 }
 
 fn solve(mut plays: Parsed) -> usize {

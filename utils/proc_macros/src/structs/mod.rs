@@ -10,6 +10,7 @@ struct Separator(Expr);
 pub(crate) fn from_line_derive_internal(item: TokenStream) -> deluxe::Result<TokenStream> {
     let mut ast: DeriveInput = syn::parse2(item)?;
     let separator: Result<Separator, _> = extract_attributes(&mut ast);
+    let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
     if let Struct(data_struct) = &ast.data {
         if let Named(FieldsNamed { named: fields, .. }) = &data_struct.fields {
             let ident = &ast.ident;
@@ -34,7 +35,7 @@ pub(crate) fn from_line_derive_internal(item: TokenStream) -> deluxe::Result<Tok
                         quote!(
                             match part.trim().parse() {
                                 Ok(parsed) => parsed,
-                                Err(error) => return Err(format!("Error while parsing `{}`: {}", stringify!(#ident), error)),
+                                Err(error) => return Err(format!("Error while parsing `{}`: {:#?}", stringify!(#ident), error)),
                             }
                         )
                     };
@@ -49,7 +50,7 @@ pub(crate) fn from_line_derive_internal(item: TokenStream) -> deluxe::Result<Tok
                 .collect();
             let fields = fields.iter().map(|f| &f.ident);
             return Ok(quote!(
-                impl std::str::FromStr for #ident{
+                impl #impl_generics std::str::FromStr for #ident #ty_generics #where_clause {
                     type Err = String;
 
                     fn from_str(value: &str) -> Result<Self, Self::Err> {
