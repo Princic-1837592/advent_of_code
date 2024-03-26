@@ -6,16 +6,19 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::from_char;
+
+#[from_char]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Pipe {
-    NS,
-    EW,
-    NE,
-    NW,
-    SW,
-    SE,
-    Empty,
-    Start,
+    NS = '|',
+    EW = '-',
+    NE = 'L',
+    NW = 'J',
+    SW = '7',
+    SE = 'F',
+    Start = 'S',
+    Empty = '.',
 }
 
 impl Pipe {
@@ -72,22 +75,6 @@ impl Pipe {
             (Pipe::SE, Direction::S) => Direction::E,
             (Pipe::Empty, _) => unreachable!(),
             (Pipe::Start, _) => Direction::N,
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl From<char> for Pipe {
-    fn from(value: char) -> Self {
-        match value {
-            '|' => Self::NS,
-            '-' => Self::EW,
-            'L' => Self::NE,
-            'J' => Self::NW,
-            '7' => Self::SW,
-            'F' => Self::SE,
-            'S' => Self::Start,
-            '.' => Self::Empty,
             _ => unreachable!(),
         }
     }

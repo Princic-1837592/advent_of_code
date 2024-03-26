@@ -6,12 +6,15 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::from_char;
+
+#[from_char]
 #[derive(Copy, Clone)]
 enum Direction {
-    U,
-    R,
-    D,
-    L,
+    U = 'U',
+    R = 'R',
+    D = 'D',
+    L = 'L',
 }
 
 impl Direction {
@@ -21,18 +24,6 @@ impl Direction {
             Direction::R => (0, 1),
             Direction::D => (1, 0),
             Direction::L => (0, -1),
-        }
-    }
-}
-
-impl From<char> for Direction {
-    fn from(value: char) -> Self {
-        match value {
-            'U' => Self::U,
-            'R' => Self::R,
-            'D' => Self::D,
-            'L' => Self::L,
-            _ => unreachable!(),
         }
     }
 }

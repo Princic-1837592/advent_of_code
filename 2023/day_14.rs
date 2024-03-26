@@ -6,22 +6,14 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::from_char;
+
+#[from_char]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum Rock {
-    Round,
-    Cube,
-    Empty,
-}
-
-impl From<char> for Rock {
-    fn from(value: char) -> Self {
-        match value {
-            '#' => Self::Cube,
-            '.' => Self::Empty,
-            'O' => Self::Round,
-            _ => unreachable!(),
-        }
-    }
+    Round = 'O',
+    Cube = '#',
+    Empty = '.',
 }
 
 type Parsed = Vec<Vec<Rock>>;

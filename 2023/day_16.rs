@@ -7,26 +7,16 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::from_char;
+
+#[from_char]
 #[derive(Copy, Clone, Debug)]
 pub enum Tile {
-    Empty,
-    MirrorR,
-    MirrorL,
-    SplitV,
-    SplitH,
-}
-
-impl From<char> for Tile {
-    fn from(value: char) -> Self {
-        match value {
-            '.' => Tile::Empty,
-            '\\' => Tile::MirrorR,
-            '/' => Tile::MirrorL,
-            '-' => Tile::SplitH,
-            '|' => Tile::SplitV,
-            _ => unreachable!(),
-        }
-    }
+    Empty = '.',
+    MirrorR = '\\',
+    MirrorL = '/',
+    SplitV = '|',
+    SplitH = '-',
 }
 
 type Coord = (usize, usize);

@@ -6,22 +6,14 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::from_char;
+
+#[from_char]
 #[derive(Copy, Clone, Debug)]
 enum Spring {
-    Operational,
-    Damaged,
-    Unknown,
-}
-
-impl From<char> for Spring {
-    fn from(char: char) -> Self {
-        match char {
-            '.' => Self::Operational,
-            '?' => Self::Unknown,
-            '#' => Self::Damaged,
-            _ => unreachable!(),
-        }
-    }
+    Operational = '.',
+    Damaged = '#',
+    Unknown = '?',
 }
 
 #[derive(Clone, Debug)]

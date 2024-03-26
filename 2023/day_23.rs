@@ -6,7 +6,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use utils::from_char;
+use utils::{from_char, parsing::parse_matrix};
 
 #[from_char]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -22,10 +22,7 @@ pub enum Cell {
 type Parsed = Vec<Vec<Cell>>;
 
 fn parse(input: &str) -> Parsed {
-    input
-        .lines()
-        .map(|l| l.chars().map(Cell::from).collect())
-        .collect()
+    parse_matrix(input)
 }
 
 pub mod part1 {

@@ -2,50 +2,51 @@
 //! https://adventofcode.com/2023/day/22/input
 
 use std::{
+    cmp::Ordering,
     collections::HashSet,
     fs::read_to_string,
     time::{Duration, Instant},
 };
 
-#[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+use utils::{parsing::parse_lines, FromStr};
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, FromStr)]
+#[separator(',')]
 struct Cube {
-    z: usize,
     x: usize,
     y: usize,
+    z: usize,
 }
 
-impl From<&str> for Cube {
-    fn from(value: &str) -> Self {
-        let mut parts = value.split(',');
-        Self {
-            x: parts.next().unwrap().parse().unwrap(),
-            y: parts.next().unwrap().parse().unwrap(),
-            z: parts.next().unwrap().parse().unwrap(),
-        }
+impl Ord for Cube {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.z.cmp(&other.z)
     }
 }
 
-#[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
+impl PartialOrd for Cube {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+#[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq, FromStr)]
+#[separator('~')]
 pub struct Brick {
     start: Cube,
     end: Cube,
 }
 
-impl From<&str> for Brick {
-    fn from(value: &str) -> Self {
-        let mut ends: Vec<_> = value.split('~').map(Cube::from).collect();
-        ends.sort();
-        Self {
-            start: ends[0],
-            end: ends[1],
-        }
-    }
-}
-
 type Parsed = Vec<Brick>;
 
 fn parse(input: &str) -> Parsed {
-    let mut result: Vec<_> = input.lines().map(Brick::from).collect();
+    let mut result = parse_lines::<Brick>(input);
+    result.iter_mut().for_each(|b| {
+        if b.start > b.end {
+            println!("!");
+            (b.start, b.end) = (b.end, b.start);
+        }
+    });
     result.sort();
     result
 }

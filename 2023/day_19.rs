@@ -7,6 +7,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+use utils::from_char;
+
 use crate::LINE_ENDING;
 
 #[derive(Copy, Clone, Debug)]
@@ -75,25 +77,14 @@ impl From<&str> for Rule {
     }
 }
 
+#[from_char]
 #[derive(Copy, Clone, Debug)]
 enum Category {
-    X,
-    M,
-    A,
-    S,
-    Last,
-}
-
-impl From<char> for Category {
-    fn from(value: char) -> Self {
-        match value {
-            'x' => Self::X,
-            'm' => Self::M,
-            'a' => Self::A,
-            's' => Self::S,
-            _ => unreachable!(),
-        }
-    }
+    X = 'x',
+    M = 'm',
+    A = 'a',
+    S = 's',
+    Last = '.',
 }
 
 type Parsed = (Vec<Part>, HashMap<String, Workflow>);

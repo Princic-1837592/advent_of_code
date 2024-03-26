@@ -8,7 +8,10 @@ use std::{
     time::{Duration, Instant},
 };
 
-#[derive(Copy, Clone, Debug)]
+use utils::{parsing::parse_lines, FromStr};
+
+#[derive(Copy, Clone, Debug, FromStr)]
+#[separator(',')]
 struct Triple<T>
 where
     T: Copy + FromStr,
@@ -19,41 +22,17 @@ where
     z: T,
 }
 
-impl<T> From<&str> for Triple<T>
-where
-    T: Copy + FromStr,
-    <T as FromStr>::Err: Debug,
-{
-    fn from(value: &str) -> Self {
-        let mut parts = value.split(',');
-        Self {
-            x: parts.next().unwrap().trim().parse().unwrap(),
-            y: parts.next().unwrap().trim().parse().unwrap(),
-            z: parts.next().unwrap().trim().parse().unwrap(),
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, FromStr)]
+#[separator('@')]
 pub struct Hail {
     position: Triple<isize>,
     velocity: Triple<isize>,
 }
 
-impl From<&str> for Hail {
-    fn from(value: &str) -> Self {
-        let mut parts = value.split('@');
-        Self {
-            position: parts.next().unwrap().trim().into(),
-            velocity: parts.next().unwrap().trim().into(),
-        }
-    }
-}
-
 type Parsed = Vec<Hail>;
 
 fn parse(input: &str) -> Parsed {
-    input.lines().map(Hail::from).collect()
+    parse_lines(input)
 }
 
 pub mod part1 {
