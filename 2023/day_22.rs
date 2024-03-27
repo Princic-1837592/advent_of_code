@@ -43,7 +43,6 @@ fn parse(input: &str) -> Parsed {
     let mut result = parse_lines::<Brick>(input);
     result.iter_mut().for_each(|b| {
         if b.start > b.end {
-            println!("!");
             (b.start, b.end) = (b.end, b.start);
         }
     });
