@@ -4,6 +4,7 @@ pub use strum::IntoEnumIterator;
 pub use strum_macros::EnumIter;
 
 pub mod coords;
+pub mod errors;
 pub mod math;
 pub mod matrix;
 #[macro_use]

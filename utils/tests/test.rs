@@ -27,7 +27,7 @@ fn structs() {
         y: usize,
     }
 
-    assert_eq!(Test1 { x: 3, y: 4 }, "3, 4".parse().unwrap());
+    assert_eq!(Ok(Test1 { x: 3, y: 4 }), "3, 4".parse());
 
     #[derive(Copy, Clone, Debug, Eq, PartialEq, FromStr)]
     #[separator("--")]
@@ -36,7 +36,7 @@ fn structs() {
         y: usize,
     }
 
-    assert_eq!(Test2 { x: 3, y: 4 }, "3 -- 4".parse().unwrap());
+    assert_eq!(Ok(Test2 { x: 3, y: 4 }), "3 -- 4".parse());
 
     #[derive(Copy, Clone, Debug, Eq, PartialEq, FromStr)]
     pub struct Test3 {
@@ -44,8 +44,8 @@ fn structs() {
         y: usize,
     }
 
-    assert_eq!(Test3 { x: 3, y: 4 }, "3   4".parse().unwrap());
-    assert_eq!(Test3 { x: 3, y: 4 }, "3 4".parse().unwrap());
+    assert_eq!(Ok(Test3 { x: 3, y: 4 }), "3   4".parse());
+    assert_eq!(Ok(Test3 { x: 3, y: 4 }), "3 4".parse());
 }
 
 #[test]
@@ -66,15 +66,15 @@ fn advent() {
     }
 
     assert_eq!(
-        Hail {
+        Ok(Hail {
             position: Triple {
                 x: 19,
                 y: 13,
                 z: 30
             },
             velocity: Triple { x: -2, y: 1, z: -2 },
-        },
-        "19, 13, 30 @ -2,  1, -2".parse().unwrap()
+        }),
+        "19, 13, 30 @ -2,  1, -2".parse()
     );
 }
 
@@ -82,26 +82,26 @@ fn advent() {
 fn error() {
     #[derive(Copy, Clone, Debug, Eq, PartialEq, Default, FromStr)]
     #[separator(',')]
-    struct Triple {
-        x: isize,
-        y: isize,
-        z: isize,
+    struct Triple<T> {
+        x: T,
+        y: T,
+        z: T,
     }
 
     #[derive(Copy, Clone, Debug, Eq, PartialEq, FromStr)]
     #[separator('@')]
     pub struct Hail {
-        position: Triple,
-        velocity: Triple,
+        position: Triple<isize>,
+        velocity: Triple<usize>,
     }
 
     assert_eq!(
-        "19, 13, 30".parse::<Hail>(),
-        Err("Unexpected end of input while parsing velocity".to_string())
+        "19, 13, 30".parse::<Hail>().unwrap_err().to_string(),
+        "Unexpected end of input while parsing `velocity`"
     );
 
     assert_eq!(
-        "19, 13, 30 @".parse::<Hail>(),
-        Err("Error while parsing `velocity`: Error while parsing `x`: cannot parse integer from empty string".to_string())
+        "19, 13, 30 @".parse::<Hail>().unwrap_err().to_string(),
+        "Error while parsing `velocity`: Error while parsing `x`: cannot parse integer from empty string"
     );
 }

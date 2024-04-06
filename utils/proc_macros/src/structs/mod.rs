@@ -1,5 +1,5 @@
 use deluxe::{extract_attributes, ExtractAttributes};
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
 use quote::quote;
 use syn::{
     parse_quote, punctuated::Punctuated, token::Comma, Data::Struct, DeriveInput, Expr, Field,
@@ -10,7 +10,7 @@ use syn::{
 #[deluxe(attributes(separator))]
 struct Separator(Expr);
 
-pub(crate) fn from_line_derive_internal(item: TokenStream) -> deluxe::Result<TokenStream> {
+pub(crate) fn from_str_derive_internal(item: TokenStream) -> syn::Result<TokenStream> {
     let mut ast: DeriveInput = syn::parse2(item)?;
     let separator: Result<Separator, _> = extract_attributes(&mut ast);
     let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
@@ -26,8 +26,8 @@ pub(crate) fn from_line_derive_internal(item: TokenStream) -> deluxe::Result<Tok
             let parse_fields = parse_fields(fields);
             let fields = fields.iter().map(|f| &f.ident);
             return Ok(quote!(
-                impl #impl_generics std::str::FromStr for #ident #ty_generics #where_clause {
-                    type Err = String;
+                impl #impl_generics ::std::str::FromStr for #ident #ty_generics #where_clause {
+                    type Err = ::utils::errors::ParseError;
 
                     fn from_str(value: &str) -> Result<Self, Self::Err> {
                         let mut parts = #split;
@@ -40,7 +40,7 @@ pub(crate) fn from_line_derive_internal(item: TokenStream) -> deluxe::Result<Tok
             ));
         }
     }
-    panic!("Something went wrong");
+    Err(syn::Error::new(Span::call_site(), ""))
 }
 
 fn parse_fields(fields: &Punctuated<Field, Comma>) -> Vec<TokenStream> {
@@ -56,18 +56,20 @@ fn parse_fields(fields: &Punctuated<Field, Comma>) -> Vec<TokenStream> {
             }) {
                 quote!(part.into())
             } else {
-                quote!(
-                    match part.trim().parse() {
-                        Ok(parsed) => parsed,
-                        Err(error) => return Err(format!("Error while parsing `{}`: {:#?}", stringify!(#ident), error)),
-                    }
-                )
+                quote!(match part.trim().parse() {
+                    Ok(parsed) => parsed,
+                    Err(error) =>
+                        return Err(::utils::errors::ParseError::ParseError(
+                            ::std::stringify!(#ident),
+                            ::std::format!("{}", error),
+                        )),
+                })
             };
             quote!(
                 let #ident = if let Some(part) = parts.next() {
                     #parse
                 } else {
-                    return Err(format!("Unexpected end of input while parsing {}", stringify!(#ident)));
+                    return Err(::utils::errors::ParseError::EndOfInput(::std::stringify!(#ident)));
                 };
             )
         })
@@ -84,7 +86,7 @@ fn add_where_clause(original: Option<&WhereClause>, generics: &Generics) -> Wher
             new.predicates
                 .push(parse_quote!(#ident: ::std::str::FromStr));
             new.predicates
-                .push(parse_quote!(<#ident as std::str::FromStr>::Err: ::std::fmt::Debug));
+                .push(parse_quote!(<#ident as ::std::str::FromStr>::Err: ::std::fmt::Display));
         };
     }
     new
