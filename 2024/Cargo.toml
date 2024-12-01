@@ -1,0 +1,16 @@
+[package]
+name = "advent_of_code_2024"
+version = "0.1.0"
+authors = ["Andrea Princic <princic.1837592@studenti.uniroma1.it>"]
+edition = "2021"
+
+[lib]
+name = "advent_of_code_2024"
+path = "lib.rs"
+
+[[bin]]
+name = "main"
+path = "main.rs"
+
+[dependencies]
+utils = { path = "../utils" }

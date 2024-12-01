@@ -231,4 +231,4 @@ def setup_calendar(year: str, language: str = "python", auto_download=True, verb
 
 
 if __name__ == "__main__":
-    setup_calendar("2023", "rust", False, True)
+    setup_calendar("2024", "rust", False, True)
