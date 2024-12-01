@@ -6,25 +6,44 @@ use std::{
 	time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
+type Parsed = (Vec<usize>, Vec<usize>);
 
-fn parse(_input: &str) -> Parsed {
-	vec![]
+fn parse(input: &str) -> Parsed {
+	let (mut left, mut right) = (Vec::new(), Vec::new());
+	for line in input.lines() {
+		let mut parts = line.split_whitespace();
+		left.push(parts.next().unwrap().parse().unwrap());
+		right.push(parts.next().unwrap().parse().unwrap());
+	}
+	(left, right)
 }
 
 pub mod part1 {
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve((mut left, mut right): Parsed) -> usize {
+		left.sort();
+		right.sort();
+		left.into_iter()
+			.zip(right)
+			.map(|(l, r)| l.abs_diff(r))
+			.sum()
 	}
 }
 
 pub mod part2 {
+	use std::collections::HashMap;
+
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve((left, right): Parsed) -> usize {
+		let mut occurrencies = HashMap::new();
+		for n in right {
+			*occurrencies.entry(n).or_insert(0) += 1;
+		}
+		left.into_iter()
+			.map(|n| n * occurrencies.get(&n).unwrap_or(&0))
+			.sum()
 	}
 }
 
