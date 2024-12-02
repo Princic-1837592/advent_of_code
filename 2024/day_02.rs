@@ -6,30 +6,78 @@ use std::{
 	time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
+type Parsed = Vec<Vec<usize>>;
 
-fn parse(_input: &str) -> Parsed {
-	vec![]
+fn parse(input: &str) -> Parsed {
+	input
+		.lines()
+		.map(|line| {
+			line.split_whitespace()
+				.map(|n| n.parse().unwrap())
+				.collect()
+		})
+		.collect()
 }
 
 pub mod part1 {
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(reports: Parsed) -> usize {
+		reports
+			.into_iter()
+			.filter(|report| {
+				let mut diffs = Vec::with_capacity(report.len() - 1);
+				for i in 1..report.len() {
+					diffs.push(report[i] as isize - report[i - 1] as isize);
+				}
+				diffs.iter().all(|&diff| {
+					diff.signum() == diffs[0].signum() && 1 <= diff.abs() && diff.abs() <= 3
+				})
+			})
+			.count()
 	}
 }
 
 pub mod part2 {
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(reports: Parsed) -> usize {
+		reports
+			.into_iter()
+			.filter(|report| {
+				let mut diffs = Vec::with_capacity(report.len() - 1);
+				for i in 1..report.len() {
+					diffs.push(report[i] as isize - report[i - 1] as isize);
+				}
+				diffs.iter().all(|&diff| {
+					diff.signum() == diffs[0].signum() && 1 <= diff.abs() && diff.abs() <= 3
+				}) || {
+					(0..report.len()).any(|to_remove| {
+						let mut report = report.clone();
+						report.remove(to_remove);
+						let mut diffs = Vec::with_capacity(report.len() - 1);
+						for i in 1..report.len() {
+							diffs.push(report[i] as isize - report[i - 1] as isize);
+						}
+						diffs.iter().all(|&diff| {
+							diff.signum() == diffs[0].signum() && 1 <= diff.abs() && diff.abs() <= 3
+						})
+					})
+				}
+			})
+			.count()
 	}
 }
 
 pub fn main(test: bool, verbose: bool) -> Duration {
-	let test_input = "".to_owned();
+	let test_input = "7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9
+"
+	.to_owned();
 	let puzzle_input = if test {
 		test_input
 	} else {
