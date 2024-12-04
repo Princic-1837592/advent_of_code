@@ -1,21 +1,24 @@
 use parser::Enum;
-use proc_macro::TokenStream;
+use proc_macro2::TokenStream;
 use quote::quote;
 
 mod parser;
 
-pub(crate) fn from_char_internal(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub(crate) fn from_char_internal(
+    _attr: proc_macro::TokenStream,
+    item: proc_macro::TokenStream,
+) -> syn::Result<TokenStream> {
     let Enum {
         attrs,
         visibility,
         ident,
         variants,
         ..
-    } = syn::parse_macro_input!(item as Enum);
+    } = syn::parse(item)?;
     let chars: Vec<_> = variants.iter().map(|v| v.char.clone()).collect();
     let idents: Vec<_> = variants.iter().map(|v| v.ident.clone()).collect();
 
-    quote!(
+    Ok(quote!(
         #(#attrs)*
         #visibility enum #ident{
             #(#idents),*
@@ -29,6 +32,5 @@ pub(crate) fn from_char_internal(_attr: TokenStream, item: TokenStream) -> Token
                 }
             }
         }
-    )
-    .into()
+    ))
 }
