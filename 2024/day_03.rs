@@ -6,25 +6,61 @@ use std::{
 	time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
+use regex::Regex;
 
-fn parse(_input: &str) -> Parsed {
-	vec![]
+type Parsed = Vec<Op>;
+
+#[derive(Copy, Clone, Debug)]
+pub enum Op {
+	Do,
+	Dont,
+	Mul(usize, usize),
+}
+
+fn parse(input: &str) -> Parsed {
+	let pattern = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)").unwrap();
+	pattern
+		.captures_iter(input)
+		.map(|c| match c[0].len() {
+			4 => Op::Do,
+			7 => Op::Dont,
+			_ => Op::Mul(c[1].parse().unwrap(), c[2].parse().unwrap()),
+		})
+		.collect()
 }
 
 pub mod part1 {
-	use super::Parsed;
+	use super::{Op, Parsed};
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(muls: Parsed) -> usize {
+		muls.into_iter()
+			.filter_map(|op| match op {
+				Op::Mul(a, b) => Some((a, b)),
+				_ => None,
+			})
+			.map(|(a, b)| a * b)
+			.sum()
 	}
 }
 
 pub mod part2 {
-	use super::Parsed;
+	use super::{Op, Parsed};
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(ops: Parsed) -> usize {
+		let mut active = true;
+		let mut result = 0;
+		for op in ops {
+			match op {
+				Op::Do => active = true,
+				Op::Dont => active = false,
+				Op::Mul(a, b) => {
+					if active {
+						result += a * b
+					}
+				}
+			}
+		}
+		result
 	}
 }
 

@@ -14,3 +14,4 @@ path = "main.rs"
 
 [dependencies]
 utils = { path = "../utils" }
+regex = "1.11.1"
