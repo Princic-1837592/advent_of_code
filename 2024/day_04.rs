@@ -6,25 +6,77 @@ use std::{
 	time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
+use utils::parsing::parse_matrix;
 
-fn parse(_input: &str) -> Parsed {
-	vec![]
+type Parsed = Vec<Vec<char>>;
+
+fn parse(input: &str) -> Parsed {
+	parse_matrix(input)
 }
 
 pub mod part1 {
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(matrix: Parsed) -> usize {
+		let mut result = 0;
+		for word in [['X', 'M', 'A', 'S'], ['S', 'A', 'M', 'X']] {
+			for r in 0..matrix.len() {
+				for c in 0..matrix[r].len() {
+					if matrix[r][c] == word[0] {
+						if c + 3 < matrix[r].len()
+							&& matrix[r][c + 1] == word[1]
+							&& matrix[r][c + 2] == word[2]
+							&& matrix[r][c + 3] == word[3]
+						{
+							result += 1;
+						}
+						if r + 3 < matrix.len()
+							&& matrix[r + 1][c] == word[1]
+							&& matrix[r + 2][c] == word[2]
+							&& matrix[r + 3][c] == word[3]
+						{
+							result += 1;
+						}
+						if r + 3 < matrix.len()
+							&& c + 3 < matrix[r].len() && matrix[r + 1][c + 1] == word[1]
+							&& matrix[r + 2][c + 2] == word[2]
+							&& matrix[r + 3][c + 3] == word[3]
+						{
+							result += 1;
+						}
+						if r >= 3
+							&& c + 3 < matrix[r].len() && matrix[r - 1][c + 1] == word[1]
+							&& matrix[r - 2][c + 2] == word[2]
+							&& matrix[r - 3][c + 3] == word[3]
+						{
+							result += 1;
+						}
+					}
+				}
+			}
+		}
+		result
 	}
 }
 
 pub mod part2 {
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(matrix: Parsed) -> usize {
+		let mut result = 0;
+		for r in 1..matrix.len() - 1 {
+			for c in 1..matrix[r].len() - 1 {
+				if matrix[r][c] == 'A'
+					&& (matrix[r - 1][c - 1] == 'M' && matrix[r + 1][c + 1] == 'S'
+						|| matrix[r - 1][c - 1] == 'S' && matrix[r + 1][c + 1] == 'M')
+					&& (matrix[r - 1][c + 1] == 'M' && matrix[r + 1][c - 1] == 'S'
+						|| matrix[r - 1][c + 1] == 'S' && matrix[r + 1][c - 1] == 'M')
+				{
+					result += 1
+				}
+			}
+		}
+		result
 	}
 }
 
