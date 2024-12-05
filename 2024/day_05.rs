@@ -103,8 +103,54 @@ pub mod part1 {
 pub mod part2 {
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve((rules, updates): Parsed) -> usize {
+		let mut result = 0;
+		for mut update in updates {
+			let nodes_num = *update.iter().max().unwrap() + 1;
+			let mut is_node = vec![false; nodes_num];
+			for &node in &update {
+				is_node[node] = true;
+			}
+			let mut graph = vec![vec![]; nodes_num];
+			let mut reversed = vec![0; nodes_num];
+			let mut levels = vec![usize::MAX; nodes_num];
+			for &(a, b) in &rules {
+				if a < is_node.len() && b < is_node.len() && is_node[a] && is_node[b] {
+					graph[a].push(b);
+					reversed[b] += 1;
+				}
+			}
+			let mut free: Vec<_> = (0..reversed.len())
+				.filter(|&n| is_node[n] && reversed[n] == 0)
+				.collect();
+			let mut level = 0;
+			while !free.is_empty() {
+				let mut next_free = Vec::new();
+				for &node in &free {
+					levels[node] = level;
+					for &child in &graph[node] {
+						reversed[child] -= 1;
+						if reversed[child] == 0 {
+							next_free.push(child);
+						}
+					}
+				}
+				level += 1;
+				free = next_free;
+			}
+			let mut invalid = false;
+			for n in 1..update.len() {
+				if levels[update[n]] < levels[update[n - 1]] {
+					invalid = true;
+					break;
+				}
+			}
+			if invalid {
+				update.sort_by_key(|&n| levels[n]);
+				result += update[update.len() / 2];
+			}
+		}
+		result
 	}
 }
 
