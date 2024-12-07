@@ -3,33 +3,117 @@
 
 use std::{
 	fs::read_to_string,
+	str::FromStr,
 	time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
+use utils::parsing::parse_lines;
 
-fn parse(_input: &str) -> Parsed {
-	vec![]
+#[derive(Debug, Clone)]
+pub struct Equation {
+	target: u64,
+	factors: Vec<u64>,
+}
+
+impl FromStr for Equation {
+	type Err = ();
+
+	fn from_str(line: &str) -> Result<Self, Self::Err> {
+		let mut parts = line.split(':');
+		let target = parts.next().unwrap().parse().unwrap();
+		let factors = parts.next().unwrap()[1..]
+			.split_whitespace()
+			.map(|n| n.parse().unwrap())
+			.collect();
+		Ok(Equation { target, factors })
+	}
+}
+
+type Parsed = Vec<Equation>;
+
+fn parse(input: &str) -> Parsed {
+	parse_lines(input)
 }
 
 pub mod part1 {
-	use super::Parsed;
+	use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	use super::{Equation, Parsed};
+
+	fn valid(equation: &Equation) -> bool {
+		for combo in 0..1 << (equation.factors.len() - 1) {
+			let mut accumulator = equation.factors[0];
+			for f in 1..equation.factors.len() {
+				if combo & (1 << (f - 1)) != 0 {
+					accumulator *= equation.factors[f];
+				} else {
+					accumulator += equation.factors[f];
+				}
+			}
+			if accumulator == equation.target {
+				return true;
+			}
+		}
+		false
+	}
+
+	pub fn solve(equations: Parsed) -> u64 {
+		equations
+			.into_par_iter()
+			.filter(valid)
+			.map(|eq| eq.target)
+			.sum()
 	}
 }
 
 pub mod part2 {
-	use super::Parsed;
+	use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	use super::{Equation, Parsed};
+
+	fn valid(equation: &Equation) -> bool {
+		for mut combo in 0..=3_u64.pow((equation.factors.len() - 1) as u32) {
+			let mut accumulator = equation.factors[0];
+			for f in 1..equation.factors.len() {
+				match combo % 3 {
+					0 => accumulator *= equation.factors[f],
+					1 => accumulator += equation.factors[f],
+					2 => {
+						accumulator = accumulator * 10_u64.pow(equation.factors[f].ilog10() + 1)
+							+ equation.factors[f]
+					}
+					_ => unreachable!(),
+				}
+				combo /= 3;
+			}
+			if accumulator == equation.target {
+				return true;
+			}
+		}
+		false
+	}
+
+	pub fn solve(equations: Parsed) -> u64 {
+		equations
+			.into_par_iter()
+			.filter(valid)
+			.map(|eq| eq.target)
+			.sum()
 	}
 }
 
 pub fn main(test: bool, verbose: bool) -> Duration {
-	let test_input = "".to_owned();
+	let test_input = "190: 10 19
+3267: 81 40 27
+83: 17 5
+156: 15 6
+7290: 6 8 6 15
+161011: 16 10 13
+192: 17 8 14
+21037: 9 7 18 13
+292: 11 6 16 20
+"
+	.to_owned();
 	let puzzle_input = if test {
 		test_input
 	} else {
