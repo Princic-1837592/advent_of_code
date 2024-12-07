@@ -49,6 +49,9 @@ pub mod part1 {
 				} else {
 					accumulator += equation.factors[f];
 				}
+				if accumulator > equation.target {
+					return false;
+				}
 			}
 			if accumulator == equation.target {
 				return true;
@@ -83,6 +86,9 @@ pub mod part2 {
 							+ equation.factors[f]
 					}
 					_ => unreachable!(),
+				}
+				if accumulator > equation.target {
+					return false;
 				}
 				combo /= 3;
 			}
