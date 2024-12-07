@@ -41,7 +41,7 @@ pub mod part1 {
 	use super::{Equation, Parsed};
 
 	fn valid(equation: &Equation) -> bool {
-		for combo in 0..1 << (equation.factors.len() - 1) {
+		'combo: for combo in 0..1 << (equation.factors.len() - 1) {
 			let mut accumulator = equation.factors[0];
 			for f in 1..equation.factors.len() {
 				if combo & (1 << (f - 1)) != 0 {
@@ -50,7 +50,7 @@ pub mod part1 {
 					accumulator += equation.factors[f];
 				}
 				if accumulator > equation.target {
-					return false;
+					continue 'combo;
 				}
 			}
 			if accumulator == equation.target {
@@ -75,7 +75,7 @@ pub mod part2 {
 	use super::{Equation, Parsed};
 
 	fn valid(equation: &Equation) -> bool {
-		for mut combo in 0..=3_u64.pow((equation.factors.len() - 1) as u32) {
+		'combo: for mut combo in 0..=3_u64.pow((equation.factors.len() - 1) as u32) {
 			let mut accumulator = equation.factors[0];
 			for f in 1..equation.factors.len() {
 				match combo % 3 {
@@ -88,7 +88,7 @@ pub mod part2 {
 					_ => unreachable!(),
 				}
 				if accumulator > equation.target {
-					return false;
+					continue 'combo;
 				}
 				combo /= 3;
 			}
