@@ -2,6 +2,7 @@
 //! https://adventofcode.com/2024/day/11/input
 
 use std::{
+	collections::{hash_map::Entry, HashMap},
 	fs::read_to_string,
 	time::{Duration, Instant},
 };
@@ -15,81 +16,69 @@ fn parse(input: &str) -> Parsed {
 		.collect()
 }
 
-pub mod part1 {
-	use std::collections::VecDeque;
-
-	use super::Parsed;
-
-	pub fn solve(stones: Parsed) -> usize {
-		let mut queue: VecDeque<_> = stones.into_iter().map(|stone| (0, stone)).collect();
-		let mut result = 0;
-		while let Some((applied, stone)) = queue.pop_front() {
-			if applied == 25 {
-				result += 1;
-			} else if stone == 0 {
-				queue.push_back((applied + 1, 1));
-			} else if stone.ilog10() % 2 == 1 {
-				queue.push_back((applied + 1, stone % 10_usize.pow((stone.ilog10() + 1) / 2)));
-				queue.push_back((applied + 1, stone / 10_usize.pow((stone.ilog10() + 1) / 2)));
-			} else {
-				queue.push_back((applied + 1, stone * 2024));
+fn nonna<const TARGET: usize>(
+	stone: usize,
+	steps_left: usize,
+	cache: &mut HashMap<usize, Vec<usize>>,
+) -> usize {
+	if steps_left == 0 {
+		return 1;
+	}
+	match cache.entry(stone) {
+		Entry::Occupied(entry) => {
+			if entry.get()[steps_left] != usize::MAX {
+				return entry.get()[steps_left];
 			}
 		}
-		result
+		Entry::Vacant(entry) => {
+			entry.insert(vec![usize::MAX; TARGET + 1]);
+		}
+	}
+	if stone == 0 {
+		let result = nonna::<TARGET>(1, steps_left - 1, cache);
+		cache.get_mut(&stone).unwrap()[steps_left] = result;
+		return result;
+	}
+	if stone.ilog10() % 2 == 1 {
+		let mut result = nonna::<TARGET>(
+			stone % 10_usize.pow((stone.ilog10() + 1) / 2),
+			steps_left - 1,
+			cache,
+		);
+		result += nonna::<TARGET>(
+			stone / 10_usize.pow((stone.ilog10() + 1) / 2),
+			steps_left - 1,
+			cache,
+		);
+		cache.get_mut(&stone).unwrap()[steps_left] = result;
+		return result;
+	}
+	let result = nonna::<TARGET>(stone * 2024, steps_left - 1, cache);
+	cache.get_mut(&stone).unwrap()[steps_left] = result;
+	result
+}
+
+pub fn solve_generic<const TARGET: usize>(stones: Parsed) -> usize {
+	let mut cache = HashMap::new();
+	stones
+		.into_iter()
+		.map(|stone| nonna::<TARGET>(stone, TARGET, &mut cache))
+		.sum()
+}
+
+pub mod part1 {
+	use super::{solve_generic, Parsed};
+
+	pub fn solve(stones: Parsed) -> usize {
+		solve_generic::<25>(stones)
 	}
 }
 
 pub mod part2 {
-	use std::collections::VecDeque;
-
-	use super::Parsed;
+	use super::{solve_generic, Parsed};
 
 	pub fn solve(stones: Parsed) -> usize {
-		const CACHE_TARGET: usize = 40;
-		let cache: Vec<_> = (0..10_usize)
-			.map(|stone| {
-				let mut queue: VecDeque<_> = VecDeque::from([(0, stone)]);
-				let mut steps = vec![0; CACHE_TARGET + 1];
-				while let Some((applied, stone)) = queue.pop_front() {
-					steps[applied] += 1;
-					if applied == CACHE_TARGET {
-						continue;
-					} else if stone == 0 {
-						queue.push_back((applied + 1, 1));
-					} else if stone.ilog10() % 2 == 1 {
-						queue.push_back((
-							applied + 1,
-							stone % 10_usize.pow((stone.ilog10() + 1) / 2),
-						));
-						queue.push_back((
-							applied + 1,
-							stone / 10_usize.pow((stone.ilog10() + 1) / 2),
-						));
-					} else {
-						queue.push_back((applied + 1, stone * 2024));
-					}
-				}
-				steps
-			})
-			.collect();
-		const TARGET: usize = 75;
-		let mut queue: VecDeque<_> = stones.into_iter().map(|stone| (0, stone)).collect();
-		let mut result = 0;
-		while let Some((applied, stone)) = queue.pop_front() {
-			if stone < 10 && TARGET - applied <= CACHE_TARGET {
-				result += cache[stone][TARGET - applied];
-			} else if applied == TARGET {
-				result += 1;
-			} else if stone == 0 {
-				queue.push_back((applied + 1, 1));
-			} else if stone.ilog10() % 2 == 1 {
-				queue.push_back((applied + 1, stone % 10_usize.pow((stone.ilog10() + 1) / 2)));
-				queue.push_back((applied + 1, stone / 10_usize.pow((stone.ilog10() + 1) / 2)));
-			} else {
-				queue.push_back((applied + 1, stone * 2024));
-			}
-		}
-		result
+		solve_generic::<75>(stones)
 	}
 }
 
