@@ -16,53 +16,40 @@ fn parse(input: &str) -> Parsed {
 		.collect()
 }
 
-fn nonna<const TARGET: usize>(
-	stone: usize,
-	steps_left: usize,
-	cache: &mut HashMap<usize, Vec<usize>>,
-) -> usize {
+fn recursion(stone: usize, steps_left: u8, cache: &mut HashMap<(usize, u8), usize>) -> usize {
 	if steps_left == 0 {
 		return 1;
 	}
-	match cache.entry(stone) {
-		Entry::Occupied(entry) => {
-			if entry.get()[steps_left] != usize::MAX {
-				return entry.get()[steps_left];
-			}
-		}
-		Entry::Vacant(entry) => {
-			entry.insert(vec![usize::MAX; TARGET + 1]);
-		}
+	if let Entry::Occupied(entry) = cache.entry((stone, steps_left)) {
+		*entry.get()
+	} else {
+		let result = if stone == 0 {
+			recursion(1, steps_left - 1, cache)
+		} else if stone.ilog10() % 2 == 1 {
+			let mut result = recursion(
+				stone % 10_usize.pow((stone.ilog10() + 1) / 2),
+				steps_left - 1,
+				cache,
+			);
+			result += recursion(
+				stone / 10_usize.pow((stone.ilog10() + 1) / 2),
+				steps_left - 1,
+				cache,
+			);
+			result
+		} else {
+			recursion(stone * 2024, steps_left - 1, cache)
+		};
+		cache.insert((stone, steps_left), result);
+		result
 	}
-	if stone == 0 {
-		let result = nonna::<TARGET>(1, steps_left - 1, cache);
-		cache.get_mut(&stone).unwrap()[steps_left] = result;
-		return result;
-	}
-	if stone.ilog10() % 2 == 1 {
-		let mut result = nonna::<TARGET>(
-			stone % 10_usize.pow((stone.ilog10() + 1) / 2),
-			steps_left - 1,
-			cache,
-		);
-		result += nonna::<TARGET>(
-			stone / 10_usize.pow((stone.ilog10() + 1) / 2),
-			steps_left - 1,
-			cache,
-		);
-		cache.get_mut(&stone).unwrap()[steps_left] = result;
-		return result;
-	}
-	let result = nonna::<TARGET>(stone * 2024, steps_left - 1, cache);
-	cache.get_mut(&stone).unwrap()[steps_left] = result;
-	result
 }
 
-pub fn solve_generic<const TARGET: usize>(stones: Parsed) -> usize {
+pub fn solve_generic<const TARGET: u8>(stones: Parsed) -> usize {
 	let mut cache = HashMap::new();
 	stones
 		.into_iter()
-		.map(|stone| nonna::<TARGET>(stone, TARGET, &mut cache))
+		.map(|stone| recursion(stone, TARGET, &mut cache))
 		.sum()
 }
 
