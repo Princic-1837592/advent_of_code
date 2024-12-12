@@ -139,7 +139,7 @@ pub mod part2 {
 							(0b_0000_0001, 0b0000_1010),
 						] {
 							if pattern & corner != 0 && (pattern & adjacent).count_ones() % 2 == 0
-								|| pattern & corner == 0 && (pattern & adjacent).count_ones() == 2
+								|| (pattern & adjacent).count_ones() == 2
 							{
 								corners += 1;
 							}
