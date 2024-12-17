@@ -96,10 +96,59 @@ pub mod part1 {
 }
 
 pub mod part2 {
-	use super::Parsed;
+	use super::{find_regions, Parsed};
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(map: Parsed) -> usize {
+		let regions = find_regions(&map);
+		regions
+			.into_iter()
+			.map(|region| {
+				let char = map[region[0].0][region[0].1];
+				region.len() * {
+					let mut corners = 0;
+					for &(i, j) in &region {
+						let mut pattern: u8 = 0;
+						for near in [
+							i.checked_sub(1)
+								.and_then(|ni| j.checked_sub(1).map(|nj| (ni, nj))),
+							i.checked_sub(1).map(|ni| (ni, j)),
+							i.checked_sub(1).map(|ni| (ni, j + 1)),
+							j.checked_sub(1).map(|nj| (i, nj)),
+							Some((i, j + 1)),
+							j.checked_sub(1).map(|nj| (i + 1, nj)),
+							Some((i + 1, j)),
+							Some((i + 1, j + 1)),
+						] {
+							let v = match near {
+								None => 1,
+								Some((ni, nj))
+									if ni >= map.len()
+										|| nj >= map[0].len() || map[ni][nj] != char =>
+								{
+									1
+								}
+								_ => 0,
+							};
+							pattern <<= 1;
+							pattern |= v;
+						}
+						for (corner, adjacent) in [
+							(0b_1000_0000, 0b0101_0000),
+							(0b_0010_0000, 0b0100_1000),
+							(0b_0000_0100, 0b0001_0010),
+							(0b_0000_0001, 0b0000_1010),
+						] {
+							if pattern & corner != 0 && (pattern & adjacent).count_ones() % 2 == 0
+								|| (pattern & adjacent).count_ones() == 2
+							{
+								corners += 1;
+							}
+						}
+					}
+					corners
+				}
+			})
+			.sum()
 	}
 }
 
