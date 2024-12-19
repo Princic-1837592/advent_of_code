@@ -37,17 +37,19 @@ pub mod part1 {
 
 	pub fn solve((patterns, designs): Parsed) -> usize {
 		designs
-			// .into_iter()
-			// .enumerate()
 			.into_par_iter()
 			.filter(|design| {
 				let mut queue = BinaryHeap::from([0]);
+				let mut seen = vec![false; design.len() + 1];
 				while let Some(matched) = queue.pop() {
 					let next_char = design[matched];
+					if seen[matched] {
+						continue;
+					}
+					seen[matched] = true;
 					for pattern in &patterns[next_char] {
 						if design[matched..].starts_with(pattern) {
 							if matched + pattern.len() == design.len() {
-								// dbg!(i);
 								return true;
 							} else {
 								queue.push(matched + pattern.len());
@@ -55,17 +57,34 @@ pub mod part1 {
 						}
 					}
 				}
-				dbg!(false)
+				false
 			})
 			.count()
 	}
 }
 
 pub mod part2 {
+	use rayon::iter::{IntoParallelIterator, ParallelIterator};
+
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve((patterns, designs): Parsed) -> usize {
+		let patterns: Vec<_> = patterns.into_iter().flatten().collect();
+		designs
+			.into_par_iter()
+			.map(|design| {
+				let mut pd = vec![0; design.len() + 1];
+				pd[0] = 1;
+				for i in 1..pd.len() {
+					for pattern in patterns.iter().filter(|p| p.len() <= i) {
+						if design[i - pattern.len()..i] == *pattern {
+							pd[i] += pd[i - pattern.len()];
+						}
+					}
+				}
+				*pd.last().unwrap()
+			})
+			.sum()
 	}
 }
 
