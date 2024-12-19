@@ -6,17 +6,58 @@ use std::{
 	time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
+use crate::LINE_ENDING;
 
-fn parse(_input: &str) -> Parsed {
-	vec![]
+type Parsed = ([Vec<Vec<usize>>; 26], Vec<Vec<usize>>);
+
+fn parse(input: &str) -> Parsed {
+	let sep = LINE_ENDING.repeat(2);
+	let mut parts = input.split(&sep);
+	let patterns = parts.next().unwrap();
+	let designs = parts
+		.next()
+		.unwrap()
+		.lines()
+		.map(|l| l.chars().map(|c| c as usize - 'a' as usize).collect())
+		.collect();
+	let mut patterns_array = core::array::from_fn(|_| vec![]);
+	for pattern in patterns.split(", ").map(|p| p.to_string()) {
+		patterns_array[pattern.chars().next().unwrap() as usize - 'a' as usize]
+			.push(pattern.chars().map(|c| c as usize - 'a' as usize).collect());
+	}
+	(patterns_array, designs)
 }
 
 pub mod part1 {
+	use std::collections::BinaryHeap;
+
+	use rayon::iter::{IntoParallelIterator, ParallelIterator};
+
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve((patterns, designs): Parsed) -> usize {
+		designs
+			// .into_iter()
+			// .enumerate()
+			.into_par_iter()
+			.filter(|design| {
+				let mut queue = BinaryHeap::from([0]);
+				while let Some(matched) = queue.pop() {
+					let next_char = design[matched];
+					for pattern in &patterns[next_char] {
+						if design[matched..].starts_with(pattern) {
+							if matched + pattern.len() == design.len() {
+								// dbg!(i);
+								return true;
+							} else {
+								queue.push(matched + pattern.len());
+							}
+						}
+					}
+				}
+				dbg!(false)
+			})
+			.count()
 	}
 }
 
@@ -29,7 +70,18 @@ pub mod part2 {
 }
 
 pub fn main(test: bool, verbose: bool) -> Duration {
-	let test_input = "".to_owned();
+	let test_input = "r, wr, b, g, bwu, rb, gb, br\r
+\r
+brwrr
+bggr
+gbbr
+rrbgbr
+ubwu
+bwurrg
+brgr
+bbrgwb
+"
+	.to_owned();
 	let puzzle_input = if test {
 		test_input
 	} else {
