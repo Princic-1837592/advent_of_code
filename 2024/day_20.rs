@@ -50,47 +50,90 @@ fn find_distances(walls: Vec<Vec<bool>>, start: Coord, end: Coord) -> Vec<Vec<us
 	distances
 }
 
-pub mod part1 {
-	use utils::coords::u_iter_near;
-
-	use super::Parsed;
-
-	pub fn solve(distances: Parsed) -> usize {
-		let mut result = 0;
-		let (width, height) = (distances[0].len(), distances.len());
-		for (i, row) in distances.iter().enumerate() {
-			for (j, &distance) in row.iter().enumerate() {
-				if distances[i][j] == usize::MAX {
-					continue;
-				}
-				for (ni, nj) in u_iter_near(i, j, width, height).chain(
-					[
-						(i + 2 < width).then(|| (i + 2, j)),
-						(j + 2 < height).then(|| (i, j + 2)),
-						(i >= 2).then(|| (i - 2, j)),
-						(j >= 2).then(|| (i, j - 2)),
-					]
-					.into_iter()
-					.flatten(),
-				) {
-					if distances[ni][nj] != usize::MAX
-						&& distances[ni][nj] > distance
-						&& distances[ni][nj] - distance > 100
+fn solve_generic<const STEPS: usize, const TARGET: usize>(distances: Parsed) -> usize {
+	let mut result = 0;
+	let (width, height) = (distances[0].len(), distances.len());
+	for (i, row) in distances.iter().enumerate() {
+		for (j, &distance) in row.iter().enumerate() {
+			if distances[i][j] == usize::MAX {
+				continue;
+			}
+			for di in 1..STEPS {
+				for dj in 1..=(STEPS - di) {
+					let (neg_i, neg_j) = (i.wrapping_sub(di), j.wrapping_sub(dj));
+					let (pos_i, pos_j) = (i + di, j + dj);
+					if neg_i < width
+						&& neg_j < height && distances[neg_i][neg_j] != usize::MAX
+						&& distance.saturating_sub(distances[neg_i][neg_j] + di + dj) >= TARGET
+					{
+						result += 1;
+					}
+					if neg_i < width
+						&& pos_j < height && distances[neg_i][pos_j] != usize::MAX
+						&& distance.saturating_sub(distances[neg_i][pos_j] + di + dj) >= TARGET
+					{
+						result += 1;
+					}
+					if pos_i < width
+						&& neg_j < height && distances[pos_i][neg_j] != usize::MAX
+						&& distance.saturating_sub(distances[pos_i][neg_j] + di + dj) >= TARGET
+					{
+						result += 1;
+					}
+					if pos_i < width
+						&& pos_j < height && distances[pos_i][pos_j] != usize::MAX
+						&& distance.saturating_sub(distances[pos_i][pos_j] + di + dj) >= TARGET
 					{
 						result += 1;
 					}
 				}
 			}
+			for d in 1..=STEPS {
+				let (neg_i, neg_j) = (i.wrapping_sub(d), j.wrapping_sub(d));
+				let (pos_i, pos_j) = (i + d, j + d);
+				if neg_i < width
+					&& distances[neg_i][j] != usize::MAX
+					&& distance.saturating_sub(distances[neg_i][j] + d) >= TARGET
+				{
+					result += 1;
+				}
+				if pos_i < width
+					&& distances[pos_i][j] != usize::MAX
+					&& distance.saturating_sub(distances[pos_i][j] + d) >= TARGET
+				{
+					result += 1;
+				}
+				if neg_j < height
+					&& distances[i][neg_j] != usize::MAX
+					&& distance.saturating_sub(distances[i][neg_j] + d) >= TARGET
+				{
+					result += 1;
+				}
+				if pos_j < height
+					&& distances[i][pos_j] != usize::MAX
+					&& distance.saturating_sub(distances[i][pos_j] + d) >= TARGET
+				{
+					result += 1;
+				}
+			}
 		}
-		result
+	}
+	result
+}
+
+pub mod part1 {
+	use super::{solve_generic, Parsed};
+
+	pub fn solve(distances: Parsed) -> usize {
+		solve_generic::<2, 100>(distances)
 	}
 }
 
 pub mod part2 {
-	use super::Parsed;
+	use super::{solve_generic, Parsed};
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(distances: Parsed) -> usize {
+		solve_generic::<20, 100>(distances)
 	}
 }
 
