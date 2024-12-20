@@ -27,6 +27,40 @@ pub fn iter_near(i: isize, j: isize) -> impl Iterator<Item = (isize, isize)> {
 	iter(&NEAR, i, j)
 }
 
+pub fn u_iter_cross_near(
+	i: usize,
+	j: usize,
+	width: usize,
+	height: usize,
+) -> impl Iterator<Item = (usize, usize)> {
+	[
+		(i + 1 < width).then(|| (i + 1, j)),
+		(j + 1 < height).then(|| (i, j + 1)),
+		(i >= 1).then(|| (i - 1, j)),
+		(j >= 1).then(|| (i, j - 1)),
+	]
+	.into_iter()
+	.flatten()
+}
+
+pub fn u_iter_near(
+	i: usize,
+	j: usize,
+	width: usize,
+	height: usize,
+) -> impl Iterator<Item = (usize, usize)> {
+	u_iter_cross_near(i, j, width, height).chain(
+		[
+			(i >= 1 && j >= 1).then(|| (i - 1, j - 1)),
+			(i >= 1 && j + 1 < height).then(|| (i - 1, j + 1)),
+			(i + 1 < width && j >= 1).then(|| (i + 1, j - 1)),
+			(i + 1 < width && j + 1 < height).then(|| (i + 1, j + 1)),
+		]
+		.into_iter()
+		.flatten(),
+	)
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, EnumIter)]
 pub enum Direction {
 	N,
