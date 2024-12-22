@@ -95,16 +95,16 @@ pub mod part2 {
 				result
 			})
 			.collect();
-		let mut max = 0;
-		for v in 0..130_321 {
-			max = max.max(
+		(0..130_321)
+			.into_par_iter()
+			.map(|v| {
 				first_occurrence
 					.iter()
 					.map(|f| if f[v] != u8::MAX { f[v] as usize } else { 0 })
-					.sum(),
-			)
-		}
-		max
+					.sum()
+			})
+			.max()
+			.unwrap()
 	}
 }
 
