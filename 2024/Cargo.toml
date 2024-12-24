@@ -16,3 +16,4 @@ path = "main.rs"
 utils = { path = "../utils" }
 regex = "1.11.1"
 rayon = "1.10.0"
+itertools = "0.13.0"
