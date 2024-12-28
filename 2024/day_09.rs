@@ -46,10 +46,47 @@ pub mod part1 {
 }
 
 pub mod part2 {
+	use std::collections::BinaryHeap;
+
 	use super::Parsed;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve(blocks: Parsed) -> usize {
+		let mut free_by_size: [_; 10] = core::array::from_fn(|_| BinaryHeap::new());
+		let mut len = 0;
+		for (b, &block_size) in blocks.iter().enumerate() {
+			if b % 2 == 1 {
+				free_by_size[block_size].push(-(len as isize));
+			}
+			len += block_size;
+		}
+		let mut result = 0;
+		let mut file_index = len;
+		for (b, block_size) in blocks.into_iter().enumerate().rev() {
+			file_index -= block_size;
+			if b % 2 == 0 {
+				if let Some((index, empty_block_size)) = (block_size..free_by_size.len())
+					.flat_map(|empty_block_size| {
+						free_by_size[empty_block_size]
+							.peek()
+							.map(|index| (-index as usize, empty_block_size))
+					})
+					.filter(|&(index, _)| index < file_index)
+					.min()
+				{
+					free_by_size[empty_block_size].pop();
+					if empty_block_size > block_size {
+						free_by_size[empty_block_size - block_size]
+							.push(-((index + block_size) as isize));
+					}
+					let (start, end) = (index, index + block_size - 1);
+					result += (end - start + 1) * (end + start) / 2 * b / 2;
+				} else {
+					let (start, end) = (file_index, file_index + block_size - 1);
+					result += (end - start + 1) * (end + start) / 2 * b / 2;
+				}
+			}
+		}
+		result
 	}
 }
 
