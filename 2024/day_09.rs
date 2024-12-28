@@ -64,7 +64,8 @@ pub mod part2 {
 		for (b, block_size) in blocks.into_iter().enumerate().rev() {
 			file_index -= block_size;
 			if b % 2 == 0 {
-				if let Some((index, empty_block_size)) = (block_size..free_by_size.len())
+				let (start, end) = if let Some((index, empty_block_size)) = (block_size
+					..free_by_size.len())
 					.flat_map(|empty_block_size| {
 						free_by_size[empty_block_size]
 							.peek()
@@ -78,12 +79,11 @@ pub mod part2 {
 						free_by_size[empty_block_size - block_size]
 							.push(-((index + block_size) as isize));
 					}
-					let (start, end) = (index, index + block_size - 1);
-					result += (end - start + 1) * (end + start) / 2 * b / 2;
+					(index, index + block_size - 1)
 				} else {
-					let (start, end) = (file_index, file_index + block_size - 1);
-					result += (end - start + 1) * (end + start) / 2 * b / 2;
-				}
+					(file_index, file_index + block_size - 1)
+				};
+				result += (end - start + 1) * (end + start) / 2 * b / 2;
 			}
 		}
 		result
