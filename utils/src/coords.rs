@@ -34,8 +34,8 @@ pub fn u_iter_cross_near(
 	height: usize,
 ) -> impl Iterator<Item = (usize, usize)> {
 	[
-		(i + 1 < width).then(|| (i + 1, j)),
-		(j + 1 < height).then(|| (i, j + 1)),
+		(i + 1 < height).then(|| (i + 1, j)),
+		(j + 1 < width).then(|| (i, j + 1)),
 		(i >= 1).then(|| (i - 1, j)),
 		(j >= 1).then(|| (i, j - 1)),
 	]
