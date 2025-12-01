@@ -19,7 +19,7 @@ resp = get(
     cookies={"session": session},
     headers={
         "User-Agent": "https://github.com/Princic-1837592/advent_of_code/blob/main/setup.py"
-                      " by princic.1837592@studenti.uniroma1.it"
+                      " by andreapri.99@gmail.com"
     },
 )
 if resp.status_code != 200:
