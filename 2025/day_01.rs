@@ -61,7 +61,7 @@ pub mod part2 {
 		for instr in parsed {
 			match instr {
 				Rotation::R(v) => {
-					count += (v / 100);
+					count += v / 100;
 					if dial + v % 100 >= 100 {
 						count += 1;
 					}
