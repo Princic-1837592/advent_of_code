@@ -68,7 +68,7 @@ pub mod part2 {
 					dial = (dial + v) % 100
 				}
 				Rotation::L(v) => {
-					count += (v / 100);
+					count += v / 100;
 					if v % 100 >= dial && dial != 0 {
 						count += 1;
 					}
