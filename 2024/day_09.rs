@@ -43,6 +43,37 @@ pub mod part1 {
 		}
 		result
 	}
+	/*pub fn solve(blocks: Parsed) -> usize {
+		let mut result = 0;
+		let mut block_i = 0;
+		let mut expanded_left_i = 0;
+		let mut empty_left_in_block = 0;
+		let mut file_i = blocks.len() - 1;
+		let mut expanded_right_i = blocks.len() - 1;
+		let mut file_left_in_block = *blocks.last().unwrap();
+		let mut block_right_i = blocks.len() - 1;
+		while expanded_left_i < expanded_right_i {
+			if block_i % 2 == 0 {
+				result += (0..blocks[block_i])
+					.map(|i| block_i / 2 * (expanded_left_i + i))
+					.sum::<usize>();
+				expanded_left_i += blocks[block_i];
+				block_i += 1;
+			} else {
+				let mut moved = 0;
+				for _ in 0..blocks[block_i] {
+					if expanded_right_i <= expanded_left_i {
+						break;
+					}
+					result += expanded_left_i
+					expanded_left_i += 1;
+					expanded_right_i -= 1;
+				}
+				block_i += 1;
+			}
+		}
+		result
+	}*/
 }
 
 pub mod part2 {
