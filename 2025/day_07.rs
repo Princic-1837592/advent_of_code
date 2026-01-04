@@ -6,30 +6,107 @@ use std::{
 	time::{Duration, Instant},
 };
 
-type Parsed = Vec<usize>;
+use utils::parsing::parse_matrix;
 
-fn parse(_input: &str) -> Parsed {
-	vec![]
+type Parsed = (Vec<Vec<Tile>>, usize);
+
+#[derive(Debug, Copy, Clone)]
+pub enum Tile {
+	Start,
+	Free,
+	Splitter,
+}
+
+impl From<char> for Tile {
+	fn from(value: char) -> Self {
+		match value {
+			'.' => Self::Free,
+			'^' => Self::Splitter,
+			_s => Self::Start,
+		}
+	}
+}
+
+fn parse(input: &str) -> Parsed {
+	let map = parse_matrix(input);
+	let start = map[0]
+		.iter()
+		.position(|t| matches!(t, Tile::Start))
+		.unwrap();
+	(map, start)
 }
 
 pub mod part1 {
-	use super::Parsed;
+	use std::collections::VecDeque;
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	use super::{Parsed, Tile};
+
+	pub fn solve((map, start): Parsed) -> usize {
+		let (width, height) = (map[0].len(), map.len());
+		let mut result = 0;
+		let mut queue = VecDeque::from([(0, start)]);
+		let mut used = vec![vec![false; width]; height];
+		while let Some((i, j)) = queue.pop_front() {
+			if i >= height {
+				continue;
+			}
+			if matches!(map[i][j], Tile::Splitter) {
+				if !used[i][j] {
+					used[i][j] = true;
+					queue.push_back((i, j - 1));
+					queue.push_back((i, j + 1));
+					result += 1;
+				}
+			} else {
+				queue.push_back((i + 1, j));
+			}
+		}
+		result
 	}
 }
 
 pub mod part2 {
-	use super::Parsed;
+	use super::{Parsed, Tile};
 
-	pub fn solve(_parsed: Parsed) -> usize {
-		0
+	pub fn solve((map, start): Parsed) -> usize {
+		let (width, height) = (map[0].len(), map.len());
+		let mut dp = vec![vec![0; width]; height];
+		dp[1][start] = 1;
+		for (i, row) in map.iter().enumerate().skip(2) {
+			for j in (0..width).filter(|&j| matches!(row[j], Tile::Free)) {
+				if j > 0 && matches!(row[j - 1], Tile::Splitter) {
+					dp[i][j] += dp[i - 1][j - 1];
+				}
+				if j < width - 1 && matches!(row[j + 1], Tile::Splitter) {
+					dp[i][j] += dp[i - 1][j + 1];
+				}
+				dp[i][j] += dp[i - 1][j];
+			}
+		}
+		let result = dp.last().unwrap().iter().sum();
+		result
 	}
 }
 
 pub fn main(test: bool, verbose: bool) -> Duration {
-	let test_input = "".to_owned();
+	let test_input = ".......S.......
+...............
+.......^.......
+...............
+......^.^......
+...............
+.....^.^.^.....
+...............
+....^.^...^....
+...............
+...^.^...^.^...
+...............
+..^...^.....^..
+...............
+.^.^.^.^.^...^.
+...............
+"
+	.to_owned();
 	let puzzle_input = if test {
 		test_input
 	} else {
