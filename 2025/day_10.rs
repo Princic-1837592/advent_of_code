@@ -105,59 +105,29 @@ pub mod part1 {
 }
 
 pub mod part2 {
-	use std::{
-		io::{Read, Write},
-		process::{Command, Stdio},
-	};
+	use microlp::{ComparisonOp, OptimizationDirection, Problem};
 
 	use crate::day_10::Parsed;
 
 	pub fn solve(machines: Parsed) -> usize {
 		let mut result = 0;
 		for machine in machines {
-			let mut command = Command::new("z3")
-				.stdin(Stdio::piped())
-				.stdout(Stdio::piped())
-				.arg("-in")
-				.spawn()
-				.unwrap();
-			let mut model = String::new();
-			for i in 0..machine.combos.len() {
-				model.push_str(&format!("(declare-const x{i} Int)\n"));
-				model.push_str(&format!("(assert (>= x{i} 0))\n"));
+			let mut problem = Problem::new(OptimizationDirection::Minimize);
+			let xs = (0..machine.combos.len())
+				.map(|_| {
+					problem.add_integer_var(1., (0, *machine.joltage.iter().max().unwrap() as i32))
+				})
+				.collect::<Vec<_>>();
+			let mut equations = vec![vec![]; machine.joltage.len()];
+			for (c, combo) in machine.combos.iter().enumerate() {
+				for &j in combo {
+					equations[j].push((xs[c], 1.));
+				}
 			}
-			model.push_str("\n(declare-const result Int)\n\n");
-			for (j, joltage) in machine.joltage.iter().enumerate() {
-				let buttons = machine
-					.combos
-					.iter()
-					.enumerate()
-					.filter_map(|(c, combo)| combo.contains(&j).then_some(format!("x{c}")))
-					.collect::<Vec<_>>()
-					.join(" ");
-				model.push_str(&format!("(assert (= (+ {buttons}) {joltage}))\n"));
+			for (equation, solution) in equations.iter().zip(&machine.joltage) {
+				problem.add_constraint(equation, ComparisonOp::Eq, *solution as f64);
 			}
-			let all_vars = (0..machine.combos.len())
-				.map(|c| format!("x{c}"))
-				.collect::<Vec<_>>()
-				.join(" ");
-			model.push_str(&format!("\n(assert (= result (+ {all_vars})))\n"));
-			model.push_str("(minimize result)\n(check-sat)\n(get-value (result))");
-			let mut input = command.stdin.take().unwrap();
-			input.write_all(model.as_bytes()).unwrap();
-			drop(input);
-			let mut output = String::new();
-			command
-				.stdout
-				.as_mut()
-				.unwrap()
-				.read_to_string(&mut output)
-				.unwrap();
-			let result_line = output.lines().nth(1).unwrap();
-			result += result_line[9..result_line.len() - 2]
-				.parse::<usize>()
-				.unwrap();
-			command.wait().unwrap();
+			result += problem.solve().unwrap().objective().round() as usize;
 		}
 		result
 	}
